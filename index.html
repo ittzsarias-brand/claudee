@@ -68,13 +68,19 @@
   .search-box button{background:var(--red);color:#fff;padding:0 20px;}
   .search-box button:hover{background:var(--red-dark);}
 
-  .icons-block{order:1;display:flex;align-items:flex-start;gap:26px;color:#fff;}
-  .icon-item{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;cursor:pointer;position:relative;color:#e8e8e8;text-decoration:none;min-width:48px;}
+  .icons-block{order:1;display:flex;align-items:flex-start;gap:8px;color:#fff;}
+  .icon-item{
+    box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+    width:48px;min-width:48px;height:auto;padding:0;margin:0;
+    gap:4px;font-size:11px;line-height:1;cursor:pointer;position:relative;
+    color:#e8e8e8;text-decoration:none;background:transparent;border:0;
+  }
   .icon-item:hover{color:var(--red);}
-  .contact-action{min-width:48px;text-decoration:none;}
+  .contact-action{width:48px;min-width:48px;text-decoration:none;}
   .contact-action .contact-icon,
   .location-icon-wrap,
-  .menu-trigger .hamburger-icon-wrap{
+  .menu-trigger .hamburger-icon-wrap,
+  .cart-icon-wrap{
     width:31px;height:31px;border-radius:50%;
     display:flex;align-items:center;justify-content:center;
     color:#fff;flex:0 0 31px;
@@ -350,12 +356,11 @@
      .logo-block{order:2;flex:0 0 auto;}
      .logo-icon-sm{width:58px;height:54px;}
      .icons-block{order:1;gap:8px;flex:1;justify-content:flex-start;}
-     .icon-item{font-size:10px;gap:3px;min-width:42px;color:#fff;}
-     .cart-icon-wrap,.location-icon-wrap,.contact-action .contact-icon{width:28px;height:28px;}
-     .menu-trigger .hamburger-icon{width:22px;height:22px;}
-     .contact-action{min-width:42px;}
-     .contact-action .contact-icon{width:28px;height:28px;}
-     .contact-action span:last-child{font-size:9px;color:#fff;}
+     .icon-item{width:48px;min-width:48px;padding:0;margin:0;font-size:10px;gap:4px;color:#fff;}
+     .cart-icon-wrap,.location-icon-wrap,.contact-action .contact-icon,.menu-trigger .hamburger-icon-wrap{width:31px;height:31px;flex:0 0 31px;}
+     .menu-trigger .hamburger-icon{width:18px;height:18px;}
+     .contact-action{width:48px;min-width:48px;}
+     .contact-action span:last-child{font-size:9px;color:#fff;line-height:1;}
      .icon{width:20px;height:20px;}
      .badge{top:-5px;left:-5px;width:15px;height:15px;font-size:9px;}
      .search-block{order:3;max-width:100%;width:100%;}
@@ -416,8 +421,8 @@
      .toast{bottom:14px;right:12px;left:12px;justify-content:center;font-size:12px;padding:11px 14px;}
    }
    @media(max-width:380px){
-     .icons-block{gap:8px;}
-     .icon-item{font-size:9px;min-width:38px;}
+     .icons-block{gap:6px;}
+     .icon-item{font-size:9px;width:44px;min-width:44px;}
      .icon{width:18px;height:18px;}
      .features-row{gap:10px 7px;}
      .feature .ficon{width:34px;height:34px;}
@@ -428,19 +433,6 @@
      .prod-name{font-size:11.5px;}
    }
 
-  @media (max-width:700px){
-    .icons-block{gap:26px;}
-    .icon-item{min-width:48px;}
-    .cart-icon-wrap,
-    .location-icon-wrap,
-    .contact-action .contact-icon,
-    .menu-trigger .hamburger-icon-wrap{
-      width:31px;
-      height:31px;
-      flex:0 0 31px;
-    }
-    .menu-trigger .hamburger-icon{width:18px;height:18px;}
-  }
 </style>
 
 <style id="replaceable-store-images">
