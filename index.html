@@ -1064,40 +1064,59 @@ function getLocation(){
   const lat = 35.114769;
   const lng = 45.687771;
   const storeName = 'PH.Tools';
+
   const googleMaps = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
   const waze = `https://www.waze.com/ul?ll=${lat}%2C${lng}&navigate=yes`;
   const appleMaps = `https://maps.apple.com/?ll=${lat},${lng}&q=${encodeURIComponent(storeName)}`;
 
-  const overlay = document.getElementById('contactChooserOverlay');
-  const box = overlay.querySelector('.contact-chooser');
+  let overlay = document.getElementById('locationChooserOverlay');
 
-  box.innerHTML = `
-    <button class="contact-chooser-close" type="button" onclick="closeContactChooser()" aria-label="داخستن">×</button>
-    <div class="contact-chooser-title">شوێنی فرۆشگا</div>
-    <div class="contact-chooser-subtitle">نەخشەیەک هەڵبژێرە بۆ دۆزینەوەی شوێنی PH.Tools</div>
-    <div class="contact-chooser-actions">
-      <a class="contact-choice" href="${googleMaps}" target="_blank" rel="noopener noreferrer" aria-label="Google Maps">
-        <span class="contact-choice-icon">
-          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>
-        </span>
-        <span><strong>Google Maps</strong><small>کردنەوەی شوێنی فرۆشگا</small></span>
-      </a>
+  if(!overlay){
+    overlay = document.createElement('div');
+    overlay.className = 'contact-chooser-overlay';
+    overlay.id = 'locationChooserOverlay';
+    overlay.innerHTML = `
+      <div class="contact-chooser" role="dialog" aria-modal="true" aria-labelledby="locationChooserTitle" onclick="event.stopPropagation()">
+        <button class="contact-chooser-close" type="button" onclick="closeLocationChooser()" aria-label="داخستن">×</button>
+        <div class="contact-chooser-title" id="locationChooserTitle">شوێنی فرۆشگا</div>
+        <div class="contact-chooser-subtitle">نەخشەیەک هەڵبژێرە بۆ دۆزینەوەی شوێنی PH.Tools</div>
+        <div class="contact-chooser-actions">
+          <a class="contact-choice" href="${googleMaps}" target="_blank" rel="noopener noreferrer" aria-label="Google Maps">
+            <span class="contact-choice-icon">
+              <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            </span>
+            <span><strong>Google Maps</strong><small>کردنەوەی شوێنی فرۆشگا</small></span>
+          </a>
 
-      <a class="contact-choice" href="${waze}" target="_blank" rel="noopener noreferrer" aria-label="Waze">
-        <span class="contact-choice-icon">
-          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 11.5c0 4.7-4 7.5-8.6 7.5-1.2 0-2.4-.2-3.4-.6L5 20l.8-2.8C3.8 15.7 3 13.7 3 11.5 3 7.6 6.5 4.5 11.7 4.5c5.1 0 8.8 2.8 8.8 7Z"/><path d="M8 11h.01M12 11h.01M16 11h.01M9 15c1.8 1.2 4.2 1.2 6 0"/></svg>
-        </span>
-        <span><strong>Waze</strong><small>ڕێنمایی ڕێگا بۆ فرۆشگاکە</small></span>
-      </a>
+          <a class="contact-choice" href="${waze}" target="_blank" rel="noopener noreferrer" aria-label="Waze">
+            <span class="contact-choice-icon">
+              <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 11.5c0 4.7-4 7.5-8.6 7.5-1.2 0-2.4-.2-3.4-.6L5 20l.8-2.8C3.8 15.7 3 13.7 3 11.5 3 7.6 6.5 4.5 11.7 4.5c5.1 0 8.8 2.8 8.8 7Z"/><path d="M8 11h.01M12 11h.01M16 11h.01M9 15c1.8 1.2 4.2 1.2 6 0"/></svg>
+            </span>
+            <span><strong>Waze</strong><small>ڕێنمایی ڕێگا بۆ فرۆشگاکە</small></span>
+          </a>
 
-      <a class="contact-choice" href="${appleMaps}" target="_blank" rel="noopener noreferrer" aria-label="Apple Maps">
-        <span class="contact-choice-icon">
-          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 12.5c0-2 1.6-3 1.7-3.1-.9-1.4-2.4-1.6-2.9-1.6-1.2-.1-2.3.7-2.9.7-.6 0-1.5-.7-2.5-.7-1.3 0-2.5.8-3.2 1.9-1.4 2.4-.4 6 1 7.9.7.9 1.5 2 2.5 2 .9 0 1.3-.6 2.5-.6s1.5.6 2.5.6c1 0 1.7-.9 2.4-1.9.8-1.1 1.1-2.2 1.1-2.3-.1 0-2.2-.8-2.2-2.9ZM14.7 6.6c.5-.7.9-1.6.8-2.6-.8 0-1.8.5-2.3 1.1-.5.6-.9 1.5-.8 2.4.9.1 1.8-.4 2.3-.9Z"/></svg>
-        </span>
-        <span><strong>Apple Maps</strong><small>کردنەوەی شوێنی فرۆشگا</small></span>
-      </a>
-    </div>`;
+          <a class="contact-choice" href="${appleMaps}" target="_blank" rel="noopener noreferrer" aria-label="Apple Maps">
+            <span class="contact-choice-icon">
+              <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 12.5c0-2 1.6-3 1.7-3.1-.9-1.4-2.4-1.6-2.9-1.6-1.2-.1-2.3.7-2.9.7-.6 0-1.5-.7-2.5-.7-1.3 0-2.5.8-3.2 1.9-1.4 2.4-.4 6 1 7.9.7.9 1.5 2 2.5 2 .9 0 1.3-.6 2.5-.6s1.5.6 2.5.6c1 0 1.7-.9 2.4-1.9.8-1.1 1.1-2.2 1.1-2.3-.1 0-2.2-.8-2.2-2.9ZM14.7 6.6c.5-.7.9-1.6.8-2.6-.8 0-1.8.5-2.3 1.1-.5.6-.9 1.5-.8 2.4.9.1 1.8-.4 2.3-.9Z"/></svg>
+            </span>
+            <span><strong>Apple Maps</strong><small>کردنەوەی شوێنی فرۆشگا</small></span>
+          </a>
+        </div>
+      </div>`;
+
+    overlay.onclick = function(event){
+      if(event.target === overlay) closeLocationChooser();
+    };
+
+    document.body.appendChild(overlay);
+  }
+
   overlay.classList.add('show');
+}
+
+function closeLocationChooser(){
+  const el = document.getElementById('locationChooserOverlay');
+  if(el) el.classList.remove('show');
 }
 
 const savedTheme = localStorage.getItem('ph_theme') || 'dark';
