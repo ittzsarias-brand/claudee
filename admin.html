@@ -1016,24 +1016,49 @@ tbody tr:hover{
     indexProductImages = new Map(indexProducts.map(p => [String(p.id), p.img || ""]));
   }
 
-  async function syncExistingProducts() {
+  async function syncExistingProducts(options = {}) {
+    const silent = !!options.silent;
+    const onlyMissing = !!options.onlyMissing;
     const btn = $("syncBtn");
-    if (btn) { btn.disabled = true; btn.textContent = "خەریکی هاوردەکردنە..."; }
+    if (!silent && btn) { btn.disabled = true; btn.textContent = "خەریکی هاوردەکردنە..."; }
     try {
       await loadIndexProducts();
       if (!indexProducts.length) throw new Error("No products found");
 
+      let existing = [];
+      if (onlyMissing) existing = await window.PHToolsFirebase.listProducts();
+
+      let imported = 0;
       for (const product of indexProducts) {
-        await window.PHToolsFirebase.upsertLegacyProduct(product);
+        const legacyId = String(product.id);
+        const alreadyExists = existing.some(row => String(row.legacyId ?? "") === legacyId);
+        if (!onlyMissing || !alreadyExists) {
+          await window.PHToolsFirebase.upsertLegacyProduct(product);
+          imported++;
+        }
       }
 
-      toast(`${indexProducts.length} بەرهەم لە index.html هاوردەکران`);
-      await loadProducts();
+      if (!silent) {
+        toast(`${imported} بەرهەم لە index.html هاوردەکران`);
+        await loadProducts();
+      }
+      return imported;
     } catch (error) {
       console.error("Index sync error:", error);
-      toast("هاوردەکردن سەرکەوتوو نەبوو: " + (error?.message || "هەڵەی نەناسراو"));
+      if (!silent) toast("هاوردەکردن سەرکەوتوو نەبوو: " + (error?.message || "هەڵەی نەناسراو"));
+      return 0;
     } finally {
-      if (btn) { btn.disabled = false; btn.textContent = "↻ هاوردەکردنی بەرهەمەکانی index.html"; }
+      if (!silent && btn) { btn.disabled = false; btn.textContent = "↻ هاوردەکردنی بەرهەمەکانی index.html"; }
+    }
+  }
+
+  async function autoSyncExistingProducts() {
+    // Run automatically after every successful login/page reload.
+    // Only missing legacy products are imported, so admin edits are preserved.
+    const imported = await syncExistingProducts({ silent: true, onlyMissing: true });
+    if (imported > 0) {
+      toast(`${imported} بەرهەم بە شێوەی خۆکار لە index.html هاوردەکران`);
+      await loadProducts();
     }
   }
 
@@ -1260,6 +1285,7 @@ tbody tr:hover{
       if (user) {
         showApp();
         await loadProducts();
+        await autoSyncExistingProducts();
       } else {
         showLogin();
       }
