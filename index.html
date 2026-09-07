@@ -69,8 +69,14 @@
   .search-box button:hover{background:var(--red-dark);}
 
   .icons-block{order:1;display:flex;align-items:center;gap:26px;color:#fff;}
-  .icon-item{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;cursor:pointer;position:relative;color:#e8e8e8;}
+  .icon-item{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;cursor:pointer;position:relative;color:#e8e8e8;text-decoration:none;}
   .icon-item:hover{color:var(--red);}
+  .contact-action{min-width:48px;text-decoration:none;}
+  .contact-action .contact-icon{width:31px;height:31px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;}
+  .contact-action.whatsapp .contact-icon{background:#25D366;}
+  .contact-action.phone .contact-icon{background:var(--red);}
+  .contact-action span:last-child{font-size:10px;font-weight:700;line-height:1;color:#e8e8e8;}
+  .contact-action:hover span:last-child{color:#fff;}
   .badge{
     position:absolute;top:-8px;left:-10px;background:var(--red);color:#fff;
     font-size:10px;font-weight:700;border-radius:50%;width:17px;height:17px;
@@ -295,8 +301,11 @@
      .header-row{flex-wrap:wrap;gap:10px;}
      .logo-block{order:2;flex:0 0 auto;}
      .logo-icon-sm{width:58px;height:54px;}
-     .icons-block{order:1;gap:14px;flex:1;justify-content:flex-start;}
+     .icons-block{order:1;gap:10px;flex:1;justify-content:flex-start;}
      .icon-item{font-size:10px;gap:3px;min-width:42px;}
+     .contact-action{min-width:42px;}
+     .contact-action .contact-icon{width:28px;height:28px;}
+     .contact-action span:last-child{font-size:9px;}
      .icon{width:20px;height:20px;}
      .badge{top:-5px;left:-5px;width:15px;height:15px;font-size:9px;}
      .search-block{order:3;max-width:100%;width:100%;}
@@ -408,6 +417,18 @@
         سەبەتە
         <span class="badge" id="cartBadge">0</span>
       </div>
+      <a class="icon-item contact-action whatsapp" href="https://wa.me/9647774242436" target="_blank" rel="noopener" aria-label="پەیوەندی لە واتساپ">
+        <span class="contact-icon">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 11.5a8.5 8.5 0 0 1-12.8 7.3L4 20l1.2-3.5A8.5 8.5 0 1 1 20.5 11.5z"/><path d="M8.5 8.5c.4 2 2 4.1 4 5.1.6.3 1.2.1 1.6-.4l.6-.8"/></svg>
+        </span>
+        <span>واتساپ</span>
+      </a>
+      <a class="icon-item contact-action phone" href="tel:+9647774242436" aria-label="پەیوەندی بە تەلەفۆن">
+        <span class="contact-icon">
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 3.5l3 1.2-1.4 3.4-1.5.8a13.5 13.5 0 0 0 8.5 8.5l.8-1.5 3.4-1.4 1.2 3c.3.8-.1 1.7-.9 2.1-1.1.5-2.3.7-3.5.4A17 17 0 0 1 4.4 7.4c-.3-1.2-.1-2.4.4-3.5.4-.8 1.3-1.2 2.1-.9z"/></svg>
+        </span>
+        <span>پەیوەندی</span>
+      </a>
     </div>
   </div>
 </header>
@@ -538,7 +559,7 @@
     </div>
     <div class="footer-col">
       <h4>پەیوەندیمان</h4>
-      <div class="contact-line">📞 +964 750 123 4567</div>
+      <div class="contact-line">📞 +964 777 424 2436</div>
       <div class="contact-line">✉️ info@phtools.com</div>
       <div class="contact-line">📍 سلێمانی، کوردستان</div>
       <div class="socials">
