@@ -269,8 +269,139 @@ img{border-radius:14px}
 }
 </style>
 
+
+<style id="premium-login-only">
+  html,body{min-height:100%;margin:0}
+  body{
+    background:#07090d!important;
+    color:#fff!important;
+  }
+  body.firebase-login-active > *:not(#firebaseLoginScreen){
+    display:none!important;
+  }
+  #firebaseLoginScreen{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    box-sizing:border-box;
+    direction:rtl;
+    background:
+      radial-gradient(circle at 50% 20%,rgba(215,181,109,.08),transparent 35%),
+      #07090d;
+  }
+  .firebase-login-card{
+    width:min(390px,100%);
+    padding:30px;
+    box-sizing:border-box;
+    border-radius:24px;
+    background:#0d1118;
+    border:1px solid rgba(255,255,255,.10);
+    box-shadow:0 28px 90px rgba(0,0,0,.55);
+  }
+  .firebase-login-logo{
+    width:52px;height:52px;border-radius:16px;
+    display:grid;place-items:center;
+    margin:0 auto 24px;
+    background:linear-gradient(145deg,#f0d38f,#a97836);
+    color:#111;
+    font-weight:950;
+    font-size:18px;
+    direction:ltr;
+  }
+  .firebase-login-form{display:grid;gap:12px}
+  .firebase-login-form input{
+    width:100%;
+    box-sizing:border-box;
+    min-height:50px;
+    padding:0 15px;
+    border-radius:14px!important;
+    background:#080c12!important;
+    border:1px solid rgba(255,255,255,.11)!important;
+    color:#fff!important;
+    outline:none;
+    direction:ltr;
+    text-align:left;
+  }
+  .firebase-login-form input:focus{
+    border-color:rgba(215,181,109,.65)!important;
+    box-shadow:0 0 0 4px rgba(215,181,109,.08)!important;
+  }
+  .firebase-login-form button{
+    width:100%;
+    min-height:50px;
+    margin-top:4px;
+    border:0!important;
+    border-radius:14px!important;
+    background:linear-gradient(135deg,#e0c07a,#b98c43)!important;
+    color:#111!important;
+    font-size:15px;
+    font-weight:900;
+    cursor:pointer;
+  }
+  #firebaseLoginError{
+    min-height:18px;
+    color:#ff9da5;
+    font-size:12px;
+    text-align:center;
+  }
+</style>
+
+
+<style id="login-cleanup">
+html,body{
+  width:100%;
+  height:100%;
+  min-height:100%;
+  overflow:hidden!important;
+}
+body.firebase-login-active{
+  height:100vh!important;
+  min-height:100vh!important;
+  overflow:hidden!important;
+}
+body.firebase-login-active > *:not(#firebaseLoginScreen){
+  display:none!important;
+  visibility:hidden!important;
+  height:0!important;
+  max-height:0!important;
+  min-height:0!important;
+  overflow:hidden!important;
+  margin:0!important;
+  padding:0!important;
+}
+body.firebase-login-active #firebaseLoginScreen{
+  position:fixed!important;
+  inset:0!important;
+  width:100vw!important;
+  height:100vh!important;
+  min-height:100vh!important;
+  max-height:100vh!important;
+  overflow:hidden!important;
+  z-index:2147483647!important;
+}
+body.firebase-login-active #firebaseLoginScreen *{
+  box-sizing:border-box;
+}
+</style>
+
 </head>
 <body>
+
+<div id="firebaseLoginScreen" hidden>
+  <div class="firebase-login-card">
+    <div class="firebase-login-logo">PH</div>
+    <form class="firebase-login-form" id="firebaseLoginForm">
+      <input id="firebaseLoginEmail" type="email" autocomplete="username" placeholder="Email" required>
+      <input id="firebaseLoginPassword" type="password" autocomplete="current-password" placeholder="Password" required>
+      <button type="submit">چوونەژوورەوە</button>
+      <div id="firebaseLoginError"></div>
+    </form>
+  </div>
+</div>
+
+
 <div class="premium-brand">
   <div class="premium-brand-mark">PH</div>
   <div>
@@ -480,6 +611,46 @@ start();
   color:#687282;font-size:11px;letter-spacing:.08em;
 }
 </style>
+
+
+<script type="module">
+  const loginScreen = document.getElementById("firebaseLoginScreen");
+  const form = document.getElementById("firebaseLoginForm");
+  const emailInput = document.getElementById("firebaseLoginEmail");
+  const passwordInput = document.getElementById("firebaseLoginPassword");
+  const errorBox = document.getElementById("firebaseLoginError");
+
+  document.body.classList.add("firebase-login-active");
+  loginScreen.hidden = false;
+
+  window.addEventListener("firebase-auth-ready", (event) => {
+    const user = event.detail.user;
+    if (user) {
+      document.body.classList.remove("firebase-login-active");
+      loginScreen.hidden = true;
+    } else {
+      document.body.classList.add("firebase-login-active");
+      loginScreen.hidden = false;
+    }
+  });
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    errorBox.textContent = "";
+    const button = form.querySelector("button");
+    button.disabled = true;
+    try {
+      await window.PHToolsFirebase.signIn(
+        emailInput.value.trim(),
+        passwordInput.value
+      );
+    } catch (err) {
+      errorBox.textContent = "Email یان Password هەڵەیە.";
+    } finally {
+      button.disabled = false;
+    }
+  });
+</script>
 
 </body></html>
 
