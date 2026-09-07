@@ -7,62 +7,43 @@
 
 <!-- Firebase setup: replace the placeholder values with your Firebase Web App config. -->
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
   import {
-    getAuth, onAuthStateChanged, signInWithEmailAndPassword,
-    signOut
-  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+    getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut
+  } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
   import {
-    getFirestore, collection, addDoc, getDocs, doc, getDoc,
-    updateDoc, deleteDoc, serverTimestamp, query, orderBy
-  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-  import {
-    getStorage, ref, uploadBytes, getDownloadURL, deleteObject
-  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js";
+    getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc,
+    serverTimestamp, query, orderBy
+  } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
-  // =========================
-  // 1) PASTE YOUR FIREBASE CONFIG HERE
-  // =========================
- const firebaseConfig = {
-  apiKey: "AIzaSyCH5-6OhuCVfZo8abiIHYfOzvbQTBQbEmw",
-  authDomain: "ph-tools-4a82c.firebaseapp.com",
-  projectId: "ph-tools-4a82c",
-  storageBucket: "ph-tools-4a82c.firebasestorage.app",
-  messagingSenderId: "677581607396",
-  appId: "1:677581607396:web:7c63eee6537cdf7ccb37f1",
-  measurementId: "G-DDCWBJVG1T"
-};
+  const firebaseConfig = {
+    apiKey: "AIzaSyCH5-6OhuCVfZo8abiIHYfOzvbQTBQbEmw",
+    authDomain: "ph-tools-4a82c.firebaseapp.com",
+    projectId: "ph-tools-4a82c",
+    storageBucket: "ph-tools-4a82c.firebasestorage.app",
+    messagingSenderId: "677581607396",
+    appId: "1:677581607396:web:7c63eee6537cdf7ccb37f1",
+    measurementId: "G-DDCWBJVG1T"
   };
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
-  const storage = getStorage(app);
 
-  // Expose a small API for the existing dashboard UI.
   window.PHToolsFirebase = {
-    auth, db, storage,
+    auth, db,
     signIn: (email, password) => signInWithEmailAndPassword(auth, email, password),
     signOut: () => signOut(auth),
     onAuth: (cb) => onAuthStateChanged(auth, cb),
 
     async listProducts() {
-      const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
-      const snap = await getDocs(q);
-      return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      const snap = await getDocs(collection(db, "products"));
+      const rows = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      rows.sort((a,b) => Number(a.sortOrder ?? a.sort_order ?? 0) - Number(b.sortOrder ?? b.sort_order ?? 0));
+      return rows;
     },
 
-    async addProduct(product, imageFile) {
-      let imageUrl = product.imageUrl || "";
-      let imagePath = "";
-      if (imageFile) {
-        const safeName = imageFile.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-        imagePath = `products/${crypto.randomUUID()}-${safeName}`;
-        const imageRef = ref(storage, imagePath);
-        await uploadBytes(imageRef, imageFile);
-        imageUrl = await getDownloadURL(imageRef);
-      }
-
+    async addProduct(product) {
       const payload = {
         name: product.name || "",
         price: Number(product.price || 0),
@@ -70,10 +51,11 @@
         brand: product.brand || "",
         description: product.description || "",
         stock: Number(product.stock || 0),
+        rating: Number(product.rating || 0),
+        sortOrder: Number(product.sortOrder || 0),
         featured: !!product.featured,
         active: product.active !== false,
-        imageUrl,
-        imagePath,
+        imageUrl: product.imageUrl || "",
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp()
       };
@@ -81,21 +63,7 @@
       return { id: result.id, ...payload };
     },
 
-    async updateProduct(id, product, imageFile) {
-      const productRef = doc(db, "products", id);
-      const oldSnap = await getDoc(productRef);
-      const old = oldSnap.exists() ? oldSnap.data() : {};
-
-      let imageUrl = product.imageUrl ?? old.imageUrl ?? "";
-      let imagePath = old.imagePath || "";
-
-      if (imageFile) {
-        const safeName = imageFile.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-        imagePath = `products/${crypto.randomUUID()}-${safeName}`;
-        await uploadBytes(ref(storage, imagePath), imageFile);
-        imageUrl = await getDownloadURL(ref(storage, imagePath));
-      }
-
+    async updateProduct(id, product) {
       const payload = {
         name: product.name || "",
         price: Number(product.price || 0),
@@ -103,37 +71,28 @@
         brand: product.brand || "",
         description: product.description || "",
         stock: Number(product.stock || 0),
+        rating: Number(product.rating || 0),
+        sortOrder: Number(product.sortOrder || 0),
         featured: !!product.featured,
         active: product.active !== false,
-        imageUrl,
-        imagePath,
+        imageUrl: product.imageUrl || "",
         updatedAt: serverTimestamp()
       };
-      await updateDoc(productRef, payload);
+      await updateDoc(doc(db, "products", id), payload);
       return { id, ...payload };
     },
 
     async deleteProduct(id) {
-      const productRef = doc(db, "products", id);
-      const snap = await getDoc(productRef);
-      if (snap.exists()) {
-        const data = snap.data();
-        if (data.imagePath) {
-          try { await deleteObject(ref(storage, data.imagePath)); } catch (_) {}
-        }
-      }
-      await deleteDoc(productRef);
+      await deleteDoc(doc(db, "products", id));
     }
   };
 
-  // Auth guard: hide the dashboard until a Firebase user is signed in.
   window.PHToolsFirebase.onAuth((user) => {
     document.documentElement.dataset.firebaseAuth = user ? "signed-in" : "signed-out";
     window.dispatchEvent(new CustomEvent("firebase-auth-ready", { detail: { user } }));
   });
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#111827;--muted:#6b7280;--line:#e5e7eb;--dark:#111827;--accent:#2563eb;--danger:#dc2626;--ok:#059669;--radius:18px}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif}.hidden{display:none!important}
@@ -431,7 +390,7 @@ body.firebase-login-active #firebaseLoginScreen *{
   <strong>Firebase:</strong>
   ئەم داشبۆردە ئێستا بۆ Firebase ئامادەکراوە.
   لە سەرەتای فایلەکە <code>firebaseConfig</code> ـەکەت دابنێ،
-  پاشان Firebase Authentication، Firestore و Storage چالاک بکە.
+  Firebase Authentication و Firestore چالاک بکە. بۆ وێنەکان Firebase Storage پێویست نییە.
 </div>
 
 
@@ -481,7 +440,7 @@ body.firebase-login-active #firebaseLoginScreen *{
       <div class="field"><label>ستۆک</label><input id="stock" class="input" type="number" min="0" step="1" value="0"></div>
       <div class="field"><label>هەڵسەنگاندن</label><select id="rating" class="input"><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option><option>0</option></select></div>
       <div class="field"><label>ڕیزبەندی</label><input id="sortOrder" class="input" type="number" step="1" value="0"></div>
-      <div class="field"><label>وێنەی بەرهەم</label><input id="image" class="input" type="file" accept="image/*"><img id="preview" class="preview hidden"></div>
+      <div class="field"><label>ڕێگای وێنە / URL</label><input id="image" class="input" type="text" placeholder="images/product.jpg"><img id="preview" class="preview hidden"></div>
       <div class="field full"><label>وەسف</label><textarea id="description" rows="5"></textarea></div>
       <div class="field"><label class="check"><input id="featured" type="checkbox"> بەرهەمی تایبەت</label></div>
       <div class="field"><label class="check"><input id="active" type="checkbox" checked> لە ماڵپەڕدا پیشان بدرێت</label></div>
@@ -493,116 +452,227 @@ body.firebase-login-active #firebaseLoginScreen *{
 <div id="toast" class="toast hidden"></div>
 
 <script>
-const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-const SUPABASE_PUBLISHABLE_KEY = 'YOUR_SUPABASE_PUBLISHABLE_KEY';
-const { createClient } = supabase;
-const db = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+const $ = id => document.getElementById(id);
 let products = [];
 
-const $ = id => document.getElementById(id);
-function toast(msg){ $('toast').textContent=msg; $('toast').classList.remove('hidden'); setTimeout(()=>$('toast').classList.add('hidden'),2200); }
-function msg(el,text,type='error'){ el.innerHTML = `<div class="${type}">${text}</div>`; }
+function toast(msg){
+  $('toast').textContent = msg;
+  $('toast').classList.remove('hidden');
+  setTimeout(() => $('toast').classList.add('hidden'), 2200);
+}
+function msg(el,text,type='error'){
+  el.innerHTML = `<div class="${type}">${text}</div>`;
+}
 
-async function ensureAdmin(){
-  const {data:{user}} = await db.auth.getUser();
-  if(!user) return false;
-  const {data,error} = await db.from('admin_users').select('user_id').eq('user_id',user.id).maybeSingle();
-  return !error && !!data;
+function showLogin(){
+  $('loginView').classList.remove('hidden');
+  $('appView').classList.add('hidden');
+}
+function showApp(){
+  $('loginView').classList.add('hidden');
+  $('appView').classList.remove('hidden');
 }
 
 async function start(){
-  const {data:{session}} = await db.auth.getSession();
-  if(session && await ensureAdmin()){ showApp(); await loadProducts(); }
-  else showLogin();
+  window.PHToolsFirebase.onAuth(async (user) => {
+    if(user){
+      showApp();
+      await loadProducts();
+    }else{
+      showLogin();
+    }
+  });
 }
-function showLogin(){ $('loginView').classList.remove('hidden'); $('appView').classList.add('hidden'); }
-function showApp(){ $('loginView').classList.add('hidden'); $('appView').classList.remove('hidden'); }
 
-$('loginBtn').onclick = async ()=>{
-  $('loginMsg').innerHTML='';
-  const email=$('loginEmail').value.trim(), password=$('loginPassword').value;
-  const {error}=await db.auth.signInWithPassword({email,password});
-  if(error){ msg($('loginMsg'),'چوونەژوورەوە سەرکەوتوو نەبوو.'); return; }
-  if(!await ensureAdmin()){ await db.auth.signOut(); msg($('loginMsg'),'ئەم هەژمارە دەسەڵاتی ئەدمینی نییە.'); return; }
-  showApp(); loadProducts();
+$('loginBtn').onclick = async () => {
+  $('loginMsg').innerHTML = '';
+  const email = $('loginEmail').value.trim();
+  const password = $('loginPassword').value;
+  if(!email || !password){
+    msg($('loginMsg'),'تکایە ئیمەیڵ و وشەی نهێنی بنووسە.');
+    return;
+  }
+  $('loginBtn').disabled = true;
+  try{
+    await window.PHToolsFirebase.signIn(email, password);
+  }catch(error){
+    console.error(error);
+    msg($('loginMsg'),'چوونەژوورەوە سەرکەوتوو نەبوو. ئیمەیڵ یان وشەی نهێنی بپشکنە.');
+  }finally{
+    $('loginBtn').disabled = false;
+  }
 };
-$('logoutBtn').onclick=async()=>{await db.auth.signOut();showLogin()};
-$('refreshBtn').onclick=loadProducts;
-$('search').oninput=renderRows;
-$('statusFilter').onchange=renderRows;
-$('addBtn').onclick=()=>openModal();
-$('closeModal').onclick=closeModal;$('cancelBtn').onclick=closeModal;$('modalBg').onclick=closeModal;
-$('image').onchange=()=>{const f=$('image').files[0];if(f){$('preview').src=URL.createObjectURL(f);$('preview').classList.remove('hidden')}};
+
+$('logoutBtn').onclick = async () => {
+  await window.PHToolsFirebase.signOut();
+};
+$('refreshBtn').onclick = loadProducts;
+$('search').oninput = renderRows;
+$('statusFilter').onchange = renderRows;
+$('addBtn').onclick = () => openModal();
+$('closeModal').onclick = closeModal;
+$('cancelBtn').onclick = closeModal;
+$('modalBg').onclick = closeModal;
+
+$('image').oninput = () => {
+  const url = $('image').value.trim();
+  if(url){
+    $('preview').src = url;
+    $('preview').classList.remove('hidden');
+  }else{
+    $('preview').classList.add('hidden');
+  }
+};
 
 async function loadProducts(){
-  const {data,error}=await db.from('products').select('*').order('sort_order',{ascending:true}).order('created_at',{ascending:false});
-  if(error){toast('هەڵە لە هێنانی بەرهەمەکان');console.error(error);return;}
-  products=data||[]; renderRows(); updateStats();
+  try{
+    products = await window.PHToolsFirebase.listProducts();
+    renderRows();
+    updateStats();
+  }catch(error){
+    console.error(error);
+    toast('هەڵە لە هێنانی بەرهەمەکان. Firestore Rules بپشکنە.');
+  }
 }
+
 function updateStats(){
-  $('statTotal').textContent=products.length;
-  $('statActive').textContent=products.filter(p=>p.active).length;
-  $('statLow').textContent=products.filter(p=>p.stock<=5).length;
-  $('statFeatured').textContent=products.filter(p=>p.featured).length;
+  $('statTotal').textContent = products.length;
+  $('statActive').textContent = products.filter(p => p.active).length;
+  $('statLow').textContent = products.filter(p => Number(p.stock || 0) <= 5).length;
+  $('statFeatured').textContent = products.filter(p => p.featured).length;
 }
+
 function renderRows(){
-  const q=$('search').value.trim().toLowerCase(), f=$('statusFilter').value;
-  const list=products.filter(p=>{
-    const hay=[p.name,p.brand,p.category].filter(Boolean).join(' ').toLowerCase();
-    if(q&&!hay.includes(q)) return false;
-    if(f==='active'&&!p.active)return false;
-    if(f==='inactive'&&p.active)return false;
-    if(f==='low'&&p.stock>5)return false;
+  const q = $('search').value.trim().toLowerCase();
+  const f = $('statusFilter').value;
+  const list = products.filter(p => {
+    const hay = [p.name,p.brand,p.category].filter(Boolean).join(' ').toLowerCase();
+    if(q && !hay.includes(q)) return false;
+    if(f === 'active' && !p.active) return false;
+    if(f === 'inactive' && p.active) return false;
+    if(f === 'low' && Number(p.stock || 0) > 5) return false;
     return true;
   });
-  $('productRows').innerHTML=list.map(p=>`<tr>
-    <td>${p.image_url?`<img class="thumb" src="${esc(p.image_url)}">`:'—'}</td>
-    <td><b>${esc(p.name)}</b><div class="muted">${p.featured?'⭐ تایبەت':''}</div></td>
-    <td>${esc(p.category||'—')}<div class="muted">${esc(p.brand||'')}</div></td>
-    <td>$${Number(p.price).toFixed(2)}</td>
-    <td>${p.stock}</td>
-    <td>${p.active?'<span class="badge">چالاک</span>':'<span class="badge off">ناچالاک</span>'}${p.stock<=5?'<span class="badge low" style="margin-right:5px">کەم</span>':''}</td>
-    <td><div class="actions"><button class="btn small secondary" onclick="editProduct('${p.id}')">دەستکاری</button><button class="btn small danger" onclick="deleteProduct('${p.id}')">سڕینەوە</button></div></td>
-  </tr>`).join('') || '<tr><td colspan="7" class="muted">هیچ بەرهەمێک نییە.</td></tr>';
-}
-function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
 
-function openModal(p=null){
-  $('productForm').reset();$('productId').value='';$('modalTitle').textContent=p?'دەستکاریی بەرهەم':'زیادکردنی بەرهەم';$('preview').classList.add('hidden');$('formMsg').innerHTML='';
-  $('active').checked=true;$('rating').value='5';$('sortOrder').value='0';
-  if(p){$('productId').value=p.id;$('name').value=p.name;$('price').value=p.price;$('category').value=p.category||'';$('brand').value=p.brand||'';$('stock').value=p.stock;$('rating').value=p.rating;$('sortOrder').value=p.sort_order;$('description').value=p.description||'';$('featured').checked=!!p.featured;$('active').checked=!!p.active;if(p.image_url){$('preview').src=p.image_url;$('preview').classList.remove('hidden')}}
+  $('productRows').innerHTML = list.map(p => {
+    const image = p.imageUrl || p.image_url || '';
+    return `<tr>
+      <td>${image ? `<img class="thumb" src="${esc(image)}">` : '—'}</td>
+      <td><b>${esc(p.name)}</b><div class="muted">${p.featured ? '⭐ تایبەت' : ''}</div></td>
+      <td>${esc(p.category || '—')}<div class="muted">${esc(p.brand || '')}</div></td>
+      <td>$${Number(p.price || 0).toFixed(2)}</td>
+      <td>${Number(p.stock || 0)}</td>
+      <td>${p.active ? '<span class="badge">چالاک</span>' : '<span class="badge off">ناچالاک</span>'}${Number(p.stock || 0) <= 5 ? '<span class="badge low" style="margin-right:5px">کەم</span>' : ''}</td>
+      <td><div class="actions">
+        <button class="btn small secondary" onclick="editProduct('${p.id}')">دەستکاری</button>
+        <button class="btn small danger" onclick="deleteProduct('${p.id}')">سڕینەوە</button>
+      </div></td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="7" class="muted">هیچ بەرهەمێک نییە.</td></tr>';
+}
+
+function esc(v){
+  return String(v ?? '').replace(/[&<>'"]/g,c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'
+  }[c]));
+}
+
+function openModal(p = null){
+  $('productForm').reset();
+  $('productId').value = '';
+  $('modalTitle').textContent = p ? 'دەستکاریی بەرهەم' : 'زیادکردنی بەرهەم';
+  $('preview').classList.add('hidden');
+  $('formMsg').innerHTML = '';
+  $('active').checked = true;
+  $('rating').value = '5';
+  $('sortOrder').value = '0';
+
+  if(p){
+    $('productId').value = p.id;
+    $('name').value = p.name || '';
+    $('price').value = p.price ?? 0;
+    $('category').value = p.category || '';
+    $('brand').value = p.brand || '';
+    $('stock').value = p.stock ?? 0;
+    $('rating').value = p.rating ?? 5;
+    $('sortOrder').value = p.sortOrder ?? p.sort_order ?? 0;
+    $('description').value = p.description || '';
+    $('featured').checked = !!p.featured;
+    $('active').checked = p.active !== false;
+    const image = p.imageUrl || p.image_url || '';
+    $('image').value = image;
+    if(image){
+      $('preview').src = image;
+      $('preview').classList.remove('hidden');
+    }
+  }
   $('modal').classList.remove('hidden');
 }
-function closeModal(){$('modal').classList.add('hidden')}
-window.editProduct=id=>openModal(products.find(p=>p.id===id));
 
-$('productForm').onsubmit=async e=>{
-  e.preventDefault();$('formMsg').innerHTML='';$('saveBtn').disabled=true;
+function closeModal(){
+  $('modal').classList.add('hidden');
+}
+
+window.editProduct = id => openModal(products.find(p => p.id === id));
+
+$('productForm').onsubmit = async e => {
+  e.preventDefault();
+  $('formMsg').innerHTML = '';
+  $('saveBtn').disabled = true;
+
   try{
-    const id=$('productId').value; let imageUrl=products.find(p=>p.id===id)?.image_url||null;
-    const file=$('image').files[0];
-    if(file){
-      const ext=(file.name.split('.').pop()||'jpg').toLowerCase();const path=`${crypto.randomUUID()}.${ext}`;
-      const up=await db.storage.from('product-images').upload(path,file,{upsert:false,contentType:file.type});
-      if(up.error) throw up.error;
-      imageUrl=db.storage.from('product-images').getPublicUrl(path).data.publicUrl;
+    const id = $('productId').value;
+    const existing = products.find(p => p.id === id);
+    // Images stay in the main website. Admin only stores the image path/URL.
+    const imageUrl = $('image').value.trim();
+
+    const product = {
+      name: $('name').value.trim(),
+      price: Number($('price').value || 0),
+      category: $('category').value.trim(),
+      brand: $('brand').value.trim(),
+      stock: Number($('stock').value || 0),
+      rating: Number($('rating').value || 0),
+      sortOrder: Number($('sortOrder').value || 0),
+      description: $('description').value.trim(),
+      featured: $('featured').checked,
+      active: $('active').checked,
+      imageUrl
+    };
+
+    if(id){
+      await window.PHToolsFirebase.updateProduct(id, product);
+      toast('بەرهەمەکە نوێکرایەوە');
+    }else{
+      await window.PHToolsFirebase.addProduct(product);
+      toast('بەرهەمەکە زیادکرا');
     }
-    const row={name:$('name').value.trim(),price:Number($('price').value||0),category:$('category').value.trim()||null,brand:$('brand').value.trim()||null,description:$('description').value.trim()||null,stock:Number($('stock').value||0),rating:Number($('rating').value||0),sort_order:Number($('sortOrder').value||0),featured:$('featured').checked,active:$('active').checked,image_url:imageUrl};
-    const result=id?await db.from('products').update(row).eq('id',id):await db.from('products').insert(row);
-    if(result.error) throw result.error;
-    closeModal();toast(id?'بەرهەمەکە نوێکرایەوە':'بەرهەمەکە زیادکرا');await loadProducts();
-  }catch(err){console.error(err);msg($('formMsg'),'پاشەکەوتکردن سەرکەوتوو نەبوو. تکایە ڕێکخستنی Supabase و RLS بپشکنە.')}finally{$('saveBtn').disabled=false}
+
+    closeModal();
+    await loadProducts();
+  }catch(err){
+    console.error(err);
+    msg($('formMsg'),'پاشەکەوتکردن سەرکەوتوو نەبوو. Firestore Rules و Firebase config بپشکنە.');
+  }finally{
+    $('saveBtn').disabled = false;
+  }
 };
 
-window.deleteProduct=async id=>{
-  const p=products.find(x=>x.id===id);if(!p)return;
-  if(!confirm(`دڵنیایت لە سڕینەوەی «${p.name}»؟`))return;
-  const {error}=await db.from('products').delete().eq('id',id);
-  if(error){toast('سڕینەوە سەرکەوتوو نەبوو');return}
-  toast('بەرهەمەکە سڕایەوە');loadProducts();
+window.deleteProduct = async id => {
+  const p = products.find(x => x.id === id);
+  if(!p) return;
+  if(!confirm(`دڵنیایت لە سڕینەوەی «${p.name}»؟`)) return;
+
+  try{
+    await window.PHToolsFirebase.deleteProduct(id);
+    toast('بەرهەمەکە سڕایەوە');
+    await loadProducts();
+  }catch(error){
+    console.error(error);
+    toast('سڕینەوە سەرکەوتوو نەبوو');
+  }
 };
 
-db.auth.onAuthStateChange(async (_event,session)=>{if(!session)showLogin()});
 start();
 </script>
 
@@ -615,63 +685,8 @@ start();
 </style>
 
 
-<script type="module">
-  const loginScreen = document.getElementById("firebaseLoginScreen");
-  const form = document.getElementById("firebaseLoginForm");
-  const emailInput = document.getElementById("firebaseLoginEmail");
-  const passwordInput = document.getElementById("firebaseLoginPassword");
-  const errorBox = document.getElementById("firebaseLoginError");
 
-  document.body.classList.add("firebase-login-active");
-  loginScreen.hidden = false;
-
-  window.addEventListener("firebase-auth-ready", (event) => {
-    const user = event.detail.user;
-    if (user) {
-      document.body.classList.remove("firebase-login-active");
-      loginScreen.hidden = true;
-    } else {
-      document.body.classList.add("firebase-login-active");
-      loginScreen.hidden = false;
-    }
-  });
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    errorBox.textContent = "";
-    const button = form.querySelector("button");
-    button.disabled = true;
-    try {
-      await window.PHToolsFirebase.signIn(
-        emailInput.value.trim(),
-        passwordInput.value
-      );
-    } catch (err) {
-      errorBox.textContent = "Email یان Password هەڵەیە.";
-    } finally {
-      button.disabled = false;
-    }
-  });
-</script>
 
 </body></html>
 
-<script>
-window.addEventListener("firebase-auth-ready", async (event) => {
-  const user = event.detail.user;
-  const note = document.getElementById("firebaseSetupNote");
-  if (user) {
-    if (note) note.innerHTML = "<strong>Firebase:</strong> بە سەرکەوتوویی چوویتە ژوورەوە. داتاکان لە Firestore ـەوە دەهێنرێن.";
-    try {
-      const products = await window.PHToolsFirebase.listProducts();
-      window.PHToolsProducts = products;
-      window.dispatchEvent(new CustomEvent("firebase-products-ready", {detail:{products}}));
-    } catch (err) {
-      console.error("Firebase products error:", err);
-      if (note) note.innerHTML = "<strong>Firebase:</strong> کێشەیەک لە خوێندنەوەی products هەیە. Rules و config بپشکنە.";
-    }
-  } else {
-    if (note) note.innerHTML = "<strong>Firebase:</strong> تکایە بە هەژماری admin بچۆ ژوورەوە.";
-  }
-});
-</script>
+
