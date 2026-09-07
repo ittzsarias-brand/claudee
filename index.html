@@ -1057,26 +1057,12 @@ function checkout(){
 
 /* ================= WISHLIST ================= */
 function saveWish(){ localStorage.setItem('ph_wish', JSON.stringify(wishlist)); }
-function toggleWish(id){
-  if(wishlist.includes(id)) wishlist = wishlist.filter(x=>x!==id);
-  else wishlist.push(id);
-  saveWish();
-  document.getElementById('wishBadge').style.display = wishlist.length ? 'flex' : 'none';
-  document.getElementById('wishBadge').textContent = wishlist.length;
-  runSearch();
-}
+
 document.getElementById('wishBadge').textContent = wishlist.length;
 document.getElementById('wishBadge').style.display = wishlist.length ? 'flex' : 'none';
 
-function openWishlist(){
-  const box = document.getElementById('simpleModalBox');
-  if(wishlist.length === 0){
-    box.innerHTML = `<h3>دڵخوازییەکانم</h3><p>هیچ بەرهەمێکت زیاد نەکردووە بۆ دڵخوازی. کلیک لەسەر ♥ لەسەر بەرهەمەکان بکە.</p>`;
-  } else {
-    box.innerHTML = `<h3>دڵخوازییەکانم</h3><div class="wish-list-items">` +
-      wishlist.map(id=>{
-        const p = PRODUCTS.find(x=>x.id===id);
-        return `<div class="wl-row"><img src="${p.img}"><div><h5>${p.name}</h5><div class="prod-price" style="font-size:13px;">$${p.price}</div></div></div>`;
+ else {
+    box.innerHTML = `<h3>دڵخوازییەکانم</h3><div class="prod-price" style="font-size:13px;">$${p.price}</div></div></div>`;
       }).join('') + `</div>`;
   }
   document.getElementById('simpleModal').classList.add('show');
