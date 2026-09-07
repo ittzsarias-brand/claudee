@@ -1049,14 +1049,6 @@ function saveWish(){ localStorage.setItem('ph_wish', JSON.stringify(wishlist)); 
 document.getElementById('wishBadge').textContent = wishlist.length;
 document.getElementById('wishBadge').style.display = wishlist.length ? 'flex' : 'none';
 
- else {
-    box.innerHTML = `<h3>دڵخوازییەکانم</h3><div class="prod-price" style="font-size:13px;">$${p.price}</div></div></div>`;
-      }).join('') + `</div>`;
-  }
-  document.getElementById('simpleModal').classList.add('show');
-  document.getElementById('overlay').classList.add('show');
-}
-
 /* ================= MENU / APPEARANCE / LOCATION ================= */
 function toggleMenu(open){
   document.getElementById('menuDrawer').classList.toggle('show', open);
