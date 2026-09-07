@@ -432,7 +432,6 @@
 </style>
 
 <style id="replaceable-store-images">
-/* REPLACE HERO: change the URL below to your own image path if preferred. */
 /* HERO BANNER SLIDER */
 .hero{
   position:relative;
@@ -444,40 +443,42 @@
 .hero-slider{
   width:100%;
   overflow:hidden;
-  aspect-ratio:1983 / 793;
+  aspect-ratio:1536 / 602;
 }
 .hero-track{
   display:flex;
   flex-direction:row;
   width:500%;
   height:100%;
+  margin:0;
+  padding:0;
   direction:ltr;
-  animation:heroBannerSlide 10s infinite ease-in-out;
+  animation:heroBannerSlide 10s infinite;
   will-change:transform;
 }
 .hero-track img{
   display:block;
   width:20%;
+  min-width:20%;
   height:100%;
   flex:0 0 20%;
+  margin:0;
+  padding:0;
   object-fit:cover;
   object-position:center;
   user-select:none;
   -webkit-user-drag:none;
 }
 @keyframes heroBannerSlide{
-  0%, 14%   { transform:translateX(0); }
-  20%, 34%  { transform:translateX(-20%); }
-  40%, 54%  { transform:translateX(-40%); }
-  60%, 74%  { transform:translateX(-60%); }
-  80%, 94%  { transform:translateX(-80%); }
-  100%      { transform:translateX(0); }
+  0%,14%   { transform:translate3d(0,0,0); }
+  20%,34%  { transform:translate3d(-20%,0,0); }
+  40%,54%  { transform:translate3d(-40%,0,0); }
+  60%,74%  { transform:translate3d(-60%,0,0); }
+  80%,94%  { transform:translate3d(-80%,0,0); }
+  100%     { transform:translate3d(0,0,0); }
 }
 @media (prefers-reduced-motion: reduce){
-  .hero-track{
-    animation-duration:10s;
-    animation-timing-function:linear;
-  }
+  .hero-track{animation-duration:10s;animation-timing-function:linear;}
 }
 
 /* Premium styling ONLY for the four header/footer action buttons */
@@ -826,14 +827,14 @@
 <!-- ============ HERO BANNER SLIDER ============ -->
 <section class="hero" id="home" aria-label="بەنەرەکانی پڕۆمۆشن">
   <div class="hero-slider">
-    <div class="hero-track">
-      <img src="IMG_9552.jpg" alt="PH.Tools main banner">
-      <img src="IMG_9555.jpg" alt="DeWALT banner">
-      <img src="IMG_9554.jpg" alt="Knauf banner">
-      <img src="IMG_9553.jpg" alt="Bosch banner">
-      <img src="IMG_9552.jpg" alt="" aria-hidden="true">
-    </div>
-  </div>
+        <div class="hero-track">
+          <img src="./IMG_9552.webp" alt="PH.Tools main banner">
+          <img src="./IMG_9553.webp" alt="Bosch banner" loading="lazy">
+          <img src="./IMG_9554.webp" alt="Knauf banner" loading="lazy">
+          <img src="./IMG_9555.webp" alt="DeWALT banner" loading="lazy">
+          <img src="./IMG_9552.webp" alt="" aria-hidden="true" loading="lazy">
+        </div>
+      </div>
 </section>
 
 <!-- ============ FEATURES ============ -->
