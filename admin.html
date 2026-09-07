@@ -23,7 +23,8 @@ import {
   doc,
   updateDoc,
   deleteDoc,
-  serverTimestamp
+  serverTimestamp,
+  setDoc
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -97,6 +98,28 @@ window.PHToolsFirebase = {
 
   async deleteProduct(id) {
     await deleteDoc(doc(db, "products", id));
+  },
+
+  async upsertLegacyProduct(product) {
+    const id = "legacy-" + String(product.id);
+    const payload = {
+      legacyId: String(product.id),
+      name: product.name || "",
+      price: Number(product.price || 0),
+      category: product.category || "",
+      brand: product.brand || "",
+      description: product.desc || product.description || "",
+      stock: Number(product.stock || 0),
+      rating: Number(product.rating || 0),
+      sortOrder: Number(product.sortOrder || product.id || 0),
+      featured: !!product.featured,
+      active: product.active !== false,
+      imageRef: "index-product-" + String(product.id),
+      source: "index.html",
+      updatedAt: serverTimestamp()
+    };
+    await setDoc(doc(db, "products", id), payload, { merge: true });
+    return { id, ...payload };
   }
 };
 
@@ -898,7 +921,7 @@ tbody tr:hover{
   </div>
 
   <div class="panel">
-    <div class="panel-head"><h2>بەرهەمەکان</h2><button id="addBtn" class="btn">+ زیادکردنی بەرهەم</button></div>
+    <div class="panel-head"><h2>بەرهەمەکان</h2><div class="toolbar"><button id="syncBtn" class="btn">↻ هاوردەکردنی بەرهەمەکانی index.html</button><button id="addBtn" class="btn">+ زیادکردنی بەرهەم</button></div></div>
     <div class="toolbar"><input id="search" class="input" placeholder="گەڕان بە ناو، براند یان بەش..."/><select id="statusFilter" class="input" style="max-width:180px"><option value="all">هەموو</option><option value="active">چالاک</option><option value="inactive">ناچالاک</option><option value="low">کەم‌ستۆک</option></select></div>
   </div>
 
@@ -917,7 +940,7 @@ tbody tr:hover{
       <div class="field"><label>ستۆک</label><input id="stock" class="input" type="number" min="0" step="1" value="0"></div>
       <div class="field"><label>هەڵسەنگاندن</label><select id="rating" class="input"><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option><option>0</option></select></div>
       <div class="field"><label>ڕیزبەندی</label><input id="sortOrder" class="input" type="number" step="1" value="0"></div>
-      <div class="field"><label>ڕێگای وێنە / URL</label><input id="image" class="input" type="text" placeholder="images/product.jpg"><img id="preview" class="preview hidden"></div>
+      <div class="field"><label>سەرچاوەی وێنە</label><input id="image" class="input" type="text" placeholder="index-product-1"><img id="preview" class="preview hidden"></div>
       <div class="field full"><label>وەسف</label><textarea id="description" rows="5"></textarea></div>
       <div class="field"><label class="check"><input id="featured" type="checkbox"> بەرهەمی تایبەت</label></div>
       <div class="field"><label class="check"><input id="active" type="checkbox" checked> لە ماڵپەڕدا پیشان بدرێت</label></div>
@@ -932,6 +955,8 @@ tbody tr:hover{
 (function () {
   const $ = id => document.getElementById(id);
   let products = [];
+  let indexProducts = [];
+  let indexProductImages = new Map();
 
   function toast(message) {
     const el = $("toast");
@@ -961,9 +986,76 @@ tbody tr:hover{
     }[c]));
   }
 
+  function extractProductsArray(html) {
+    const marker = "const PRODUCTS =";
+    const start = html.indexOf(marker);
+    if (start < 0) throw new Error("PRODUCTS array not found in index.html");
+
+    const open = html.indexOf("[", start);
+    if (open < 0) throw new Error("PRODUCTS opening bracket not found");
+
+    let depth = 0;
+    let quote = null;
+    let escaped = false;
+
+    for (let i = open; i < html.length; i++) {
+      const ch = html[i];
+      if (quote) {
+        if (escaped) { escaped = false; continue; }
+        if (ch === "\\") { escaped = true; continue; }
+        if (ch === quote) quote = null;
+        continue;
+      }
+      if (ch === "\"" || ch === "'") { quote = ch; continue; }
+      if (ch === "[") depth++;
+      else if (ch === "]") {
+        depth--;
+        if (depth === 0) {
+          const arrayText = html.slice(open, i + 1);
+          return Function('"use strict"; return (' + arrayText + ')')();
+        }
+      }
+    }
+    throw new Error("PRODUCTS array is incomplete");
+  }
+
+  async function loadIndexProducts() {
+    const response = await fetch("index.html", { cache: "no-store" });
+    if (!response.ok) throw new Error("index.html could not be loaded");
+    const html = await response.text();
+    const parsed = extractProductsArray(html);
+    if (!Array.isArray(parsed)) throw new Error("PRODUCTS is not an array");
+    indexProducts = parsed;
+    indexProductImages = new Map(indexProducts.map(p => [String(p.id), p.img || ""]));
+  }
+
+  async function syncExistingProducts() {
+    const btn = $("syncBtn");
+    if (btn) { btn.disabled = true; btn.textContent = "خەریکی هاوردەکردنە..."; }
+    try {
+      await loadIndexProducts();
+      if (!indexProducts.length) throw new Error("No products found");
+
+      for (const product of indexProducts) {
+        await window.PHToolsFirebase.upsertLegacyProduct(product);
+      }
+
+      toast(`${indexProducts.length} بەرهەم لە index.html هاوردەکران`);
+      await loadProducts();
+    } catch (error) {
+      console.error("Index sync error:", error);
+      toast("هاوردەکردن سەرکەوتوو نەبوو. دڵنیابە لەوەی admin.html و index.html لە هەمان شوێنن.");
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = "↻ هاوردەکردنی بەرهەمەکانی index.html"; }
+    }
+  }
+
   async function loadProducts() {
     try {
       products = await window.PHToolsFirebase.listProducts();
+      if (!indexProducts.length) {
+        try { await loadIndexProducts(); } catch (e) { console.warn("Could not preload index.html", e); }
+      }
       renderRows();
       updateStats();
     } catch (error) {
@@ -993,7 +1085,8 @@ tbody tr:hover{
     });
 
     $("productRows").innerHTML = list.map(p => {
-      const image = p.imageUrl || p.image_url || "";
+      const legacyImage = p.legacyId ? (indexProductImages.get(String(p.legacyId)) || "") : "";
+      const image = legacyImage || p.imageUrl || p.image_url || "";
       return `<tr>
         <td>${image ? `<img class="thumb" src="${esc(image)}">` : "—"}</td>
         <td><b>${esc(p.name)}</b>${p.featured ? '<div class="muted">⭐ تایبەت</div>' : ""}</td>
@@ -1032,8 +1125,9 @@ tbody tr:hover{
       $("featured").checked = !!product.featured;
       $("active").checked = product.active !== false;
 
-      const image = product.imageUrl || product.image_url || "";
-      $("image").value = image;
+      const legacyImage = product.legacyId ? (indexProductImages.get(String(product.legacyId)) || "") : "";
+      const image = legacyImage || product.imageUrl || product.image_url || "";
+      $("image").value = product.imageRef || image;
       if (image) {
         $("preview").src = image;
         $("preview").classList.remove("hidden");
@@ -1115,6 +1209,7 @@ tbody tr:hover{
 
     $("logoutBtn").addEventListener("click", () => window.PHToolsFirebase.signOut());
     $("refreshBtn").addEventListener("click", loadProducts);
+    $("syncBtn").addEventListener("click", syncExistingProducts);
     $("search").addEventListener("input", renderRows);
     $("statusFilter").addEventListener("change", renderRows);
     $("addBtn").addEventListener("click", () => openModal());
@@ -1123,9 +1218,11 @@ tbody tr:hover{
     $("modalBg").addEventListener("click", closeModal);
 
     $("image").addEventListener("input", () => {
-      const url = $("image").value.trim();
-      if (url) {
-        $("preview").src = url;
+      const value = $("image").value.trim();
+      const match = value.match(/^index-product-(\d+)$/);
+      const image = match ? (indexProductImages.get(match[1]) || "") : value;
+      if (image) {
+        $("preview").src = image;
         $("preview").classList.remove("hidden");
       } else {
         $("preview").classList.add("hidden");
