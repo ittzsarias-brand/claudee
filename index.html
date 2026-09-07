@@ -446,39 +446,33 @@
   aspect-ratio:1536 / 602;
 }
 .hero-track{
-  display:flex;
-  flex-direction:row;
-  width:500%;
-  height:100%;
-  margin:0;
-  padding:0;
-  direction:ltr;
-  animation:heroBannerSlide 10s infinite;
+  display:flex !important;
+  flex-direction:row !important;
+  width:500% !important;
+  height:100% !important;
+  margin:0 !important;
+  padding:0 !important;
+  direction:ltr !important;
+  transform:translate3d(0,0,0);
+  transition:transform .75s ease-in-out;
   will-change:transform;
 }
 .hero-track img{
-  display:block;
-  width:20%;
-  min-width:20%;
-  height:100%;
-  flex:0 0 20%;
-  margin:0;
-  padding:0;
-  object-fit:cover;
-  object-position:center;
+  display:block !important;
+  width:20% !important;
+  min-width:20% !important;
+  max-width:20% !important;
+  height:100% !important;
+  flex:0 0 20% !important;
+  margin:0 !important;
+  padding:0 !important;
+  object-fit:cover !important;
+  object-position:center !important;
   user-select:none;
   -webkit-user-drag:none;
 }
-@keyframes heroBannerSlide{
-  0%,14%   { transform:translate3d(0,0,0); }
-  20%,34%  { transform:translate3d(-20%,0,0); }
-  40%,54%  { transform:translate3d(-40%,0,0); }
-  60%,74%  { transform:translate3d(-60%,0,0); }
-  80%,94%  { transform:translate3d(-80%,0,0); }
-  100%     { transform:translate3d(0,0,0); }
-}
 @media (prefers-reduced-motion: reduce){
-  .hero-track{animation-duration:10s;animation-timing-function:linear;}
+  .hero-track{transition:none;}
 }
 
 /* Premium styling ONLY for the four header/footer action buttons */
@@ -827,15 +821,45 @@
 <!-- ============ HERO BANNER SLIDER ============ -->
 <section class="hero" id="home" aria-label="بەنەرەکانی پڕۆمۆشن">
   <div class="hero-slider">
-        <div class="hero-track">
-          <img src="./IMG_9552.webp" alt="PH.Tools main banner">
-          <img src="./IMG_9553.webp" alt="Bosch banner" loading="lazy">
-          <img src="./IMG_9554.webp" alt="Knauf banner" loading="lazy">
-          <img src="./IMG_9555.webp" alt="DeWALT banner" loading="lazy">
-          <img src="./IMG_9552.webp" alt="" aria-hidden="true" loading="lazy">
-        </div>
-      </div>
+    <div class="hero-track" id="heroTrack">
+      <img src="./IMG_9552.webp" alt="PH.Tools main banner" loading="eager" fetchpriority="high" decoding="async">
+      <img src="./IMG_9553.webp" alt="Bosch banner" loading="eager" decoding="async">
+      <img src="./IMG_9554.webp" alt="Knauf banner" loading="eager" decoding="async">
+      <img src="./IMG_9555.webp" alt="DeWALT banner" loading="eager" decoding="async">
+      <img src="./IMG_9552.webp" alt="" aria-hidden="true" loading="eager" decoding="async">
+    </div>
+  </div>
 </section>
+
+<script>
+(function () {
+  const track = document.getElementById('heroTrack');
+  if (!track) return;
+
+  let slide = 0;
+  let timer;
+
+  function showSlide(index, animate = true) {
+    track.style.transition = animate ? 'transform .75s ease-in-out' : 'none';
+    track.style.transform = 'translate3d(' + (-index * 20) + '%, 0, 0)';
+  }
+
+  function nextSlide() {
+    slide += 1;
+    showSlide(slide, true);
+
+    if (slide === 4) {
+      setTimeout(function () {
+        slide = 0;
+        showSlide(0, false);
+      }, 750);
+    }
+  }
+
+  showSlide(0, false);
+  timer = setInterval(nextSlide, 2000);
+})();
+</script>
 
 <!-- ============ FEATURES ============ -->
 <section class="features">
