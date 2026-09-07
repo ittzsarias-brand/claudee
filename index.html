@@ -397,7 +397,7 @@
      .nav-item.home{padding:11px 14px;}
      .nav-item.contact{margin-inline-start:0;}
      .dropdown{display:none !important;}
-     .hero{width:100%;height:auto;min-height:0;aspect-ratio:1983 / 793;background-size:100% 100%;background-position:center;background-repeat:no-repeat;}
+     .hero{width:100%;height:auto;min-height:0;}
      .hero-inner{display:none;}
      .features{padding:16px 0;}
      .features-row{display:grid;grid-template-columns:1fr 1fr;gap:12px 10px;}
@@ -461,7 +461,51 @@
 
 <style id="replaceable-store-images">
 /* REPLACE HERO: change the URL below to your own image path if preferred. */
-.hero{background-image:url("PH.Tools-banner.png") !important;background-size:cover;background-position:center;background-repeat:no-repeat;aspect-ratio:1983 / 793;min-height:0;}
+/* HERO BANNER SLIDER */
+.hero{
+  position:relative;
+  width:100%;
+  min-height:0;
+  overflow:hidden;
+  background:#050505;
+}
+.hero-slider{
+  width:100%;
+  overflow:hidden;
+  aspect-ratio:1983 / 793;
+}
+.hero-track{
+  display:flex;
+  width:500%;
+  height:100%;
+  direction:ltr;
+  animation:heroBannerSlide 10s infinite ease-in-out;
+  will-change:transform;
+}
+.hero-track img{
+  display:block;
+  width:20%;
+  height:100%;
+  flex:0 0 20%;
+  object-fit:cover;
+  object-position:center;
+  user-select:none;
+  -webkit-user-drag:none;
+}
+@keyframes heroBannerSlide{
+  0%, 14%   { transform:translateX(0); }
+  20%, 34%  { transform:translateX(-20%); }
+  40%, 54%  { transform:translateX(-40%); }
+  60%, 74%  { transform:translateX(-60%); }
+  80%, 94%  { transform:translateX(-80%); }
+  100%      { transform:translateX(0); }
+}
+@media (prefers-reduced-motion: reduce){
+  .hero-track{
+    animation-duration:10s;
+    animation-timing-function:linear;
+  }
+}
 
 /* Premium styling ONLY for the four header/footer action buttons */
 .icons-block .menu-trigger .hamburger-icon-wrap,
@@ -806,16 +850,17 @@
   </div>
 </nav>
 
-<!-- ============ HERO ============ -->
-<section class="hero" id="home">
-  <!-- REPLACE: add background-image:url(your-photo.jpg) to .hero in the CSS above for the real construction-site photo -->
-  <div class="container hero-inner">
-    <div class="hero-tagline">QUALITY<br><span class="accent">TOOLS</span><br>FOR A STRONGER<br>TOMORROW</div>
-    <div class="hero-tagline2">BUILD<br><span class="accent">MORE</span></div>
-    <div class="brand-logo-img logo-icon-hero" role="img" aria-label="PH.Tools Construction Supply"></div>
-    <div class="hero-strap"><span>PROFESSIONAL</span> TOOLS</div>
-    <div class="hero-strap2">FOR EVERY PROJECT</div>
-    <a href="#products" class="hero-cta">لە کڕینەوەی ئێستا ‹</a>
+<!-- ============ HERO BANNER SLIDER ============ -->
+<section class="hero" id="home" aria-label="بەنەرەکانی پڕۆمۆشن">
+  <div class="hero-slider">
+    <div class="hero-track">
+      <img src="IMG_9552.png" alt="Banner 1">
+      <img src="IMG_9555.png" alt="Banner 2">
+      <img src="IMG_9554.png" alt="Banner 3">
+      <img src="IMG_9553.png" alt="Banner 4">
+      <!-- Duplicate of the first banner makes the loop seamless. -->
+      <img src="IMG_9552.png" alt="" aria-hidden="true">
+    </div>
   </div>
 </section>
 
