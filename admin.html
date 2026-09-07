@@ -987,36 +987,23 @@ tbody tr:hover{
   }
 
   function extractProductsArray(html) {
-    const marker = "const PRODUCTS =";
-    const start = html.indexOf(marker);
-    if (start < 0) throw new Error("PRODUCTS array not found in index.html");
+    // The products array in index.html is a normal JS array and ends with a
+    // dedicated `];` line. Using that boundary is safer than scanning every
+    // bracket inside the large base64 image strings.
+    const match = html.match(/const\s+PRODUCTS\s*=\s*\[/);
+    if (!match) throw new Error("PRODUCTS array not found in index.html");
 
-    const open = html.indexOf("[", start);
-    if (open < 0) throw new Error("PRODUCTS opening bracket not found");
+    const open = match.index + match[0].lastIndexOf("[");
+    const close = html.indexOf("\n];", open);
+    if (close < 0) throw new Error("PRODUCTS closing bracket not found");
 
-    let depth = 0;
-    let quote = null;
-    let escaped = false;
-
-    for (let i = open; i < html.length; i++) {
-      const ch = html[i];
-      if (quote) {
-        if (escaped) { escaped = false; continue; }
-        if (ch === "\\") { escaped = true; continue; }
-        if (ch === quote) quote = null;
-        continue;
-      }
-      if (ch === "\"" || ch === "'") { quote = ch; continue; }
-      if (ch === "[") depth++;
-      else if (ch === "]") {
-        depth--;
-        if (depth === 0) {
-          const arrayText = html.slice(open, i + 1);
-          return Function('"use strict"; return (' + arrayText + ')')();
-        }
-      }
+    const arrayText = html.slice(open, close + 2);
+    try {
+      return Function('"use strict"; return (' + arrayText + ')')();
+    } catch (e) {
+      console.error("Could not parse PRODUCTS array", e);
+      throw new Error("PRODUCTS array could not be parsed");
     }
-    throw new Error("PRODUCTS array is incomplete");
   }
 
   async function loadIndexProducts() {
@@ -1044,7 +1031,7 @@ tbody tr:hover{
       await loadProducts();
     } catch (error) {
       console.error("Index sync error:", error);
-      toast("هاوردەکردن سەرکەوتوو نەبوو. دڵنیابە لەوەی admin.html و index.html لە هەمان شوێنن.");
+      toast("هاوردەکردن سەرکەوتوو نەبوو: " + (error?.message || "هەڵەی نەناسراو"));
     } finally {
       if (btn) { btn.disabled = false; btn.textContent = "↻ هاوردەکردنی بەرهەمەکانی index.html"; }
     }
