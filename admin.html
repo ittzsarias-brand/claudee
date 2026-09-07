@@ -7,90 +7,99 @@
 
 <!-- Firebase setup: replace the placeholder values with your Firebase Web App config. -->
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-  import {
-    getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut
-  } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-  import {
-    getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc,
-    serverTimestamp, query, orderBy
-  } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  doc,
+  updateDoc,
+  deleteDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyCH5-6OhuCVfZo8abiIHYfOzvbQTBQbEmw",
-    authDomain: "ph-tools-4a82c.firebaseapp.com",
-    projectId: "ph-tools-4a82c",
-    storageBucket: "ph-tools-4a82c.firebasestorage.app",
-    messagingSenderId: "677581607396",
-    appId: "1:677581607396:web:7c63eee6537cdf7ccb37f1",
-    measurementId: "G-DDCWBJVG1T"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyCH5-6OhuCVfZo8abiIHYfOzvbQTBQbEmw",
+  authDomain: "ph-tools-4a82c.firebaseapp.com",
+  projectId: "ph-tools-4a82c",
+  storageBucket: "ph-tools-4a82c.firebasestorage.app",
+  messagingSenderId: "677581607396",
+  appId: "1:677581607396:web:7c63eee6537cdf7ccb37f1",
+  measurementId: "G-DDCWBJVG1T"
+};
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-  window.PHToolsFirebase = {
-    auth, db,
-    signIn: (email, password) => signInWithEmailAndPassword(auth, email, password),
-    signOut: () => signOut(auth),
-    onAuth: (cb) => onAuthStateChanged(auth, cb),
+window.PHToolsFirebase = {
+  auth,
+  db,
+  signIn: (email, password) => signInWithEmailAndPassword(auth, email, password),
+  signOut: () => signOut(auth),
+  onAuth: (callback) => onAuthStateChanged(auth, callback),
 
-    async listProducts() {
-      const snap = await getDocs(collection(db, "products"));
-      const rows = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      rows.sort((a,b) => Number(a.sortOrder ?? a.sort_order ?? 0) - Number(b.sortOrder ?? b.sort_order ?? 0));
-      return rows;
-    },
+  async listProducts() {
+    const snap = await getDocs(collection(db, "products"));
+    const rows = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    rows.sort((a, b) =>
+      Number(a.sortOrder ?? a.sort_order ?? 0) -
+      Number(b.sortOrder ?? b.sort_order ?? 0)
+    );
+    return rows;
+  },
 
-    async addProduct(product) {
-      const payload = {
-        name: product.name || "",
-        price: Number(product.price || 0),
-        category: product.category || "",
-        brand: product.brand || "",
-        description: product.description || "",
-        stock: Number(product.stock || 0),
-        rating: Number(product.rating || 0),
-        sortOrder: Number(product.sortOrder || 0),
-        featured: !!product.featured,
-        active: product.active !== false,
-        imageUrl: product.imageUrl || "",
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp()
-      };
-      const result = await addDoc(collection(db, "products"), payload);
-      return { id: result.id, ...payload };
-    },
+  async addProduct(product) {
+    const payload = {
+      name: product.name || "",
+      price: Number(product.price || 0),
+      category: product.category || "",
+      brand: product.brand || "",
+      description: product.description || "",
+      stock: Number(product.stock || 0),
+      rating: Number(product.rating || 0),
+      sortOrder: Number(product.sortOrder || 0),
+      featured: !!product.featured,
+      active: product.active !== false,
+      imageUrl: product.imageUrl || "",
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    };
+    const result = await addDoc(collection(db, "products"), payload);
+    return { id: result.id, ...payload };
+  },
 
-    async updateProduct(id, product) {
-      const payload = {
-        name: product.name || "",
-        price: Number(product.price || 0),
-        category: product.category || "",
-        brand: product.brand || "",
-        description: product.description || "",
-        stock: Number(product.stock || 0),
-        rating: Number(product.rating || 0),
-        sortOrder: Number(product.sortOrder || 0),
-        featured: !!product.featured,
-        active: product.active !== false,
-        imageUrl: product.imageUrl || "",
-        updatedAt: serverTimestamp()
-      };
-      await updateDoc(doc(db, "products", id), payload);
-      return { id, ...payload };
-    },
+  async updateProduct(id, product) {
+    const payload = {
+      name: product.name || "",
+      price: Number(product.price || 0),
+      category: product.category || "",
+      brand: product.brand || "",
+      description: product.description || "",
+      stock: Number(product.stock || 0),
+      rating: Number(product.rating || 0),
+      sortOrder: Number(product.sortOrder || 0),
+      featured: !!product.featured,
+      active: product.active !== false,
+      imageUrl: product.imageUrl || "",
+      updatedAt: serverTimestamp()
+    };
+    await updateDoc(doc(db, "products", id), payload);
+  },
 
-    async deleteProduct(id) {
-      await deleteDoc(doc(db, "products", id));
-    }
-  };
+  async deleteProduct(id) {
+    await deleteDoc(doc(db, "products", id));
+  }
+};
 
-  window.PHToolsFirebase.onAuth((user) => {
-    document.documentElement.dataset.firebaseAuth = user ? "signed-in" : "signed-out";
-    window.dispatchEvent(new CustomEvent("firebase-auth-ready", { detail: { user } }));
-  });
+window.dispatchEvent(new Event("firebase-ready"));
 </script>
 
 <style>
@@ -231,129 +240,10 @@ img{border-radius:14px}
 </style>
 
 
-<style id="premium-login-only">
-  html,body{min-height:100%;margin:0}
-  body{
-    background:#07090d!important;
-    color:#fff!important;
-  }
-  body.firebase-login-active > *:not(#firebaseLoginScreen){
-    display:none!important;
-  }
-  #firebaseLoginScreen{
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:24px;
-    box-sizing:border-box;
-    direction:rtl;
-    background:
-      radial-gradient(circle at 50% 20%,rgba(215,181,109,.08),transparent 35%),
-      #07090d;
-  }
-  .firebase-login-card{
-    width:min(390px,100%);
-    padding:30px;
-    box-sizing:border-box;
-    border-radius:24px;
-    background:#0d1118;
-    border:1px solid rgba(255,255,255,.10);
-    box-shadow:0 28px 90px rgba(0,0,0,.55);
-  }
-  .firebase-login-logo{
-    width:52px;height:52px;border-radius:16px;
-    display:grid;place-items:center;
-    margin:0 auto 24px;
-    background:linear-gradient(145deg,#f0d38f,#a97836);
-    color:#111;
-    font-weight:950;
-    font-size:18px;
-    direction:ltr;
-  }
-  .firebase-login-form{display:grid;gap:12px}
-  .firebase-login-form input{
-    width:100%;
-    box-sizing:border-box;
-    min-height:50px;
-    padding:0 15px;
-    border-radius:14px!important;
-    background:#080c12!important;
-    border:1px solid rgba(255,255,255,.11)!important;
-    color:#fff!important;
-    outline:none;
-    direction:ltr;
-    text-align:left;
-  }
-  .firebase-login-form input:focus{
-    border-color:rgba(215,181,109,.65)!important;
-    box-shadow:0 0 0 4px rgba(215,181,109,.08)!important;
-  }
-  .firebase-login-form button{
-    width:100%;
-    min-height:50px;
-    margin-top:4px;
-    border:0!important;
-    border-radius:14px!important;
-    background:linear-gradient(135deg,#e0c07a,#b98c43)!important;
-    color:#111!important;
-    font-size:15px;
-    font-weight:900;
-    cursor:pointer;
-  }
-  #firebaseLoginError{
-    min-height:18px;
-    color:#ff9da5;
-    font-size:12px;
-    text-align:center;
-  }
-</style>
-
-
-<style id="login-cleanup">
-html,body{
-  width:100%;
-  height:100%;
-  min-height:100%;
-  overflow:hidden!important;
-}
-body.firebase-login-active{
-  height:100vh!important;
-  min-height:100vh!important;
-  overflow:hidden!important;
-}
-body.firebase-login-active > *:not(#firebaseLoginScreen){
-  display:none!important;
-  visibility:hidden!important;
-  height:0!important;
-  max-height:0!important;
-  min-height:0!important;
-  overflow:hidden!important;
-  margin:0!important;
-  padding:0!important;
-}
-body.firebase-login-active #firebaseLoginScreen{
-  position:fixed!important;
-  inset:0!important;
-  width:100vw!important;
-  height:100vh!important;
-  min-height:100vh!important;
-  max-height:100vh!important;
-  overflow:hidden!important;
-  z-index:2147483647!important;
-}
-body.firebase-login-active #firebaseLoginScreen *{
-  box-sizing:border-box;
-}
-</style>
-
 </head>
 <body>
 
-<div id="firebaseLoginScreen" hidden>
-  <div class="firebase-login-card">
-    <div class="firebase-login-logo">PH</div>
-    <form class="firebase-login-form" id="firebaseLoginForm">
+<form class="firebase-login-form" id="firebaseLoginForm">
       <input id="firebaseLoginEmail" type="email" autocomplete="username" placeholder="Email" required>
       <input id="firebaseLoginPassword" type="password" autocomplete="current-password" placeholder="Password" required>
       <button type="submit">چوونەژوورەوە</button>
@@ -384,14 +274,6 @@ body.firebase-login-active #firebaseLoginScreen *{
 .premium-brand-name{font-size:20px;font-weight:900;letter-spacing:-.04em;color:#fff}
 .premium-brand-sub{font-size:9px;letter-spacing:.18em;color:#8e98a8;margin-top:2px}
 </style>
-
-
-<div class="firebase-setup-note" id="firebaseSetupNote">
-  <strong>Firebase:</strong>
-  ئەم داشبۆردە ئێستا بۆ Firebase ئامادەکراوە.
-  لە سەرەتای فایلەکە <code>firebaseConfig</code> ـەکەت دابنێ،
-  Firebase Authentication و Firestore چالاک بکە. بۆ وێنەکان Firebase Storage پێویست نییە.
-</div>
 
 
 <div id="loginView" class="login">
@@ -452,229 +334,262 @@ body.firebase-login-active #firebaseLoginScreen *{
 <div id="toast" class="toast hidden"></div>
 
 <script>
-const $ = id => document.getElementById(id);
-let products = [];
+(function () {
+  const $ = id => document.getElementById(id);
+  let products = [];
 
-function toast(msg){
-  $('toast').textContent = msg;
-  $('toast').classList.remove('hidden');
-  setTimeout(() => $('toast').classList.add('hidden'), 2200);
-}
-function msg(el,text,type='error'){
-  el.innerHTML = `<div class="${type}">${text}</div>`;
-}
+  function toast(message) {
+    const el = $("toast");
+    if (!el) return;
+    el.textContent = message;
+    el.classList.remove("hidden");
+    setTimeout(() => el.classList.add("hidden"), 2200);
+  }
 
-function showLogin(){
-  $('loginView').classList.remove('hidden');
-  $('appView').classList.add('hidden');
-}
-function showApp(){
-  $('loginView').classList.add('hidden');
-  $('appView').classList.remove('hidden');
-}
+  function showError(message) {
+    $("loginMsg").innerHTML = '<div class="error">' + message + '</div>';
+  }
 
-async function start(){
-  window.PHToolsFirebase.onAuth(async (user) => {
-    if(user){
-      showApp();
+  function showLogin() {
+    $("loginView").classList.remove("hidden");
+    $("appView").classList.add("hidden");
+  }
+
+  function showApp() {
+    $("loginView").classList.add("hidden");
+    $("appView").classList.remove("hidden");
+  }
+
+  function esc(value) {
+    return String(value ?? "").replace(/[&<>'"]/g, c => ({
+      "&":"&amp;", "<":"&lt;", ">":"&gt;", "'":"&#39;", '"':"&quot;"
+    }[c]));
+  }
+
+  async function loadProducts() {
+    try {
+      products = await window.PHToolsFirebase.listProducts();
+      renderRows();
+      updateStats();
+    } catch (error) {
+      console.error("Firestore error:", error);
+      toast("چوونەژوورەوە سەرکەوتووە، بەڵام Firestore ئێستا دەستپێگەیشتن پێنادات.");
+    }
+  }
+
+  function updateStats() {
+    $("statTotal").textContent = products.length;
+    $("statActive").textContent = products.filter(p => p.active).length;
+    $("statLow").textContent = products.filter(p => Number(p.stock || 0) <= 5).length;
+    $("statFeatured").textContent = products.filter(p => p.featured).length;
+  }
+
+  function renderRows() {
+    const q = $("search").value.trim().toLowerCase();
+    const f = $("statusFilter").value;
+
+    const list = products.filter(p => {
+      const hay = [p.name, p.brand, p.category].filter(Boolean).join(" ").toLowerCase();
+      if (q && !hay.includes(q)) return false;
+      if (f === "active" && !p.active) return false;
+      if (f === "inactive" && p.active) return false;
+      if (f === "low" && Number(p.stock || 0) > 5) return false;
+      return true;
+    });
+
+    $("productRows").innerHTML = list.map(p => {
+      const image = p.imageUrl || p.image_url || "";
+      return `<tr>
+        <td>${image ? `<img class="thumb" src="${esc(image)}">` : "—"}</td>
+        <td><b>${esc(p.name)}</b>${p.featured ? '<div class="muted">⭐ تایبەت</div>' : ""}</td>
+        <td>${esc(p.category || "—")}<div class="muted">${esc(p.brand || "")}</div></td>
+        <td>$${Number(p.price || 0).toFixed(2)}</td>
+        <td>${Number(p.stock || 0)}</td>
+        <td>${p.active ? '<span class="badge">چالاک</span>' : '<span class="badge off">ناچالاک</span>'}</td>
+        <td><div class="actions">
+          <button class="btn small secondary" type="button" onclick="editProduct('${p.id}')">دەستکاری</button>
+          <button class="btn small danger" type="button" onclick="deleteProduct('${p.id}')">سڕینەوە</button>
+        </div></td>
+      </tr>`;
+    }).join("") || '<tr><td colspan="7" class="muted">هیچ بەرهەمێک نییە.</td></tr>';
+  }
+
+  function openModal(product = null) {
+    $("productForm").reset();
+    $("productId").value = "";
+    $("modalTitle").textContent = product ? "دەستکاریی بەرهەم" : "زیادکردنی بەرهەم";
+    $("formMsg").innerHTML = "";
+    $("preview").classList.add("hidden");
+    $("active").checked = true;
+    $("rating").value = "5";
+    $("sortOrder").value = "0";
+
+    if (product) {
+      $("productId").value = product.id;
+      $("name").value = product.name || "";
+      $("price").value = product.price ?? 0;
+      $("category").value = product.category || "";
+      $("brand").value = product.brand || "";
+      $("stock").value = product.stock ?? 0;
+      $("rating").value = product.rating ?? 5;
+      $("sortOrder").value = product.sortOrder ?? product.sort_order ?? 0;
+      $("description").value = product.description || "";
+      $("featured").checked = !!product.featured;
+      $("active").checked = product.active !== false;
+
+      const image = product.imageUrl || product.image_url || "";
+      $("image").value = image;
+      if (image) {
+        $("preview").src = image;
+        $("preview").classList.remove("hidden");
+      }
+    }
+
+    $("modal").classList.remove("hidden");
+  }
+
+  function closeModal() {
+    $("modal").classList.add("hidden");
+  }
+
+  window.editProduct = id => openModal(products.find(p => p.id === id));
+
+  window.deleteProduct = async id => {
+    const product = products.find(p => p.id === id);
+    if (!product) return;
+    if (!confirm(`دڵنیایت لە سڕینەوەی «${product.name}»؟`)) return;
+
+    try {
+      await window.PHToolsFirebase.deleteProduct(id);
+      toast("بەرهەمەکە سڕایەوە");
       await loadProducts();
-    }else{
-      showLogin();
+    } catch (error) {
+      console.error(error);
+      toast("سڕینەوە سەرکەوتوو نەبوو");
     }
-  });
-}
+  };
 
-$('loginBtn').addEventListener('click', async (e) => {
-  e.preventDefault();
-  $('loginMsg').innerHTML = '';
-  const email = $('loginEmail').value.trim();
-  const password = $('loginPassword').value;
-  if(!email || !password){
-    msg($('loginMsg'),'تکایە ئیمەیڵ و وشەی نهێنی بنووسە.');
-    return;
+  function setup() {
+    const loginForm = $("loginView").querySelector(".login-card");
+    const loginBtn = $("loginBtn");
+
+    // Prevent any browser form submission/reload.
+    loginBtn.addEventListener("click", async function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      $("loginMsg").innerHTML = "";
+      const email = $("loginEmail").value.trim();
+      const password = $("loginPassword").value;
+
+      if (!email || !password) {
+        showError("تکایە ئیمەیڵ و وشەی نهێنی بنووسە.");
+        return;
+      }
+
+      loginBtn.disabled = true;
+      loginBtn.textContent = "چاوەڕوان بە...";
+
+      try {
+        await window.PHToolsFirebase.signIn(email, password);
+        // onAuthStateChanged will switch to the dashboard.
+      } catch (error) {
+        console.error("Firebase login error:", error);
+        let message = "چوونەژوورەوە سەرکەوتوو نەبوو.";
+        if (error.code === "auth/invalid-credential" || error.code === "auth/wrong-password") {
+          message = "ئیمەیڵ یان وشەی نهێنی هەڵەیە.";
+        } else if (error.code === "auth/user-not-found") {
+          message = "ئەم ئەکاونتە نییە.";
+        } else if (error.code === "auth/too-many-requests") {
+          message = "هەوڵی زۆر دراوە. تکایە دواتر هەوڵ بدەرەوە.";
+        }
+        showError(message);
+      } finally {
+        loginBtn.disabled = false;
+        loginBtn.textContent = "چوونەژوورەوە";
+      }
+    });
+
+    // Also prevent Enter in either login field from navigating/reloading.
+    loginForm.addEventListener("keydown", event => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        loginBtn.click();
+      }
+    });
+
+    $("logoutBtn").addEventListener("click", () => window.PHToolsFirebase.signOut());
+    $("refreshBtn").addEventListener("click", loadProducts);
+    $("search").addEventListener("input", renderRows);
+    $("statusFilter").addEventListener("change", renderRows);
+    $("addBtn").addEventListener("click", () => openModal());
+    $("closeModal").addEventListener("click", closeModal);
+    $("cancelBtn").addEventListener("click", closeModal);
+    $("modalBg").addEventListener("click", closeModal);
+
+    $("image").addEventListener("input", () => {
+      const url = $("image").value.trim();
+      if (url) {
+        $("preview").src = url;
+        $("preview").classList.remove("hidden");
+      } else {
+        $("preview").classList.add("hidden");
+      }
+    });
+
+    $("productForm").addEventListener("submit", async event => {
+      event.preventDefault();
+
+      $("formMsg").innerHTML = "";
+      $("saveBtn").disabled = true;
+
+      try {
+        const id = $("productId").value;
+        const product = {
+          name: $("name").value.trim(),
+          price: Number($("price").value || 0),
+          category: $("category").value.trim(),
+          brand: $("brand").value.trim(),
+          stock: Number($("stock").value || 0),
+          rating: Number($("rating").value || 0),
+          sortOrder: Number($("sortOrder").value || 0),
+          description: $("description").value.trim(),
+          featured: $("featured").checked,
+          active: $("active").checked,
+          imageUrl: $("image").value.trim()
+        };
+
+        if (id) {
+          await window.PHToolsFirebase.updateProduct(id, product);
+          toast("بەرهەمەکە نوێکرایەوە");
+        } else {
+          await window.PHToolsFirebase.addProduct(product);
+          toast("بەرهەمەکە زیادکرا");
+        }
+
+        closeModal();
+        await loadProducts();
+      } catch (error) {
+        console.error(error);
+        $("formMsg").innerHTML = '<div class="error">پاشەکەوتکردن سەرکەوتوو نەبوو. Rules ـی Firestore بپشکنە.</div>';
+      } finally {
+        $("saveBtn").disabled = false;
+      }
+    });
+
+    window.PHToolsFirebase.onAuth(async user => {
+      if (user) {
+        showApp();
+        await loadProducts();
+      } else {
+        showLogin();
+      }
+    });
   }
-  $('loginBtn').disabled = true;
-  try{
-    await window.PHToolsFirebase.signIn(email, password);
-  }catch(error){
-    console.error(error);
-    msg($('loginMsg'),'چوونەژوورەوە سەرکەوتوو نەبوو. ئیمەیڵ یان وشەی نهێنی بپشکنە.');
-  }finally{
-    $('loginBtn').disabled = false;
-  }
-});
 
-$('logoutBtn').onclick = async () => {
-  await window.PHToolsFirebase.signOut();
-};
-$('refreshBtn').onclick = loadProducts;
-$('search').oninput = renderRows;
-$('statusFilter').onchange = renderRows;
-$('addBtn').onclick = () => openModal();
-$('closeModal').onclick = closeModal;
-$('cancelBtn').onclick = closeModal;
-$('modalBg').onclick = closeModal;
-
-$('image').oninput = () => {
-  const url = $('image').value.trim();
-  if(url){
-    $('preview').src = url;
-    $('preview').classList.remove('hidden');
-  }else{
-    $('preview').classList.add('hidden');
-  }
-};
-
-async function loadProducts(){
-  try{
-    products = await window.PHToolsFirebase.listProducts();
-    renderRows();
-    updateStats();
-  }catch(error){
-    console.error(error);
-    toast('هەڵە لە هێنانی بەرهەمەکان. Firestore Rules بپشکنە.');
-  }
-}
-
-function updateStats(){
-  $('statTotal').textContent = products.length;
-  $('statActive').textContent = products.filter(p => p.active).length;
-  $('statLow').textContent = products.filter(p => Number(p.stock || 0) <= 5).length;
-  $('statFeatured').textContent = products.filter(p => p.featured).length;
-}
-
-function renderRows(){
-  const q = $('search').value.trim().toLowerCase();
-  const f = $('statusFilter').value;
-  const list = products.filter(p => {
-    const hay = [p.name,p.brand,p.category].filter(Boolean).join(' ').toLowerCase();
-    if(q && !hay.includes(q)) return false;
-    if(f === 'active' && !p.active) return false;
-    if(f === 'inactive' && p.active) return false;
-    if(f === 'low' && Number(p.stock || 0) > 5) return false;
-    return true;
-  });
-
-  $('productRows').innerHTML = list.map(p => {
-    const image = p.imageUrl || p.image_url || '';
-    return `<tr>
-      <td>${image ? `<img class="thumb" src="${esc(image)}">` : '—'}</td>
-      <td><b>${esc(p.name)}</b><div class="muted">${p.featured ? '⭐ تایبەت' : ''}</div></td>
-      <td>${esc(p.category || '—')}<div class="muted">${esc(p.brand || '')}</div></td>
-      <td>$${Number(p.price || 0).toFixed(2)}</td>
-      <td>${Number(p.stock || 0)}</td>
-      <td>${p.active ? '<span class="badge">چالاک</span>' : '<span class="badge off">ناچالاک</span>'}${Number(p.stock || 0) <= 5 ? '<span class="badge low" style="margin-right:5px">کەم</span>' : ''}</td>
-      <td><div class="actions">
-        <button class="btn small secondary" onclick="editProduct('${p.id}')">دەستکاری</button>
-        <button class="btn small danger" onclick="deleteProduct('${p.id}')">سڕینەوە</button>
-      </div></td>
-    </tr>`;
-  }).join('') || '<tr><td colspan="7" class="muted">هیچ بەرهەمێک نییە.</td></tr>';
-}
-
-function esc(v){
-  return String(v ?? '').replace(/[&<>'"]/g,c => ({
-    '&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'
-  }[c]));
-}
-
-function openModal(p = null){
-  $('productForm').reset();
-  $('productId').value = '';
-  $('modalTitle').textContent = p ? 'دەستکاریی بەرهەم' : 'زیادکردنی بەرهەم';
-  $('preview').classList.add('hidden');
-  $('formMsg').innerHTML = '';
-  $('active').checked = true;
-  $('rating').value = '5';
-  $('sortOrder').value = '0';
-
-  if(p){
-    $('productId').value = p.id;
-    $('name').value = p.name || '';
-    $('price').value = p.price ?? 0;
-    $('category').value = p.category || '';
-    $('brand').value = p.brand || '';
-    $('stock').value = p.stock ?? 0;
-    $('rating').value = p.rating ?? 5;
-    $('sortOrder').value = p.sortOrder ?? p.sort_order ?? 0;
-    $('description').value = p.description || '';
-    $('featured').checked = !!p.featured;
-    $('active').checked = p.active !== false;
-    const image = p.imageUrl || p.image_url || '';
-    $('image').value = image;
-    if(image){
-      $('preview').src = image;
-      $('preview').classList.remove('hidden');
-    }
-  }
-  $('modal').classList.remove('hidden');
-}
-
-function closeModal(){
-  $('modal').classList.add('hidden');
-}
-
-window.editProduct = id => openModal(products.find(p => p.id === id));
-
-$('productForm').onsubmit = async e => {
-  e.preventDefault();
-  $('formMsg').innerHTML = '';
-  $('saveBtn').disabled = true;
-
-  try{
-    const id = $('productId').value;
-    const existing = products.find(p => p.id === id);
-    // Images stay in the main website. Admin only stores the image path/URL.
-    const imageUrl = $('image').value.trim();
-
-    const product = {
-      name: $('name').value.trim(),
-      price: Number($('price').value || 0),
-      category: $('category').value.trim(),
-      brand: $('brand').value.trim(),
-      stock: Number($('stock').value || 0),
-      rating: Number($('rating').value || 0),
-      sortOrder: Number($('sortOrder').value || 0),
-      description: $('description').value.trim(),
-      featured: $('featured').checked,
-      active: $('active').checked,
-      imageUrl
-    };
-
-    if(id){
-      await window.PHToolsFirebase.updateProduct(id, product);
-      toast('بەرهەمەکە نوێکرایەوە');
-    }else{
-      await window.PHToolsFirebase.addProduct(product);
-      toast('بەرهەمەکە زیادکرا');
-    }
-
-    closeModal();
-    await loadProducts();
-  }catch(err){
-    console.error(err);
-    msg($('formMsg'),'پاشەکەوتکردن سەرکەوتوو نەبوو. Firestore Rules و Firebase config بپشکنە.');
-  }finally{
-    $('saveBtn').disabled = false;
-  }
-};
-
-window.deleteProduct = async id => {
-  const p = products.find(x => x.id === id);
-  if(!p) return;
-  if(!confirm(`دڵنیایت لە سڕینەوەی «${p.name}»؟`)) return;
-
-  try{
-    await window.PHToolsFirebase.deleteProduct(id);
-    toast('بەرهەمەکە سڕایەوە');
-    await loadProducts();
-  }catch(error){
-    console.error(error);
-    toast('سڕینەوە سەرکەوتوو نەبوو');
-  }
-};
-
-start();
+  // Wait until the Firebase module has initialized.
+  window.addEventListener("firebase-ready", setup, { once: true });
+})();
 </script>
 
 <div class="premium-footer">PH.Tools · Admin Dashboard</div>
