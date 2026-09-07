@@ -68,11 +68,17 @@
   .search-box button{background:var(--red);color:#fff;padding:0 20px;}
   .search-box button:hover{background:var(--red-dark);}
 
-  .icons-block{order:1;display:flex;align-items:center;gap:26px;color:#fff;}
-  .icon-item{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;cursor:pointer;position:relative;color:#e8e8e8;text-decoration:none;}
+  .icons-block{order:1;display:flex;align-items:flex-start;gap:26px;color:#fff;}
+  .icon-item{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;cursor:pointer;position:relative;color:#e8e8e8;text-decoration:none;min-width:48px;}
   .icon-item:hover{color:var(--red);}
   .contact-action{min-width:48px;text-decoration:none;}
-  .contact-action .contact-icon{width:31px;height:31px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;}
+  .contact-action .contact-icon,
+  .location-icon-wrap,
+  .menu-trigger .hamburger-icon-wrap{
+    width:31px;height:31px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;flex:0 0 31px;
+  }
   .contact-action.whatsapp .contact-icon{background:#25D366;}
   .contact-action.phone .contact-icon{background:var(--red);}
   .contact-action span:last-child{font-size:10px;font-weight:700;line-height:1;color:#fff;}
@@ -85,13 +91,14 @@
 
   .cart-action{color:#ffd21a !important;}
   .cart-action:hover{color:#ffe36a !important;}
-  .cart-icon-wrap,.location-icon-wrap{width:31px;height:31px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+  .cart-icon-wrap{width:31px;height:31px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:0 0 31px;}
   .icons-block .icon-item{color:#fff;}
   .cart-icon-wrap{background:#ffd21a;color:#111;}
   .cart-icon-wrap .icon{stroke:#111;}
   .location-action{background:transparent;border:0;font-family:inherit;}
-  .location-action .location-icon-wrap{background:var(--red);color:#fff;}
-  .menu-trigger .hamburger-icon{width:25px;height:25px;stroke-width:2.2;}
+  .location-action .location-icon-wrap{background:#ffd21a;color:#111;}
+  .menu-trigger .hamburger-icon-wrap{background:#ffd21a;color:#111;}
+  .menu-trigger .hamburger-icon{width:18px;height:18px;stroke-width:2.2;}
   .menu-drawer{position:fixed;top:0;right:0;width:min(360px,88vw);height:100vh;background:#151516;color:#fff;z-index:95;transform:translateX(105%);transition:transform .25s ease;box-shadow:-10px 0 30px rgba(0,0,0,.3);}
   .menu-drawer.show{transform:translateX(0);}
   .menu-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid #2b2b2d;}
@@ -420,6 +427,20 @@
      .nav-item{font-size:11px;padding-inline:10px;}
      .prod-name{font-size:11.5px;}
    }
+
+  @media (max-width:700px){
+    .icons-block{gap:26px;}
+    .icon-item{min-width:48px;}
+    .cart-icon-wrap,
+    .location-icon-wrap,
+    .contact-action .contact-icon,
+    .menu-trigger .hamburger-icon-wrap{
+      width:31px;
+      height:31px;
+      flex:0 0 31px;
+    }
+    .menu-trigger .hamburger-icon{width:18px;height:18px;}
+  }
 </style>
 
 <style id="replaceable-store-images">
@@ -447,7 +468,9 @@
 
     <div class="icons-block">
       <div class="icon-item menu-trigger" onclick="toggleMenu(true)" aria-label="کردنەوەی مینیو">
-        <svg class="icon hamburger-icon" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        <span class="hamburger-icon-wrap">
+          <svg class="icon hamburger-icon" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </span>
         مینیو
       </div>
       <div class="icon-item cart-action" onclick="toggleCart(true)">
