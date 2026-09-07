@@ -273,26 +273,6 @@
   .brands-logos img{height:34px;object-fit:contain;filter:grayscale(0);opacity:.9;}
   .brands-label{font-size:14px;font-weight:800;color:#333;white-space:nowrap;}
 
-  /* ---------- FOOTER ---------- */
-  footer{background:var(--black);color:#c9c9cc;padding:44px 0 0;}
-  .footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1.2fr;gap:30px;padding-bottom:34px;}
-  .footer-col h4{color:#fff;font-size:15px;margin-bottom:14px;}
-  .footer-col li{margin-bottom:9px;font-size:13.5px;}
-  .footer-col li a:hover{color:var(--red);}
-  .footer-brand{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
-  .footer-col p.desc{font-size:13px;color:var(--text-dim);line-height:1.8;}
-  .contact-line{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:13.5px;}
-  .socials{display:flex;gap:12px;margin-top:16px;}
-  .socials a{
-    width:32px;height:32px;border-radius:50%;background:#232325;display:flex;align-items:center;
-    justify-content:center;color:#fff;
-  }
-  .socials a:hover{background:var(--red);}
-  .footer-bottom{
-    border-top:1px solid #222;padding:16px 0;display:flex;justify-content:space-between;
-    font-size:12.5px;color:#8a8a8e;flex-wrap:wrap;gap:10px;
-  }
-  .footer-bottom .flinks{display:flex;gap:18px;}
 
   /* ---------- CART DRAWER ---------- */
   .overlay{
@@ -368,7 +348,6 @@
   @media(max-width:1000px){
     .cat-grid{grid-template-columns:repeat(3,1fr);}
     .prod-grid{grid-template-columns:repeat(3,1fr);}
-    .footer-grid{grid-template-columns:1fr 1fr;}
     .hero-tagline,.hero-tagline2{position:static;text-align:center;margin-bottom:10px;}
   }
   @media(max-width:640px){
@@ -426,13 +405,6 @@
      .brands-label{font-size:12px;width:100%;text-align:center;}
      .brands-logos{justify-content:center;gap:18px;}
      .brands-logos img{height:25px;max-width:90px;}
-     footer{padding:30px 0 0;}
-     .footer-grid{grid-template-columns:1fr;gap:22px;padding-bottom:24px;}
-     .footer-col h4{font-size:14px;margin-bottom:10px;}
-     .footer-col li{font-size:12px;margin-bottom:7px;}
-     .footer-col p.desc,.contact-line{font-size:12px;}
-     .footer-bottom{padding:12px 0;font-size:10.5px;justify-content:center;text-align:center;}
-     .footer-bottom .flinks{gap:12px;justify-content:center;flex-wrap:wrap;}
      .modal{padding:10px;}
      .modal-box{flex-direction:column;max-height:92vh;border-radius:10px;}
      .modal-img{flex:0 0 auto;min-height:220px;max-height:280px;}
@@ -897,17 +869,6 @@
   </div>
 </section>
 
-<!-- ============ PRODUCTS ============ -->
-<section class="sec" id="products" style="padding-top:0;">
-  <div class="container">
-    <div class="sec-head">
-      <h2>بەرهەمە نوێیەکان</h2>
-      <a href="#" class="see-all">‹ بینینی هەموو بەرهەمەکان</a>
-    </div>
-    <div class="prod-grid" id="prodGrid"></div>
-  </div>
-</section>
-
 <!-- ============ BRANDS ============ -->
 <section class="brands-strip">
   <div class="container brands-row">
@@ -915,46 +876,6 @@
     <div class="brands-label">مارکەکانی ئێمە</div>
   </div>
 </section>
-
-<!-- ============ FOOTER ============ -->
-<footer>
-  <div class="container footer-grid">
-    <div class="footer-col">
-      <p class="desc">بۆ پێداویستی هەموو پرۆژەیەکت، ئامرازی ورجاڵ و کوالیتی بەرز پێشکەشت دەکەین.</p>
-    </div>
-    <div class="footer-col">
-      <h4>لینکە خێراکان</h4>
-      <ul>
-        <li><a href="#home">سەرەتا</a></li>
-        <li><a href="#products">بەرهەمەکان</a></li>
-        <li><a href="#">مارکەکان</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h4>یارمەتی</h4>
-      <ul>
-        <li><a href="#">پرسیارە زۆر پرسیارەکان</a></li>
-        <li><a href="#">گەڕانەوە و گۆڕین</a></li>
-        <li><a href="#">گەرەنتی</a></li>
-        <li><a href="#">ڕێنمایی کڕین</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h4>پەیوەندیمان</h4>
-      <div class="contact-line">📞 +964 777 424 2436</div>
-      <div class="contact-line">✉️ info@phtools.com</div>
-      <div class="contact-line">📍 سلێمانی، کوردستان</div>
-    </div>
-  </div>
-  <div class="container footer-bottom">
-    <div>© 2024 PH.Tools. هەموو مافەکان پارێزراون</div>
-    <div class="flinks">
-      <a href="#">مەرجەکانی بەکارهێنان</a>
-      <a href="#">سیاسەتی تایبەتمەندی</a>
-    </div>
-  </div>
-</footer>
-
 
 <!-- ============ CONTACT CHOOSER ============ -->
 <div class="contact-chooser-overlay" id="contactChooserOverlay" onclick="closeContactChooser(event)">
