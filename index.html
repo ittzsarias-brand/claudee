@@ -1044,6 +1044,43 @@ window.dispatchEvent(new Event("products-firebase-ready"));
 #locationChooserOverlay .location-map-icon:hover{transform:scale(1.03) !important;box-shadow:none !important;}
 #locationChooserOverlay .location-map-icon img{width:100% !important;height:100% !important;object-fit:cover !important;display:block !important;border-radius:inherit !important;}
 #locationChooserOverlay .contact-chooser-close{box-shadow:none !important;}
+
+/* Final location popup cleanup */
+#locationChooserOverlay .contact-chooser::before,
+#locationChooserOverlay .location-icon-only::before{display:none !important;content:none !important;}
+#locationChooserOverlay .location-map-icon{border:none !important;outline:none !important;box-shadow:none !important;}
+#locationChooserOverlay .location-map-icon:focus,
+#locationChooserOverlay .location-map-icon:focus-visible{outline:none !important;box-shadow:none !important;}
+#locationChooserOverlay .contact-chooser-close{
+  position:absolute !important;
+  top:8px !important;
+  right:8px !important;
+  left:auto !important;
+  width:38px !important;
+  height:38px !important;
+  padding:0 !important;
+  border:none !important;
+  background:transparent !important;
+  color:#ff3030 !important;
+  font-size:34px !important;
+  font-weight:900 !important;
+  line-height:38px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  z-index:20 !important;
+  text-shadow:none !important;
+}
+#locationChooserOverlay .contact-chooser-close:hover,
+#locationChooserOverlay .contact-chooser-close:focus,
+#locationChooserOverlay .contact-chooser-close:focus-visible{
+  background:transparent !important;
+  color:#ff3030 !important;
+  border:none !important;
+  outline:none !important;
+  transform:none !important;
+  box-shadow:none !important;
+}
 </style>
 </head>
 <body>
