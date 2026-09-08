@@ -923,6 +923,90 @@ window.dispatchEvent(new Event("products-firebase-ready"));
   font-size:10.5px;
 }
 </style>
+<style id="location-chooser-new-design">
+/* LOCATION PICKER — completely separate flat design */
+#locationChooserOverlay{
+  align-items:flex-end;
+  justify-content:center;
+  padding:0;
+  background:rgba(0,0,0,.72);
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
+}
+#locationChooserOverlay .contact-chooser{
+  width:min(520px,100vw);
+  box-sizing:border-box;
+  padding:26px 22px 24px;
+  border-radius:26px 26px 0 0;
+  background:#101012;
+  border:1px solid #303035;
+  border-bottom:0;
+  box-shadow:none !important;
+  transform:none;
+}
+#locationChooserOverlay .contact-chooser:before{
+  content:"";display:block;width:42px;height:4px;border-radius:99px;
+  background:#55555c;margin:0 auto 22px;
+}
+#locationChooserOverlay .contact-chooser-close{
+  top:18px;left:18px;width:34px;height:34px;
+  border:1px solid #36363c;border-radius:50%;
+  background:#1b1b1f;color:#aaa;font-size:21px;
+  box-shadow:none !important;
+}
+#locationChooserOverlay .contact-chooser-close:hover{
+  transform:none;background:#242429;color:#fff;border-color:#55555d;
+}
+#locationChooserOverlay .contact-chooser-title{
+  text-align:right;margin:0 0 5px;font-size:21px;font-weight:900;
+  letter-spacing:0;color:#fff;
+}
+#locationChooserOverlay .contact-chooser-subtitle{
+  text-align:right;margin:0 0 18px;max-width:none;
+  color:#77777f;font-size:11px;line-height:1.7;
+}
+#locationChooserOverlay .contact-chooser-actions{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:9px;
+}
+#locationChooserOverlay .contact-choice{
+  min-height:118px;box-sizing:border-box;padding:15px 10px;
+  border-radius:16px;background:#17171a;
+  border:1px solid #2d2d32;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:10px;text-align:center;box-shadow:none !important;
+  transition:border-color .15s ease,background .15s ease;
+}
+#locationChooserOverlay .contact-choice:after{
+  content:none;
+}
+#locationChooserOverlay .contact-choice:hover{
+  transform:none;background:#1c1c20;border-color:#55555d;
+  box-shadow:none !important;
+}
+#locationChooserOverlay .contact-choice-icon{
+  width:48px;height:48px;flex:0 0 48px;border-radius:14px;
+  background:#242429 !important;color:#fff !important;
+  border:1px solid #3a3a40 !important;
+  box-shadow:none !important;
+}
+#locationChooserOverlay .contact-choice:nth-child(1) .contact-choice-icon{border-color:#4b6fae !important;background:#1b2b45 !important;}
+#locationChooserOverlay .contact-choice:nth-child(2) .contact-choice-icon{border-color:#3c8a9e !important;background:#18353d !important;}
+#locationChooserOverlay .contact-choice:nth-child(3) .contact-choice-icon{border-color:#66666d !important;background:#252529 !important;}
+#locationChooserOverlay .contact-choice:hover .contact-choice-icon{transform:none;}
+#locationChooserOverlay .contact-choice span:last-child{
+  padding:0;text-align:center;gap:3px;
+}
+#locationChooserOverlay .contact-choice strong{font-size:13px;font-weight:850;}
+#locationChooserOverlay .contact-choice small{font-size:9px;color:#77777f;line-height:1.35;}
+@media(max-width:430px){
+  #locationChooserOverlay .contact-chooser{padding:22px 14px 18px;}
+  #locationChooserOverlay .contact-chooser-actions{gap:7px;}
+  #locationChooserOverlay .contact-choice{min-height:108px;padding:12px 6px;}
+  #locationChooserOverlay .contact-choice-icon{width:42px;height:42px;flex-basis:42px;}
+  #locationChooserOverlay .contact-choice strong{font-size:11.5px;}
+  #locationChooserOverlay .contact-choice small{font-size:8px;}
+}
+</style>
 </head>
 <body>
 
