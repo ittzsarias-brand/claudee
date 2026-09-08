@@ -27,7 +27,14 @@ const firebaseConfig={apiKey:"AIzaSyCH5-6OhuCVfZo8abiIHYfOzvbQTBQbEmw",authDomai
 const app=initializeApp(firebaseConfig,"ph-tools-admin-new");const auth=getAuth(app),db=getFirestore(app),storage=getStorage(app);
 window.FB={auth,db,storage,signIn:(e,p)=>signInWithEmailAndPassword(auth,e,p),signOut:()=>signOut(auth)};
 const $=id=>document.getElementById(id);let products=[],unsub=null;
-const categories=[['drill','درێل'],['charger','بابەت شەحن'],['shafra','شفرە و ماڵە'],['nail','بورغی دەرزی'],['cutting','مشار'],['electronics','ئەلیکترۆنی']];
+const categories=[
+  ['drill','درێل'],
+  ['charger','بابەت شەحن'],
+  ['shafra','شفرە و ماڵە'],
+  ['nail','بورغی دەرزی'],
+  ['cutting','مشار'],
+  ['electronics','ئەلیکترۆنی']
+];
 const esc=v=>String(v??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\\':'&#92;'}[c]));
 function money(n,c){return c==='USD'?`$${Number(n||0).toLocaleString('en-US',{maximumFractionDigits:2})}`:`${Number(n||0).toLocaleString('en-US')} د.ع`;}
 function toast(msg){$('toast').textContent=msg;$('toast').classList.remove('hidden');clearTimeout(window._t);window._t=setTimeout(()=>$('toast').classList.add('hidden'),2200)}
@@ -35,10 +42,42 @@ function showLogin(){ $('loginView').classList.remove('hidden');$('appView').cla
 function showApp(){ $('loginView').classList.add('hidden');$('appView').classList.remove('hidden'); }
 function categoryName(c){return categories.find(x=>x[0]===c)?.[1]||c||'—'}
 function render(){
- const q=$('search').value.trim().toLowerCase(), status=$('status').value;
- const list=products.filter(p=>{const text=[p.name,p.brand,p.category,p.smallDescription].join(' ').toLowerCase();if(q&&!text.includes(q))return false;if(status==='active'&&p.active===false)return false;if(status==='inactive'&&p.active!==false)return false;return true});
- $('total').textContent=products.length;$('activeCount').textContent=products.filter(p=>p.active!==false).length;$('inactiveCount').textContent=products.filter(p=>p.active===false).length;$('featuredCount').textContent=products.filter(p=>p.featured).length;
- $('rows').innerHTML=list.length?list.map(p=>{const img=(p.images?.[0]||p.imageUrl||'');return `<tr><td>${img?`<img class="thumb" src="${esc(img)}" alt="">`:'—'}</td><td><b>${esc(p.name||'بێ ناو')}</b><div class="muted">${esc(p.smallDescription||'')}</div></td><td>${esc(categoryName(p.category))}<br><span class="muted">${esc(p.brand||'')}</span></td><td>${p.sizes?.length?money(p.sizes[0].price,p.sizes[0].currency):money(p.price,p.currency)}</td><td>${Number(p.stock||0)}</td><td><span class="badge ${p.active!==false?'on':'off'}">${p.active!==false?'چالاک':'ناچالاک'}</span></td><td><div class="row-actions"><button class="btn" onclick="editProduct('${esc(p.id)}')">دەستکاری</button><button class="btn ${p.active!==false?'danger':'primary'}" onclick="toggleActive('${esc(p.id)}')">${p.active!==false?'ناچالاک':'چالاک'}</button><button class="btn danger" onclick="removeProduct('${esc(p.id)}')">سڕینەوە</button></div></td></tr>`}).join(''):`<tr><td colspan="7" class="empty">هیچ بەرهەمێک نییە.</td></tr>`;
+  const q=$('search').value.trim().toLowerCase();
+  const status=$('status').value;
+  const category=$('categoryFilter').value;
+
+  const list=products.filter(p=>{
+    const text=[p.name,p.brand,p.category,p.smallDescription].join(' ').toLowerCase();
+
+    if(q&&!text.includes(q))return false;
+    if(category!=='all'&&p.category!==category)return false;
+    if(status==='active'&&p.active===false)return false;
+    if(status==='inactive'&&p.active!==false)return false;
+
+    return true;
+  });
+
+  $('total').textContent=products.length;
+  $('activeCount').textContent=products.filter(p=>p.active!==false).length;
+  $('inactiveCount').textContent=products.filter(p=>p.active===false).length;
+  $('featuredCount').textContent=products.filter(p=>p.featured).length;
+
+  $('rows').innerHTML=list.length?list.map(p=>{
+    const img=(p.images?.[0]||p.imageUrl||'');
+    return `<tr>
+      <td>${img?`<img class="thumb" src="${esc(img)}" alt="">`:'—'}</td>
+      <td><b>${esc(p.name||'بێ ناو')}</b><div class="muted">${esc(p.smallDescription||'')}</div></td>
+      <td>${esc(categoryName(p.category))}<br><span class="muted">${esc(p.brand||'')}</span></td>
+      <td>${p.sizes?.length?money(p.sizes[0].price,p.sizes[0].currency):money(p.price,p.currency)}</td>
+      <td>${Number(p.stock||0)}</td>
+      <td><span class="badge ${p.active!==false?'on':'off'}">${p.active!==false?'چالاک':'ناچالاک'}</span></td>
+      <td><div class="row-actions">
+        <button class="btn" onclick="editProduct('${esc(p.id)}')">دەستکاری</button>
+        <button class="btn ${p.active!==false?'danger':'primary'}" onclick="toggleActive('${esc(p.id)}')">${p.active!==false?'ناچالاک':'چالاک'}</button>
+        <button class="btn danger" onclick="removeProduct('${esc(p.id)}')">سڕینەوە</button>
+      </div></td>
+    </tr>`;
+  }).join(''):`<tr><td colspan="7" class="empty">هیچ بەرهەمێک نییە.</td></tr>`;
 }
 function addSizeRow(s={name:'',price:'',currency:'IQD'}){const d=document.createElement('div');d.className='size-row';d.innerHTML=`<input class="input sz-name" placeholder="قەبارە" value="${esc(s.name)}"><input class="input sz-price" type="number" min="0" step="0.01" placeholder="نرخ" value="${esc(s.price)}"><select class="input sz-cur"><option value="IQD" ${s.currency==='IQD'?'selected':''}>IQD</option><option value="USD" ${s.currency==='USD'?'selected':''}>USD</option></select><button type="button" class="btn danger">×</button>`;d.querySelector('button').onclick=()=>d.remove();$('sizes').appendChild(d)}
 function readSizes(){return [...$('sizes').children].map(r=>({name:r.querySelector('.sz-name').value.trim(),price:Number(r.querySelector('.sz-price').value||0),currency:r.querySelector('.sz-cur').value})).filter(x=>x.name)}
@@ -52,8 +91,8 @@ window.editProduct=id=>openModal(products.find(p=>p.id===id));
 window.removeProduct=async id=>{const p=products.find(x=>x.id===id);if(!p||!confirm(`دڵنیایت لە سڕینەوەی «${p.name}»؟`))return;try{await deleteDoc(doc(db,'products',id));toast('سڕایەوە')}catch(e){toast('سڕینەوە سەرکەوتوو نەبوو')}};
 window.toggleActive=async id=>{const p=products.find(x=>x.id===id);if(!p)return;try{await updateDoc(doc(db,'products',id),{active:p.active===false,updatedAt:serverTimestamp()});toast(p.active===false?'چالاک کرا':'ناچالاک کرا')}catch(e){toast('گۆڕینی دۆخ سەرکەوتوو نەبوو')}};
 function subscribe(){if(unsub)unsub();unsub=onSnapshot(collection(db,'products'),snap=>{products=snap.docs.map(d=>({id:d.id,...d.data()}));$('syncState').innerHTML='<span class="sync-dot live"></span> هاوکاتە';render()},err=>{$('syncState').innerHTML='<span class="sync-dot"></span> کێشەی sync';console.error(err)})}
-$('loginBtn')).onclick=async()=>{const e=$('email').value.trim(),p=$('password').value;$('loginMsg').innerHTML='';if(!e||!p){$('loginMsg').innerHTML='<div class="error">ئیمەیڵ و وشەی نهێنی پڕبکەرەوە.</div>';return}try{await FB.signIn(e,p)}catch(err){$('loginMsg').innerHTML='<div class="error">چوونەژوورەوە سەرکەوتوو نەبوو.</div>'}};
-$('logout').onclick=()=>FB.signOut();$('refresh').onclick=()=>render();$('search').oninput=render;$('status').onchange=render;$('add').onclick=()=>openModal();$('close').onclick=closeModal;$('cancel').onclick=closeModal;$('bg').onclick=closeModal;$('form').onsubmit=save;$('addSize').onclick=()=>addSizeRow();$('files').onchange=()=>{const files=[...$('files').files];$('fileHint').textContent=files.length?`${files.length} وێنە هەڵبژێردراوە`:'هێشتا وێنە هەڵنەبژێردراوە';$('preview').innerHTML='';files.forEach(f=>addPreview(URL.createObjectURL(f)))};
+$('loginBtn').onclick=async()=>{const e=$('email').value.trim(),p=$('password').value;$('loginMsg').innerHTML='';if(!e||!p){$('loginMsg').innerHTML='<div class="error">ئیمەیڵ و وشەی نهێنی پڕبکەرەوە.</div>';return}try{await FB.signIn(e,p)}catch(err){$('loginMsg').innerHTML='<div class="error">چوونەژوورەوە سەرکەوتوو نەبوو.</div>'}};
+$('logout').onclick=()=>FB.signOut();$('refresh').onclick=()=>render();$('search').oninput=render;$('categoryFilter').onchange=render;$('status').onchange=render;$('add').onclick=()=>openModal();$('close').onclick=closeModal;$('cancel').onclick=closeModal;$('bg').onclick=closeModal;$('form').onsubmit=save;$('addSize').onclick=()=>addSizeRow();$('files').onchange=()=>{const files=[...$('files').files];$('fileHint').textContent=files.length?`${files.length} وێنە هەڵبژێردراوە`:'هێشتا وێنە هەڵنەبژێردراوە';$('preview').innerHTML='';files.forEach(f=>addPreview(URL.createObjectURL(f)))};
 $('images').oninput=()=>{const urls=$('images').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);$('preview').innerHTML='';urls.forEach(addPreview)};
 onAuthStateChanged(auth,async user=>{if(!user){showLogin();if(unsub){unsub();unsub=null}return}showApp();subscribe()});
 </script>
@@ -62,8 +101,29 @@ onAuthStateChanged(auth,async user=>{if(!user){showLogin();if(unsub){unsub();uns
 <div id="loginView" class="login"><div class="login-card"><div class="brand">PH<span>.</span>Tools</div><h1>چوونەژوورەوەی ئەدمین</h1><div class="muted">بەڕێوەبردنی بەرهەمەکان و sync ـی ڕاستەوخۆ لەگەڵ ماڵپەڕ.</div><div class="field"><label>ئیمەیڵ</label><input id="email" class="input" type="email" autocomplete="username"></div><div class="field"><label>وشەی نهێنی</label><input id="password" class="input" type="password" autocomplete="current-password"></div><button id="loginBtn" class="btn primary" style="width:100%;margin-top:15px">چوونەژوورەوە</button><div id="loginMsg"></div></div></div>
 <div id="appView" class="hidden"><div class="wrap"><div class="top"><div><div class="brand">PH<span>.</span>Tools</div><div class="muted">داشبۆردی نوێی بەرهەمەکان · <span id="syncState"><span class="sync-dot"></span> چاوەڕوانی sync...</span></div></div><div class="actions"><button id="refresh" class="btn">نوێکردنەوە</button><button id="add" class="btn primary">+ زیادکردنی بەرهەم</button><button id="logout" class="btn">چوونەدەرەوە</button></div></div>
 <div class="stats"><div class="stat"><div class="muted">کۆی بەرهەمەکان</div><b id="total">0</b></div><div class="stat"><div class="muted">چالاک</div><b id="activeCount">0</b></div><div class="stat"><div class="muted">ناچالاک</div><b id="inactiveCount">0</b></div><div class="stat"><div class="muted">نیشانکراو</div><b id="featuredCount">0</b></div></div>
-<div class="panel"><div class="panel-head"><h2>بەرهەمەکان</h2><span class="muted">گۆڕانەکان خۆکارانە sync دەبن</span></div><div class="toolbar"><input id="search" class="input search" placeholder="گەڕان بە ناو، براند یان کەتەگۆری..."><select id="status" class="input"><option value="all">هەموو</option><option value="active">چالاک</option><option value="inactive">ناچالاک</option></select></div></div>
+<div class="panel"><div class="panel-head"><h2>بەرهەمەکان</h2><span class="muted">گۆڕانەکان خۆکارانە sync دەبن</span></div><div class="toolbar"><input id="search" class="input search" placeholder="گەڕان بە ناو، براند یان کەتەگۆری...">
+<select id="categoryFilter" class="input">
+  <option value="all">هەموو کەتەگۆرییەکان</option>
+  <option value="drill">درێل</option>
+  <option value="charger">بابەت شەحن</option>
+  <option value="shafra">شفرە و ماڵە</option>
+  <option value="nail">بورغی دەرزی</option>
+  <option value="cutting">مشار</option>
+  <option value="electronics">ئەلیکترۆنی</option>
+</select>
+<select id="status" class="input">
+  <option value="all">هەموو دۆخەکان</option>
+  <option value="active">چالاک</option>
+  <option value="inactive">ناچالاک</option>
+</select></div></div>
 <div class="panel table-wrap"><table class="table"><thead><tr><th>وێنە</th><th>ناو</th><th>کەتەگۆری / براند</th><th>نرخ</th><th>ستۆک</th><th>دۆخ</th><th>کردار</th></tr></thead><tbody id="rows"></tbody></table></div></div></div>
-<div id="modal" class="modal hidden"><div id="bg" style="position:absolute;inset:0"></div><div class="modal-card" style="position:relative;z-index:1"><div class="panel-head"><h2 id="title">زیادکردنی بەرهەم</h2><button id="close" class="btn">×</button></div><form id="form"><input id="id" type="hidden"><div class="form-grid"><div class="field"><label>ناوی پیشاندان *</label><input id="name" class="input" required></div><div class="field"><label>نرخی سەرەکی *</label><input id="price" class="input" type="number" min="0" step="0.01" required></div><div class="field"><label>دراو</label><select id="currency" class="input"><option value="IQD">IQD — دینار</option><option value="USD">USD — دۆلار</option></select></div><div class="field"><label>کەتەگۆری</label><select id="category" class="input">${categories.map(c=>`<option value="${c[0]}">${c[1]}</option>`).join('')}</select></div><div class="field"><label>براند</label><input id="brand" class="input"></div><div class="field"><label>ستۆک</label><input id="stock" class="input" type="number" min="0" value="0"></div><div class="field full"><label>وەسفی کورت</label><textarea id="small" class="input" rows="2"></textarea></div><div class="field full"><label>وێنەکان</label><div class="file-row"><input id="files" class="input" type="file" accept="image/*" multiple><span id="fileHint" class="muted">دەتوانیت چەند وێنە هەڵبژێریت.</span></div><textarea id="images" class="input" rows="3" style="margin-top:8px" placeholder="یان URL ـی وێنەکان، هەر URL لە هێڵێکی جیاواز"></textarea><div id="preview" class="preview-grid"></div></div><div class="field full"><label>ڤیدیۆ (URL)</label><input id="video" class="input" placeholder="YouTube / Vimeo / direct video URL"></div><div class="field full"><label>وەسفی تەواو</label><textarea id="description" class="input" rows="5"></textarea></div><div class="field full"><div class="panel-head" style="margin:0 0 6px"><label style="margin:0">قەبارە و نرخە جیاوازەکان</label><button id="addSize" type="button" class="btn">+ قەبارە</button></div><div id="sizes"></div></div><div class="field full"><div class="check-row"><label><input id="featured" type="checkbox"> نیشانکراو</label><label><input id="active" type="checkbox"> چالاک</label></div></div></div><div id="msg"></div><div class="footer-actions"><button id="cancel" type="button" class="btn">هەڵوەشاندنەوە</button><button id="save" type="submit" class="btn primary">پاشەکەوتکردن</button></div></form></div></div>
+<div id="modal" class="modal hidden"><div id="bg" style="position:absolute;inset:0"></div><div class="modal-card" style="position:relative;z-index:1"><div class="panel-head"><h2 id="title">زیادکردنی بەرهەم</h2><button id="close" class="btn">×</button></div><form id="form"><input id="id" type="hidden"><div class="form-grid"><div class="field"><label>ناوی پیشاندان *</label><input id="name" class="input" required></div><div class="field"><label>نرخی سەرەکی *</label><input id="price" class="input" type="number" min="0" step="0.01" required></div><div class="field"><label>دراو</label><select id="currency" class="input"><option value="IQD">IQD — دینار</option><option value="USD">USD — دۆلار</option></select></div><div class="field"><label>کەتەگۆری</label><select id="category" class="input" required>
+<option value="drill">درێل</option>
+<option value="charger">بابەت شەحن</option>
+<option value="shafra">شفرە و ماڵە</option>
+<option value="nail">بورغی دەرزی</option>
+<option value="cutting">مشار</option>
+<option value="electronics">ئەلیکترۆنی</option>
+</select></div><div class="field"><label>براند</label><input id="brand" class="input"></div><div class="field"><label>ستۆک</label><input id="stock" class="input" type="number" min="0" value="0"></div><div class="field full"><label>وەسفی کورت</label><textarea id="small" class="input" rows="2"></textarea></div><div class="field full"><label>وێنەکان</label><div class="file-row"><input id="files" class="input" type="file" accept="image/*" multiple><span id="fileHint" class="muted">دەتوانیت چەند وێنە هەڵبژێریت.</span></div><textarea id="images" class="input" rows="3" style="margin-top:8px" placeholder="یان URL ـی وێنەکان، هەر URL لە هێڵێکی جیاواز"></textarea><div id="preview" class="preview-grid"></div></div><div class="field full"><label>ڤیدیۆ (URL)</label><input id="video" class="input" placeholder="YouTube / Vimeo / direct video URL"></div><div class="field full"><label>وەسفی تەواو</label><textarea id="description" class="input" rows="5"></textarea></div><div class="field full"><div class="panel-head" style="margin:0 0 6px"><label style="margin:0">قەبارە و نرخە جیاوازەکان</label><button id="addSize" type="button" class="btn">+ قەبارە</button></div><div id="sizes"></div></div><div class="field full"><div class="check-row"><label><input id="featured" type="checkbox"> نیشانکراو</label><label><input id="active" type="checkbox"> چالاک</label></div></div></div><div id="msg"></div><div class="footer-actions"><button id="cancel" type="button" class="btn">هەڵوەشاندنەوە</button><button id="save" type="submit" class="btn primary">پاشەکەوتکردن</button></div></form></div></div>
 <div id="toast" class="hidden" style="position:fixed;bottom:18px;left:18px;z-index:100;background:#171717;border:1px solid #444;color:#fff;padding:11px 15px;border-radius:12px;box-shadow:0 15px 35px rgba(0,0,0,.35)"></div>
 </body></html>
