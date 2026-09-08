@@ -6,11 +6,12 @@
   <meta name="theme-color" content="#070707">
   <title>PH.Tools — داشبۆردی بەڕێوەبردن</title>
   <style>
-    :root{--bg:#f2f2f0;--card:#fff;--ink:#0b0b0b;--muted:#6b6b6b;--line:#d8d8d4;--accent:#111;--danger:#b42323;--radius:20px}
-    *{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Tahoma,Arial,sans-serif}button,input,textarea,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.55;cursor:not-allowed}.hidden{display:none!important}.wrap{max-width:1280px;margin:auto;padding:26px}
-    .top{display:flex;justify-content:space-between;align-items:center;padding:20px 22px;background:#111;color:#fff;border-radius:24px;margin-bottom:18px;box-shadow:0 12px 30px rgba(0,0,0,.12)}.brand{font-size:28px;font-weight:950}.brand span{color:#fff}.top .muted{color:#bdbdbd}.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid var(--line);background:#fff;color:#111;border-radius:12px;padding:10px 14px;font-weight:900;transition:.15s}.btn:hover:not(:disabled){transform:translateY(-1px);border-color:#111}.btn.primary{background:#111;color:#fff;border-color:#111}.btn.danger{color:var(--danger);border-color:#e1bcbc}.panel,.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 7px 22px rgba(0,0,0,.05)}.panel{padding:20px;margin-bottom:18px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}.stat{padding:18px;cursor:default}.stat-click{cursor:pointer}.stat b{display:block;font-size:32px;margin-top:5px}.stat.active-filter{background:#111;color:#fff;border-color:#111}.stat.active-filter .muted{color:#bbb}.muted{color:var(--muted);font-size:13px}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:15px}.panel-head h2{margin:0;font-size:20px}.toolbar{display:grid;grid-template-columns:1fr 220px 180px;gap:9px}.input{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:12px;background:#fafafa;outline:none}.input:focus{border-color:#111;background:#fff}.banner-box{display:grid;grid-template-columns:1fr 1fr;gap:18px}.banner-preview{margin-top:9px;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#eee;min-height:120px}.banner-preview img{width:100%;aspect-ratio:7/5;object-fit:cover}.banner-tools{display:flex;gap:8px;margin-top:10px}.banner-tools .btn{flex:1}.products-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.product-card{background:#fff;border:1px solid #111;border-radius:18px;overflow:hidden;box-shadow:0 5px 18px rgba(0,0,0,.05)}.product-image{width:100%;aspect-ratio:1;object-fit:cover;background:#eee}.product-image.empty{display:grid;place-items:center;color:#888}.product-body{padding:14px}.product-name{font-size:16px;font-weight:950;margin-bottom:5px}.product-price{font-weight:950;margin:9px 0}.product-meta{display:flex;justify-content:space-between;align-items:center;margin:9px 0 12px}.product-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}.product-actions .btn{padding:9px 5px;font-size:12px}.badge{display:inline-flex;padding:5px 9px;border-radius:99px;font-size:11px;font-weight:900;border:1px solid #111}.badge.on{background:#111;color:#fff}.badge.off{color:#777;border-color:#bbb}.empty{text-align:center;padding:35px;color:#777;border:1px dashed #aaa;border-radius:15px;grid-column:1/-1}.login{min-height:100vh;display:grid;place-items:center;padding:20px;background:#111}.login-card{width:min(430px,100%);background:#fff;border-radius:24px;padding:28px;box-shadow:0 25px 70px rgba(0,0,0,.35)}.login-card h1{margin:14px 0 8px}.field{margin-top:12px}.field label{display:block;font-size:12px;font-weight:900;margin-bottom:7px}.error,.ok{margin-top:12px;padding:10px 12px;border-radius:11px}.error{background:#fff0f0;color:#a40000}.ok{background:#eff9ed;color:#28651d}.modal{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:50;display:grid;place-items:center;padding:14px}.modal-card{width:min(800px,100%);max-height:94vh;overflow:auto;background:#fff;border-radius:22px;padding:20px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.full{grid-column:1/-1}.preview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;margin-top:9px}.preview-grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px}.file-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.size-row{display:grid;grid-template-columns:1fr 130px 130px auto;gap:7px;margin-top:7px}.check-row{display:flex;gap:16px;flex-wrap:wrap;margin-top:9px}.footer-actions{display:flex;gap:8px;margin-top:17px;padding-top:13px;border-top:1px solid var(--line)}.sync-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#999;margin-left:6px}.sync-dot.live{background:#fff;box-shadow:0 0 0 4px rgba(255,255,255,.12)}#toast{position:fixed;bottom:18px;left:18px;z-index:100;background:#111;color:#fff;padding:11px 15px;border-radius:12px}
-    @media(max-width:1050px){.products-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.toolbar{grid-template-columns:1fr 1fr 1fr}}@media(max-width:800px){.wrap{padding:14px}.top{flex-direction:column;align-items:stretch}.actions{display:grid;grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}.stat:last-child{grid-column:1/-1}.banner-box{grid-template-columns:1fr}.products-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.toolbar{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.full{grid-column:auto}.modal{align-items:end;padding:0}.modal-card{width:100%;border-radius:20px 20px 0 0}}@media(max-width:480px){.products-grid{grid-template-columns:1fr}.actions{grid-template-columns:1fr}.banner-tools{flex-direction:column}}
-  </style>
+:root{--bg:#0b0d10;--surface:#111419;--surface2:#171a20;--line:#292e36;--text:#f5f6f7;--muted:#8f98a5;--accent:#fff;--danger:#ff5c5c;--ok:#65d391;--radius:16px}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif}body{min-height:100vh}button,input,textarea,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}.hidden{display:none!important}img{display:block}.muted{color:var(--muted);font-size:12px}.input{width:100%;background:#0d1014;color:var(--text);border:1px solid var(--line);border-radius:11px;padding:11px 12px;outline:none}.input:focus{border-color:#777;box-shadow:0 0 0 3px #fff1}.btn{border:1px solid var(--line);background:#171a20;color:var(--text);border-radius:10px;padding:10px 13px;font-weight:800}.btn:hover:not(:disabled){border-color:#777;background:#20242b}.btn.primary{background:#fff;color:#090a0c;border-color:#fff}.btn.danger{color:#ff7777;border-color:#4a2929}.wrap{max-width:1440px;margin:auto;padding:22px}.dashboard{display:grid;grid-template-columns:220px minmax(0,1fr);gap:20px;direction:ltr}.sidebar{background:#0f1216;border:1px solid var(--line);border-radius:20px;padding:18px;position:sticky;top:22px;height:calc(100vh - 44px);display:flex;flex-direction:column;direction:rtl}.brand{font-size:27px;font-weight:950;padding:6px 8px 24px}.brand span{color:#aaa}.side-title{font-size:10px;color:#666f7b;margin:5px 8px 9px}.navitem{border:0;background:transparent;color:#aab2bd;width:100%;text-align:right;padding:11px 12px;border-radius:10px;font-weight:800;margin-bottom:4px}.navitem.active,.navitem:hover{background:#1a1e25;color:#fff}.side-bottom{margin-top:auto;border-top:1px solid var(--line);padding-top:14px}.main{direction:rtl;min-width:0}.topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:20px}.topbar h1{font-size:25px;margin:0 0 5px}.top-actions{display:flex;gap:8px}.sync{padding:8px 11px;border:1px solid var(--line);border-radius:999px;background:#111419}.sync-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#777;margin-left:6px}.sync-dot.live{background:var(--ok);box-shadow:0 0 0 4px #65d39118}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}.stat{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;position:relative;overflow:hidden}.stat:after{content:"";position:absolute;inset:auto 0 0;height:2px;background:#fff}.stat.click{cursor:pointer}.stat.click:hover{background:#171b21}.stat b{display:block;font-size:30px;margin-top:8px}.stat .label{font-size:12px;color:var(--muted)}.stat.active-filter{background:#fff;color:#111}.stat.active-filter .label{color:#666}.section{background:var(--surface);border:1px solid var(--line);border-radius:18px;margin-bottom:18px;overflow:hidden}.section-head{padding:17px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.section-head h2{margin:0;font-size:17px}.section-body{padding:18px}.banner-layout{display:grid;grid-template-columns:1.05fr .95fr;gap:18px}.banner-preview{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#090b0e;min-height:150px}.banner-preview img{width:100%;aspect-ratio:7/5;object-fit:cover}.banner-tools{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}.banner-tools .btn{flex:1}.field{margin-top:11px}.field label{display:block;font-size:11px;font-weight:800;color:#b5bdc8;margin-bottom:6px}.products-head{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:18px;border-bottom:1px solid var(--line)}.toolbar{display:grid;grid-template-columns:minmax(0,1fr) 210px 160px;gap:8px;padding:14px 18px;border-bottom:1px solid var(--line)}.products-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line)}.product-card{background:var(--surface);min-width:0}.product-card:hover{background:#15191f}.product-image{width:100%;aspect-ratio:1/0.82;object-fit:cover;background:#0b0d10}.product-image.empty{display:grid;place-items:center;color:#66707c}.product-body{padding:13px}.product-name{font-weight:900;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.product-price{font-weight:900;font-size:14px;margin:8px 0}.product-meta{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:11px}.badge{display:inline-flex;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:900;border:1px solid var(--line)}.badge.on{background:#183b28;color:#79e0a1;border-color:#285d3e}.badge.off{color:#8b929d}.product-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px}.product-actions .btn{padding:8px 5px;font-size:11px}.empty{text-align:center;padding:40px;color:#707986;background:var(--surface);grid-column:1/-1}.login{min-height:100vh;display:grid;place-items:center;padding:20px;background:#080a0d}.login-card{width:min(410px,100%);background:#111419;border:1px solid var(--line);border-radius:22px;padding:28px;box-shadow:0 30px 90px #0008}.login-card h1{margin:8px 0;font-size:22px}.login-card .brand{padding:0 0 14px}.error,.ok{margin-top:11px;padding:10px 12px;border-radius:10px;line-height:1.7}.error{background:#30171a;color:#ff9292;border:1px solid #5b292d}.ok{background:#15291e;color:#8be0aa;border:1px solid #28563a}.modal{position:fixed;inset:0;background:#000b;z-index:50;display:grid;place-items:center;padding:16px}.modal-card{width:min(820px,100%);max-height:94vh;overflow:auto;background:#111419;border:1px solid #363c45;border-radius:20px;padding:20px;box-shadow:0 30px 100px #000b}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.full{grid-column:1/-1}.preview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;margin-top:9px}.preview-grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:9px}.file-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.size-row{display:grid;grid-template-columns:1fr 130px 130px auto;gap:7px;margin-top:7px}.check-row{display:flex;gap:18px;flex-wrap:wrap;margin-top:9px}.check-row label{display:flex;gap:7px;align-items:center}.footer-actions{display:flex;gap:8px;margin-top:17px;padding-top:13px;border-top:1px solid var(--line)}#toast{position:fixed;bottom:18px;right:18px;z-index:100;background:#fff;color:#111;padding:11px 15px;border-radius:10px;box-shadow:0 15px 35px #0008}
+@media(max-width:1050px){.dashboard{grid-template-columns:1fr}.sidebar{position:static;height:auto;display:block}.sidebar nav{display:flex;overflow:auto;gap:5px}.navitem{white-space:nowrap}.side-bottom{margin-top:10px}.products-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.banner-layout{grid-template-columns:1fr}}
+@media(max-width:650px){.wrap{padding:10px}.topbar{align-items:flex-start;flex-direction:column}.top-actions{width:100%}.top-actions .btn{flex:1}.stats{grid-template-columns:1fr 1fr}.stats .stat:first-child{grid-column:1/-1}.toolbar{grid-template-columns:1fr}.products-grid{grid-template-columns:1fr 1fr}.form-grid{grid-template-columns:1fr}.full{grid-column:auto}.modal{align-items:end;padding:0}.modal-card{border-radius:18px 18px 0 0;max-height:95vh}.products-head{align-items:flex-start;flex-direction:column}.products-head .btn{width:100%}}
+@media(max-width:420px){.products-grid{grid-template-columns:1fr}.product-image{aspect-ratio:1}.stats b{font-size:25px}}
+</style>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
     import {
@@ -677,107 +678,55 @@
   </script>
 </head>
 <body>
-  <!-- LOGIN -->
   <div id="loginView" class="login">
     <div class="login-card">
-      <div class="brand">
-        PH<span>.</span>Tools
-      </div>
+      <div class="brand">PH<span>.</span>Tools</div>
       <h1>چوونەژوورەوەی ئەدمین</h1>
-      <div class="muted">
-        بەڕێوەبردنی بەرهەمەکان و sync ـی ڕاستەوخۆ لەگەڵ ماڵپەڕ.
-      </div>
-      <div class="field">
-        <label for="email">ئیمەیڵ</label>
-        <input
-          id="email"
-          class="input"
-          type="email"
-          autocomplete="username"
-        >
-      </div>
-      <div class="field">
-        <label for="password">وشەی نهێنی</label>
-        <input
-          id="password"
-          class="input"
-          type="password"
-          autocomplete="current-password"
-        >
-      </div>
-      <button
-        id="loginBtn"
-        class="btn primary"
-        type="button"
-        style="width:100%;margin-top:15px"
-      >
-        چوونەژوورەوە
-      </button>
+      <div class="muted">بەڕێوەبردنی ماڵپەڕ و بەرهەمەکان</div>
+      <div class="field"><label for="email">ئیمەیڵ</label><input id="email" class="input" type="email" autocomplete="username"></div>
+      <div class="field"><label for="password">وشەی نهێنی</label><input id="password" class="input" type="password" autocomplete="current-password"></div>
+      <button id="loginBtn" class="btn primary" type="button" style="width:100%;margin-top:15px">چوونەژوورەوە</button>
       <div id="loginMsg"></div>
     </div>
   </div>
-  <!-- APP -->
   <div id="appView" class="hidden">
     <div class="wrap">
-      <div class="top">
-        <div>
+      <div class="dashboard">
+        <aside class="sidebar">
           <div class="brand">PH<span>.</span>Tools</div>
-          <div class="muted">داشبۆردی بەڕێوەبردن · <span id="syncState"><span class="sync-dot"></span>چاوەڕوانی sync...</span></div>
-        </div>
-        <div class="actions">
-          <button id="refresh" class="btn" type="button">نوێکردنەوە</button>
-          <button id="add" class="btn primary" type="button">+ زیادکردنی بابەت</button>
-          <button id="logout" class="btn" type="button">چوونەدەرەوە</button>
-        </div>
-      </div>
-
-      <div class="stats">
-        <div class="stat"><div class="muted">بابەتەکان</div><b id="total">0</b></div>
-        <div id="activeStat" class="stat stat-click"><div class="muted">چالاک</div><b id="activeCount">0</b></div>
-        <div id="inactiveStat" class="stat stat-click"><div class="muted">ناچالاک</div><b id="inactiveCount">0</b></div>
-      </div>
-
-      <div class="panel">
-        <div class="panel-head">
-          <div><h2>بەنەر</h2><div class="muted">بەنەری سەرەکیی ماڵپەڕ لێرەوە بگۆڕە.</div></div>
-        </div>
-        <div class="banner-box">
-          <div>
-            <div class="field">
-              <label for="bannerUrl">Link ـی بەنەر</label>
-              <input id="bannerUrl" class="input" type="url" placeholder="https://.../banner.webp">
-            </div>
-            <div class="banner-tools">
-              <button id="saveBanner" class="btn primary" type="button">Update</button>
-              <button id="resetBanner" class="btn" type="button">Restore Previous banner</button>
-            </div>
-            <div id="bannerMsg"></div>
+          <div class="side-title">بەڕێوەبردن</div>
+          <button class="navitem active" type="button">▣ داشبۆرد</button>
+          <button class="navitem" type="button" onclick="document.getElementById('productsSection').scrollIntoView({behavior:'smooth'})">▤ بابەتەکان</button>
+          <button class="navitem" type="button" onclick="document.getElementById('bannerSection').scrollIntoView({behavior:'smooth'})">▰ بەنەر</button>
+          <div class="side-bottom">
+            <div class="sync"><span id="syncState"><span class="sync-dot"></span>چاوەڕوانی sync...</span></div>
+            <button id="logout" class="btn" type="button" style="width:100%;margin-top:9px">چوونەدەرەوە</button>
           </div>
-          <div>
-            <div id="bannerPreviewHint" class="muted">پێشبینین</div>
-            <div id="bannerPreview" class="banner-preview"></div>
+        </aside>
+        <main class="main">
+          <div class="topbar">
+            <div><h1>سەنتەری بەڕێوەبردن</h1><div class="muted">کۆنترۆڵی بابەتەکان و بەنەری ماڵپەڕ</div></div>
+            <div class="top-actions"><button id="refresh" class="btn" type="button">↻ نوێکردنەوە</button><button id="add" class="btn primary" type="button">+ زیادکردنی بابەت</button></div>
           </div>
-        </div>
+          <div class="stats">
+            <div class="stat"><div class="label">بابەتەکان</div><b id="total">0</b></div>
+            <div id="activeStat" class="stat click"><div class="label">چالاک</div><b id="activeCount">0</b></div>
+            <div id="inactiveStat" class="stat click"><div class="label">ناچالاک</div><b id="inactiveCount">0</b></div>
+          </div>
+          <section id="bannerSection" class="section">
+            <div class="section-head"><div><h2>بەنەری سەرەکی</h2><div class="muted">لینکی وێنەکە دابنێ و بەنەری ماڵپەڕ نوێ بکەرەوە.</div></div></div>
+            <div class="section-body banner-layout">
+              <div><div class="field"><label for="bannerUrl">Link ـی بەنەر</label><input id="bannerUrl" class="input" type="url" placeholder="https://.../banner.webp"></div><div class="banner-tools"><button id="saveBanner" class="btn primary" type="button">Update</button><button id="resetBanner" class="btn" type="button">Restore Previous banner</button></div><div id="bannerMsg"></div></div>
+              <div><div id="bannerPreviewHint" class="muted">پێشبینین</div><div id="bannerPreview" class="banner-preview"></div></div>
+            </div>
+          </section>
+          <section id="productsSection" class="section">
+            <div class="products-head"><div><h2 style="margin:0">بابەتەکان</h2><div class="muted">بەرهەمەکانت بە شێوەی لیستی نوێ و خاوێن.</div></div><button id="addTop" class="btn primary" type="button">+ زیادکردنی بابەت</button></div>
+            <div class="toolbar"><input id="search" class="input" type="search" placeholder="گەڕان بە ناو، براند یان کەتەگۆری..." autocomplete="off"><select id="categoryFilter" class="input"><option value="all">هەموو کەتەگۆرییەکان</option><option value="drill">درێل</option><option value="charger">بابەت شەحن</option><option value="shafra">شفرە و ماڵە</option><option value="nail">بورغی دەرزی</option><option value="cutting">مشار</option><option value="electronics">ئەلیکترۆنی</option><option value="warawela">وردەواڵە</option></select><select id="status" class="input"><option value="all">هەموو دۆخەکان</option><option value="active">چالاک</option><option value="inactive">ناچالاک</option></select></div>
+            <div id="rows" class="products-grid"></div>
+          </section>
+        </main>
       </div>
-
-      <div class="panel">
-        <div class="panel-head">
-          <div><h2>بابەتەکان</h2><div class="muted">هەموو بەرهەمەکانت لێرە بە شێوەی کارت دەبینیت.</div></div>
-          <button id="addTop" class="btn primary" type="button">+ زیادکردنی بابەت</button>
-        </div>
-        <div class="toolbar">
-          <input id="search" class="input search" type="search" placeholder="گەڕان بە ناو، براند یان کەتەگۆری..." autocomplete="off">
-          <select id="categoryFilter" class="input">
-            <option value="all">هەموو کەتەگۆرییەکان</option>
-            <option value="drill">درێل</option><option value="charger">بابەت شەحن</option><option value="shafra">شفرە و ماڵە</option><option value="nail">بورغی دەرزی</option><option value="cutting">مشار</option><option value="electronics">ئەلیکترۆنی</option><option value="warawela">وردەواڵە</option>
-          </select>
-          <select id="status" class="input">
-            <option value="all">هەموو دۆخەکان</option><option value="active">چالاک</option><option value="inactive">ناچالاک</option>
-          </select>
-        </div>
-      </div>
-
-      <div id="rows" class="products-grid"></div>
     </div>
   </div>
   <!-- PRODUCT MODAL -->
