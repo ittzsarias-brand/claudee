@@ -388,6 +388,11 @@
       border-radius:12px;
       box-shadow:0 15px 35px rgba(0,0,0,.35);
     }
+    .banner-preview{margin-top:10px;border:1px solid #292929;border-radius:14px;overflow:hidden;background:#090909;min-height:70px;display:grid;place-items:center}
+    .banner-preview img{width:100%;max-height:260px;object-fit:cover}
+    .banner-tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
+    .banner-tools .btn{flex:0 0 auto}
+
     @media(max-width:760px){
       .wrap{
         padding:14px;
@@ -508,6 +513,8 @@
       doc,
       updateDoc,
       deleteDoc,
+      setDoc,
+      getDoc,
       serverTimestamp,
       onSnapshot
     } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
@@ -524,6 +531,7 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
     const productsRef = collection(db, "products");
+    const bannerRef = doc(db, "settings", "banner");
     const $ = id => document.getElementById(id);
     let products = [];
     let unsubscribeProducts = null;
@@ -565,6 +573,88 @@
         $("toast").classList.add("hidden");
       }, 2200);
     }
+    async function loadBanner(){
+      try {
+        const snapshot = await getDoc(bannerRef);
+        const url = snapshot.exists() ? String(snapshot.data()?.imageUrl || "").trim() : "";
+        $("bannerUrl").value = url;
+        updateBannerPreview();
+        $("bannerMsg").innerHTML = url
+          ? '<div class="ok">✓ بەنەرەکەی ئێستا بارکرا.</div>'
+          : '<div class="muted">هیچ بەنەرێکی تایبەت پاشەکەوت نەکراوە؛ بەنەری بنەڕەتی بەکاردێت.</div>';
+      } catch(error) {
+        console.error("BANNER LOAD ERROR:", error);
+        $("bannerMsg").innerHTML = '<div class="error">نەتوانرا بەنەر بخوێندرێتەوە.</div>';
+      }
+    }
+
+    function updateBannerPreview(){
+      const url = $("bannerUrl").value.trim();
+      const preview = $("bannerPreview");
+      preview.innerHTML = "";
+      if (!url) return;
+      const image = document.createElement("img");
+      image.src = url;
+      image.alt = "پێشبینینی بەنەر";
+      image.onload = () => $("bannerPreviewHint").textContent = "پێشبینین";
+      image.onerror = () => $("bannerPreviewHint").textContent = "ئەم URL ـەی وێنەکە کار ناکات.";
+      preview.appendChild(image);
+    }
+
+    async function saveBanner(){
+      const button = $("saveBanner");
+      const url = $("bannerUrl").value.trim();
+      $("bannerMsg").innerHTML = '<div class="muted">بەنەر پاشەکەوت دەکرێت...</div>';
+      button.disabled = true;
+      try {
+        const user = auth.currentUser;
+        if (!user) throw new Error("AUTH_REQUIRED");
+        if (!url) throw new Error("URL_REQUIRED");
+        await withTimeout(
+          setDoc(bannerRef, {
+            imageUrl: url,
+            updatedAt: serverTimestamp(),
+            updatedBy: user.uid
+          }, { merge: true }),
+          20000,
+          "FIRESTORE_BANNER_UPDATE"
+        );
+        $("bannerMsg").innerHTML = '<div class="ok">✓ بەنەر بە سەرکەوتوویی نوێکرایەوە. لە ماڵپەڕەکەش خۆکارانە دەگۆڕێت.</div>';
+      } catch(error) {
+        console.error("BANNER SAVE ERROR:", error);
+        const code = error?.code || "";
+        let detail = "پاشەکەوتکردنی بەنەر سەرکەوتوو نەبوو.";
+        if (error?.message === "URL_REQUIRED") detail = "تکایە URL ـی وێنەی بەنەر دابنێ.";
+        else if (code === "permission-denied" || code === "PERMISSION_DENIED") detail = "Firebase ڕێگەی نووسین نادات. Firestore Rules پشکنە.";
+        else if (error?.message?.startsWith("TIMEOUT:FIRESTORE_BANNER_UPDATE")) detail = "Firebase وەڵامی پاشەکەوتکردنی بەنەر نەدا.";
+        $("bannerMsg").innerHTML = `<div class="error">${escapeHtml(detail)}</div>`;
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    async function resetBanner(){
+      const button = $("resetBanner");
+      button.disabled = true;
+      try {
+        const user = auth.currentUser;
+        if (!user) throw new Error("AUTH_REQUIRED");
+        await withTimeout(
+          setDoc(bannerRef, { imageUrl: "", updatedAt: serverTimestamp(), updatedBy: user.uid }, { merge: true }),
+          20000,
+          "FIRESTORE_BANNER_RESET"
+        );
+        $("bannerUrl").value = "";
+        updateBannerPreview();
+        $("bannerMsg").innerHTML = '<div class="ok">✓ گەڕێندرایەوە بۆ بەنەری بنەڕەتی.</div>';
+      } catch(error) {
+        console.error("BANNER RESET ERROR:", error);
+        $("bannerMsg").innerHTML = '<div class="error">نەتوانرا بەنەر بگەڕێندرێتەوە.</div>';
+      } finally {
+        button.disabled = false;
+      }
+    }
+
     function showLogin() {
       $("loginView").classList.remove("hidden");
       $("appView").classList.add("hidden");
@@ -1070,6 +1160,9 @@
         });
       });
       $("refresh").addEventListener("click", render);
+      $("bannerUrl").addEventListener("input", updateBannerPreview);
+      $("saveBanner").addEventListener("click", saveBanner);
+      $("resetBanner").addEventListener("click", resetBanner);
       $("add").addEventListener("click", () => {
         openModal();
       });
@@ -1125,6 +1218,7 @@
           return;
         }
         showApp();
+        loadBanner();
         subscribeToProducts();
       });
     }
@@ -1225,6 +1319,31 @@
             نیشانکراو
           </div>
           <b id="featuredCount">0</b>
+        </div>
+      </div>
+      <!-- BANNER MANAGEMENT -->
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>بەڕێوەبردنی بەنەر</h2>
+            <div class="muted">بەنەری سەرەکیی ماڵپەڕ لێرەوە بگۆڕە.</div>
+          </div>
+        </div>
+        <div class="field">
+          <label for="bannerUrl">URL ـی وێنەی بەنەر</label>
+          <input
+            id="bannerUrl"
+            class="input"
+            type="url"
+            placeholder="https://.../banner.webp"
+          >
+          <div id="bannerPreviewHint" class="muted" style="margin-top:7px">پێشبینین</div>
+          <div id="bannerPreview" class="banner-preview"></div>
+          <div class="banner-tools">
+            <button id="saveBanner" class="btn primary" type="button">پاشەکەوتکردنی بەنەر</button>
+            <button id="resetBanner" class="btn" type="button">گەڕاندنەوەی بەنەری بنەڕەتی</button>
+          </div>
+          <div id="bannerMsg"></div>
         </div>
       </div>
       <!-- FILTERS -->
