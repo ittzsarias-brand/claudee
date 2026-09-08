@@ -844,29 +844,132 @@ body.light-theme .appearance-btn{background:#fff;color:#222;border-color:#ddd}bo
   .product-detail-description{white-space:pre-wrap!important;overflow-wrap:anywhere!important;word-break:break-word!important;}
 }
 </style>
-<style id="centered-menu-fix">
-@media (max-width:640px){
-  #menuDrawer.menu-drawer{
-    top:50%!important;
-    right:auto!important;
-    left:50%!important;
-    bottom:auto!important;
-    width:min(360px,92vw)!important;
-    height:auto!important;
-    max-height:82dvh!important;
-    border-radius:18px!important;
-    transform:translate(-50%,-50%) scale(.96)!important;
-    opacity:0!important;
-    visibility:hidden!important;
-    transition:transform .25s ease,opacity .2s ease,visibility .2s ease!important;
-  }
-  #menuDrawer.menu-drawer.show{
-    transform:translate(-50%,-50%) scale(1)!important;
-    opacity:1!important;
-    visibility:visible!important;
-  }
+
+
+<style id="FINAL-CENTERED-POPUP-FIX">
+/* ===== FINAL FIX: all opened panels appear in the CENTER ===== */
+
+/* The dark background behind the hamburger menu */
+#overlay.menu-overlay{
+  position:fixed !important;
+  inset:0 !important;
+  width:100vw !important;
+  height:100vh !important;
+  z-index:99990 !important;
+  opacity:0 !important;
+  visibility:hidden !important;
+}
+#overlay.menu-overlay.show{
+  opacity:1 !important;
+  visibility:visible !important;
+}
+
+/* Hamburger menu: NOT a side drawer anymore */
+html body #menuDrawer.menu-drawer{
+  position:fixed !important;
+  top:50% !important;
+  left:50% !important;
+  right:auto !important;
+  bottom:auto !important;
+  inset-inline:auto !important;
+  inset-block:auto !important;
+
+  width:min(420px,92vw) !important;
+  max-width:92vw !important;
+  height:auto !important;
+  max-height:85vh !important;
+  overflow-y:auto !important;
+
+  margin:0 !important;
+  border-radius:20px !important;
+  z-index:99999 !important;
+
+  transform:translate3d(-50%,-50%,0) scale(.96) !important;
+  opacity:0 !important;
+  visibility:hidden !important;
+
+  transition:
+    transform .25s ease,
+    opacity .2s ease,
+    visibility .2s ease !important;
+}
+
+html body #menuDrawer.menu-drawer.show{
+  top:50% !important;
+  left:50% !important;
+  right:auto !important;
+  bottom:auto !important;
+  transform:translate3d(-50%,-50%,0) scale(1) !important;
+  opacity:1 !important;
+  visibility:visible !important;
+}
+
+/* Restore menu contents if an older mobile rule hid them */
+#menuDrawer .menu-links{
+  display:grid !important;
+}
+
+/* Location + contact dialogs */
+html body .contact-chooser-overlay{
+  position:fixed !important;
+  inset:0 !important;
+  width:100vw !important;
+  height:100vh !important;
+  min-height:100vh !important;
+  padding:18px !important;
+  box-sizing:border-box !important;
+
+  display:none !important;
+  align-items:center !important;
+  justify-content:center !important;
+  z-index:99998 !important;
+}
+html body .contact-chooser-overlay.show{
+  display:flex !important;
+}
+html body .contact-chooser{
+  position:relative !important;
+  top:auto !important;
+  right:auto !important;
+  bottom:auto !important;
+  left:auto !important;
+  margin:0 !important;
+  transform:none !important;
+}
+
+/* Product details */
+html body .product-modal-v2{
+  position:fixed !important;
+  inset:0 !important;
+  width:100vw !important;
+  height:100vh !important;
+  padding:18px !important;
+  box-sizing:border-box !important;
+
+  display:none !important;
+  align-items:center !important;
+  justify-content:center !important;
+  z-index:99997 !important;
+}
+html body .product-modal-v2.show{
+  display:flex !important;
+}
+html body .product-detail{
+  position:relative !important;
+  top:auto !important;
+  right:auto !important;
+  bottom:auto !important;
+  left:auto !important;
+  margin:0 !important;
+  transform:none !important;
+}
+
+/* Keep the page from moving sideways while a panel is open */
+html, body{
+  overflow-x:hidden !important;
 }
 </style>
+
 </head>
 <body>
 
