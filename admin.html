@@ -85,20 +85,44 @@ function openModal(p=null){$('form').reset();$('id').value=p?.id||'';$('title').
  if(p){$('name').value=p.name||'';$('brand').value=p.brand||'';$('small').value=p.smallDescription||'';$('description').value=p.description||'';$('video').value=p.videoUrl||p.video||'';(p.images||[]).forEach(u=>addPreview(u));(p.sizes||[]).forEach(addSizeRow)} $('modal').classList.remove('hidden')}
 function closeModal(){$('modal').classList.add('hidden')}
 function addPreview(url){const img=document.createElement('img');img.src=url;$('preview').appendChild(img)}
-async function uploadFiles(){const files=[...$('files').files];if(!files.length)return[];const user=auth.currentUser;if(!user)throw new Error('AUTH_REQUIRED');const out=[];for(const file of files){const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,'_');const r=ref(storage,`products/${user.uid}/${Date.now()}-${Math.random().toString(36).slice(2,8)}-${safe}`);await uploadBytes(r,file,{contentType:file.type||'image/jpeg'});out.push(await getDownloadURL(r))}return out}
+function withTimeout(promise,ms,label){
+  return Promise.race([
+    promise,
+    new Promise((_,reject)=>setTimeout(()=>reject(new Error(`TIMEOUT:${label}`)),ms))
+  ]);
+}
+
+async function uploadFiles(){
+  const files=[...$('files').files];
+  if(!files.length)return[];
+  const user=auth.currentUser;
+  if(!user)throw new Error('AUTH_REQUIRED');
+  const out=[];
+  for(const file of files){
+    const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+    const r=ref(storage,`products/${user.uid}/${Date.now()}-${Math.random().toString(36).slice(2,8)}-${safe}`);
+    await withTimeout(uploadBytes(r,file,{contentType:file.type||'image/jpeg'}),30000,`IMAGE_UPLOAD:${file.name}`);
+    out.push(await withTimeout(getDownloadURL(r),15000,`IMAGE_URL:${file.name}`));
+  }
+  return out;
+}
+
 async function save(e){
   e.preventDefault();
   const btn=$('save');
   btn.disabled=true;
   btn.textContent='پاشەکەوت دەکرێت...';
-  $('msg').innerHTML='';
+  $('msg').innerHTML='<div class="muted">تکایە چاوەڕێ بکە...</div>';
   try{
-    if(!auth.currentUser) throw new Error('AUTH_REQUIRED');
+    const user=auth.currentUser;
+    if(!user)throw new Error('AUTH_REQUIRED');
     const name=$('name').value.trim();
-    if(!name) throw new Error('NAME_REQUIRED');
+    if(!name)throw new Error('NAME_REQUIRED');
+
     const manual=$('images').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
     const uploaded=await uploadFiles();
     const images=[...manual,...uploaded];
+
     const payload={
       name,
       price:Number($('price').value||0),
@@ -116,27 +140,34 @@ async function save(e){
       imageUrl:images[0]||'',
       updatedAt:serverTimestamp()
     };
-    const id=$('id').value;
+
+    const id=$('id').value.trim();
     if(id){
-      await updateDoc(doc(db,'products',id),payload);
+      await withTimeout(updateDoc(doc(db,'products',id),payload),20000,'FIRESTORE_UPDATE');
       toast('بەرهەمەکە نوێکرایەوە');
     }else{
       payload.createdAt=serverTimestamp();
-      await addDoc(collection(db,'products'),payload);
+      await withTimeout(addDoc(collection(db,'products'),payload),20000,'FIRESTORE_CREATE');
       toast('بەرهەمەکە زیادکرا');
     }
-    closeModal();
+
+    $('msg').innerHTML='<div class="ok">✓ بە سەرکەوتوویی پاشەکەوت کرا.</div>';
+    setTimeout(closeModal,500);
   }catch(err){
     console.error('PRODUCT SAVE ERROR:',err);
     const code=err?.code||'';
     const message=err?.message||String(err);
     let detail='';
-    if(code==='permission-denied' || code==='PERMISSION_DENIED') detail='Firebase ڕێگەی نووسین نادات. Firestore Rules بپشکنە.';
-    else if(code.startsWith('storage/')) detail='Firebase Storage ڕێگەی upload نادات. Storage Rules بپشکنە.';
+    if(code==='permission-denied' || code==='PERMISSION_DENIED') detail='Firebase ڕێگەی نووسین نادات. Firestore Rules پشکنە.';
+    else if(code.startsWith('storage/')) detail='Firebase Storage ڕێگەی upload نادات. Storage Rules پشکنە.';
     else if(code==='AUTH_REQUIRED') detail='تکایە دووبارە login بکە.';
     else if(code==='NAME_REQUIRED') detail='ناوی بەرهەم پڕبکەرەوە.';
+    else if(message.startsWith('TIMEOUT:FIRESTORE_UPDATE')) detail='نوێکردنەوەی بەرهەم وەڵامی Firebase وەرنەگرت. زۆرجار ئەمە لە Firestore Rules یان پەیوەندی Firebase ـە.';
+    else if(message.startsWith('TIMEOUT:FIRESTORE_CREATE')) detail='زیادکردنی بەرهەم وەڵامی Firebase وەرنەگرت. زۆرجار ئەمە لە Firestore Rules یان پەیوەندی Firebase ـە.';
+    else if(message.startsWith('TIMEOUT:IMAGE_UPLOAD')) detail='upload ـی وێنە وەڵامی Firebase وەرنەگرت. Storage Rules و پەیوەندی Firebase پشکنە.';
+    else if(message.startsWith('TIMEOUT:IMAGE_URL')) detail='وەرگرتنی URL ـی وێنە وەڵامی Firebase وەرنەگرت.';
     else detail=`هەڵە: ${code||'UNKNOWN'} — ${message}`;
-    $('msg').innerHTML=`<div class="error">پاشەکەوتکردن سەرکەوتوو نەبوو.<br>${esc(detail)}</div>`;
+    $('msg').innerHTML=`<div class="error">پاشەکەوتکردن سەرکەوتوو نەبوو.<br>${esc(detail)}<br><small>کۆدی هەڵە: ${esc(code||'none')}</small></div>`;
   }finally{
     btn.disabled=false;
     btn.textContent='پاشەکەوتکردن';
