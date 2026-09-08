@@ -855,7 +855,6 @@ window.dispatchEvent(new Event("products-firebase-ready"));
 </aside>
 
 
-<div class="toast" id="toast"><span class="tick">✓</span><span id="toastText">زیادکرا بۆ سەبەتە</span></div>
 
 <script>
 /* ================= DATA ================= (edit freely — swap img: URLs for your real photos) */
@@ -981,7 +980,7 @@ document.getElementById('detailOrderBtn').addEventListener('click',()=>{
   const price=activeDetailSize?activeDetailSize.price:activeDetailProduct.price;
   const currency=activeDetailSize?activeDetailSize.currency:activeDetailProduct.currency;
   cart[key]={productId:activeDetailProduct.id,qty:(cart[key]?.qty||0)+1,size:activeDetailSize?.name||'',price,currency};
-  saveCart();renderCart();showToast('زیادکرا بۆ سەبەتە');closeProductDetail();toggleCart(true);
+  saveCart();renderCart();closeProductDetail();toggleCart(true);
 });
 function loadSiteProducts(){
   try{
@@ -1070,7 +1069,7 @@ function renderCart(){
 }
 renderCart();
 function toggleCart(open){document.getElementById('cartDrawer').classList.toggle('show',open);document.getElementById('overlay').classList.toggle('show',open);}
-function checkout(){if(cartEntries().length===0)return;showToast('سوپاس! داواکاریەکەت تۆمار کرا ✓');cart={};saveCart();renderCart();toggleCart(false);}
+function checkout(){if(cartEntries().length===0)return;cart={};saveCart();renderCart();toggleCart(false);}
 
 /* ================= MENU / APPEARANCE / LOCATION ================= */
 function toggleMenu(open){
@@ -1146,15 +1145,6 @@ const savedTheme = localStorage.getItem('ph_theme') || 'dark';
 setTheme(savedTheme);
 
 
-/* ================= TOAST ================= */
-let toastTimer;
-function showToast(msg){
-  const t = document.getElementById('toast');
-  document.getElementById('toastText').textContent = msg;
-  t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(()=>t.classList.remove('show'), 2200);
-}
 
 function openContactChooser(){
   const el = document.getElementById('contactChooserOverlay');
