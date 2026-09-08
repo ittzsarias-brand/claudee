@@ -69,11 +69,6 @@
   .contact-action .contact-icon,
   .location-icon-wrap,
   .menu-trigger .hamburger-icon-wrap,
-  .cart-icon-wrap{
-    width:31px;height:31px;border-radius:50%;
-    display:flex;align-items:center;justify-content:center;
-    color:#fff;flex:0 0 31px;
-  }
   .contact-action.phone .contact-icon{background:var(--red);}
   .contact-action span:last-child{font-size:10px;font-weight:700;line-height:1;color:#fff;}
   .contact-action:hover span:last-child{color:#fff;}
@@ -82,13 +77,7 @@
     font-size:10px;font-weight:700;border-radius:50%;width:17px;height:17px;
     display:flex;align-items:center;justify-content:center;
   }
-
-  .cart-action{color:#ffd21a !important;}
-  .cart-action:hover{color:#ffe36a !important;}
-  .cart-icon-wrap{width:31px;height:31px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:0 0 31px;}
   .icons-block .icon-item{color:#fff;}
-  .cart-icon-wrap{background:#ffd21a;color:#111;}
-  .cart-icon-wrap .icon{stroke:#111;}
   .location-action{background:transparent;border:0;font-family:inherit;}
   .location-action .location-icon-wrap{background:#ffd21a;color:#111;}
   .menu-trigger .hamburger-icon-wrap{background:#ffd21a;color:#111;}
@@ -203,30 +192,6 @@
   @media(max-width:900px){.products-grid{grid-template-columns:repeat(3,1fr);}.product-detail{grid-template-columns:1fr;max-height:94vh;}.product-gallery{padding:14px;}.product-detail-info{padding:22px 18px 24px;}}
   @media(max-width:640px){.products-grid{grid-template-columns:repeat(2,1fr);gap:10px;}.product-card-v2 .product-content{padding:10px;}.product-card-v2 .product-name{font-size:13px;}.product-card-v2 .product-small-desc{font-size:11px;min-height:38px;}.product-card-v2 .product-price{font-size:15px;}.product-more-btn{padding:9px 10px;font-size:11.5px;}.product-detail-info h2{font-size:20px;}.product-detail-price{font-size:21px;}}
 
-  /* ---------- CART DRAWER ---------- */
-  .drawer{
-    position:fixed;top:0;right:0;height:100%;width:380px;max-width:90vw;background:#fff;
-    z-index:95;transform:translateX(100%);transition:transform .3s ease;display:flex;flex-direction:column;
-  }
-  .drawer.show{transform:translateX(0);}
-  .drawer-head{padding:18px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;}
-  .drawer-head h3{font-size:17px;font-weight:800;}
-  .drawer-close{font-size:20px;color:#888;cursor:pointer;}
-  .cart-line{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);}
-  .cart-line img{width:64px;height:64px;object-fit:cover;border-radius:6px;background:var(--gray-bg);}
-  .cart-line-info{flex:1;}
-  .cart-line-info h5{font-size:13.5px;font-weight:700;margin-bottom:4px;}
-  .qty-row{display:flex;align-items:center;gap:8px;margin-top:6px;}
-  .qty-row button{width:22px;height:22px;border:1px solid var(--line);border-radius:4px;background:#fff;font-size:14px;}
-  .qty-row span{font-size:13px;min-width:16px;text-align:center;}
-  .remove-line{font-size:12px;color:var(--red);margin-top:6px;cursor:pointer;}
-  .empty-msg{text-align:center;color:#999;padding:60px 10px;font-size:14px;}
-  .drawer-foot{padding:16px 20px;border-top:1px solid var(--line);}
-  .total-row{display:flex;justify-content:space-between;font-weight:800;font-size:16px;margin-bottom:12px;}
-  .checkout-btn{width:100%;background:var(--red);color:#fff;padding:13px;border-radius:6px;font-weight:700;font-size:14.5px;}
-  .checkout-btn:hover{background:var(--red-dark);}
-
-
   /* ---------- RESPONSIVE ---------- */
   @media(max-width:1000px){
 }
@@ -240,7 +205,7 @@
      .logo-icon-sm{width:58px;height:54px;}
      .icons-block{order:1;gap:8px;flex:1;justify-content:flex-start;}
      .icon-item{width:48px;min-width:48px;padding:0;margin:0;font-size:10px;gap:4px;color:#fff;}
-     .cart-icon-wrap,.location-icon-wrap,.contact-action .contact-icon,.menu-trigger .hamburger-icon-wrap{width:31px;height:31px;flex:0 0 31px;}
+     .location-icon-wrap,.contact-action .contact-icon,.menu-trigger .hamburger-icon-wrap{width:31px;height:31px;flex:0 0 31px;}
      .menu-trigger .hamburger-icon{width:18px;height:18px;}
      .contact-action{width:48px;min-width:48px;}
      .contact-action span:last-child{font-size:9px;color:#fff;line-height:1;}
@@ -283,7 +248,6 @@
 <style id="replaceable-store-images">
 /* Premium styling for the four header action buttons */
 .icons-block .menu-trigger .hamburger-icon-wrap,
-.icons-block .cart-action .cart-icon-wrap,
 .icons-block .contact-action.whatsapp .contact-icon,
 .icons-block .contact-action.phone .contact-icon {
   width: 38px !important;
@@ -303,7 +267,6 @@
 }
 
 .icons-block .menu-trigger:hover .hamburger-icon-wrap,
-.icons-block .cart-action:hover .cart-icon-wrap,
 .icons-block .contact-action.phone:hover .contact-icon {
   transform: translateY(-2px) !important;
   background: linear-gradient(145deg, #343438, #1c1c20) !important;
@@ -314,28 +277,19 @@
 }
 
 .icons-block .menu-trigger .hamburger-icon,
-.icons-block .cart-action .cart-icon-wrap .icon,
 .icons-block .contact-action.phone .contact-icon svg {
   color: #f5f5f5 !important;
   stroke: currentColor !important;
 }
-
-.icons-block .cart-action,
 .icons-block .contact-action,
 .icons-block .menu-trigger {
   color: #e8e8e8 !important;
 }
-
-.icons-block .cart-action:hover,
 .icons-block .contact-action:hover,
 .icons-block .menu-trigger:hover {
   color: #fff !important;
 }
 
-.icons-block .cart-action .badge {
-  border: 2px solid #151516 !important;
-  box-shadow: 0 2px 7px rgba(0,0,0,.25) !important;
-}
 
 /* Keep the existing location button exactly as it is. */
 
@@ -848,11 +802,6 @@ window.dispatchEvent(new Event("products-firebase-ready"));
         </span>
         مینیو
       </div>
-      <div class="icon-item cart-action" onclick="toggleCart(true)">
-        <span class="cart-icon-wrap"><svg class="icon" viewBox="0 0 24 24"><path d="M4 6h16l-1.5 10.5a2 2 0 0 1-2 1.5H7.5a2 2 0 0 1-2-1.5L4 6z"/><path d="M8 6V5a4 4 0 0 1 8 0v1"/></svg></span>
-        سەبەتە
-        <span class="badge" id="cartBadge">0</span>
-      </div>
       <button class="icon-item location-action" type="button" onclick="getLocation()" aria-label="شوێنی من">
         <span class="location-icon-wrap"><svg class="icon" viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
         شوێن
@@ -937,7 +886,6 @@ window.dispatchEvent(new Event("products-firebase-ready"));
       <div class="product-detail-section" id="sizeSection" style="display:none"><h4>قەبارە</h4><div class="size-options" id="sizeOptions"></div></div>
       <div class="product-detail-section"><h4>وەسفی تەواو</h4><div class="product-detail-description" id="productDetailDescription"></div></div>
       <div class="product-detail-section" id="videoSection" style="display:none"><h4>ڤیدیۆ</h4><div class="product-video"><iframe id="productVideoFrame" title="ڤیدیۆی بەرهەم" allowfullscreen></iframe></div></div>
-      <button class="order-btn-v2" id="detailOrderBtn" type="button">داوا کردن 🛒</button>
     </div>
   </div>
 </div>
@@ -988,36 +936,6 @@ window.dispatchEvent(new Event("products-firebase-ready"));
   </div>
 </div>
 
-<!-- ============ CART DRAWER ============ -->
-
-<aside class="menu-drawer" id="menuDrawer" aria-label="مینیوی سەرەکی">
-  <div class="menu-head">
-    <h3>مینیو</h3>
-    <button class="drawer-close" type="button" onclick="toggleMenu(false)">×</button>
-  </div>
-  <div class="menu-body">
-    <div class="menu-section-title">ڕووکار</div>
-    <div class="appearance-options">
-      <button type="button" class="appearance-btn" data-theme="dark" onclick="setTheme('dark')"><span>ڕەش</span></button>
-      <button type="button" class="appearance-btn" data-theme="light" onclick="setTheme('light')"><span>سپی</span></button>
-    </div>
-    <div class="menu-links">
-      <a href="#home" onclick="toggleMenu(false)">سەرەتا</a>
-      <a href="#" onclick="getLocation(); return false;">شوێنی من</a>
-    </div>
-  </div>
-</aside>
-<aside class="drawer" id="cartDrawer">
-  <div class="drawer-head">
-    <h3>سەبەتەی کڕین</h3>
-    <span class="drawer-close" onclick="toggleCart(false)">×</span>
-  </div>
-  
-  <div class="drawer-foot">
-    <div class="total-row"><span>کۆی گشتی</span><span id="cartTotal">$0</span></div>
-    <button class="checkout-btn" onclick="checkout()">تەواوکردنی کڕین</button>
-  </div>
-</aside>
 
 
 
@@ -1026,7 +944,6 @@ window.dispatchEvent(new Event("products-firebase-ready"));
 
 
 /* ================= STATE ================= */
-let cart = JSON.parse(localStorage.getItem('ph_cart') || '{}');
 
 
 /* ================= FIRESTORE PRODUCTS — REALTIME SYNC ================= */
@@ -1138,14 +1055,6 @@ function closeProductDetail(){
   activeDetailProduct=null;activeDetailSize=null;
 }
 window.openProductDetail=openProductDetail;window.closeProductDetail=closeProductDetail;window.selectProductImage=selectProductImage;window.selectProductSize=selectProductSize;
-document.getElementById('detailOrderBtn').addEventListener('click',()=>{
-  if(!activeDetailProduct) return;
-  const key=String(activeDetailProduct.id)+(activeDetailSize?`::${activeDetailSize.name}`:'');
-  const price=activeDetailSize?activeDetailSize.price:activeDetailProduct.price;
-  const currency=activeDetailSize?activeDetailSize.currency:activeDetailProduct.currency;
-  cart[key]={productId:activeDetailProduct.id,qty:(cart[key]?.qty||0)+1,size:activeDetailSize?.name||'',price,currency};
-  saveCart();renderCart();closeProductDetail();toggleCart(true);
-});
 function loadSiteProducts(){
   try{
     if(!window.PHToolsProducts){
@@ -1198,49 +1107,11 @@ function filterProducts(category){
 }
 
 
-/* ================= CART ================= */
-function saveCart(){ localStorage.setItem('ph_cart', JSON.stringify(cart)); }
-function cartEntries(){
-  return Object.entries(cart).map(([key,val])=>{
-    if(typeof val==='number') return {key,productId:key,qty:val,size:'',price:null,currency:null};
-    return {key,...val,qty:Number(val.qty||0)};
-  }).filter(x=>x.qty>0);
-}
-function changeQty(key,delta){
-  const entry=cartEntries().find(x=>x.key===key);
-  if(!entry) return;
-  if(typeof cart[key]==='number') cart[key]+=delta; else cart[key].qty=(cart[key].qty||0)+delta;
-  const q=typeof cart[key]==='number'?cart[key]:cart[key].qty;
-  if(q<=0) delete cart[key];
-  saveCart();renderCart();
-}
-function removeLine(key){delete cart[key];saveCart();renderCart();}
-function renderCart(){
-  const body=document.getElementById('cartBody');
-  if(!body) return;
-  const entries=cartEntries();
-  const countTotal=entries.reduce((s,e)=>s+e.qty,0);
-  document.getElementById('cartBadge').textContent=countTotal;
-  if(entries.length===0){body.innerHTML='<div class="empty-msg">سەبەتەکەت بەتاڵە</div>';document.getElementById('cartTotal').textContent='0';return;}
-  const totals={USD:0,IQD:0};
-  body.innerHTML=entries.map(e=>{
-    const p=siteProducts.find(x=>String(x.id)===String(e.productId));
-    if(!p) return '';
-    const price=e.price??p.price; const currency=e.currency||p.currency||'IQD'; totals[currency]=(totals[currency]||0)+Number(price||0)*e.qty;
-    return `<div class="cart-line"><img src="${escAttr(p.images?.[0]||'')}" alt="${escAttr(p.name)}"><div class="cart-line-info"><h5>${escHtml(p.name)}</h5>${e.size?`<div class="muted">${escHtml(e.size)}</div>`:''}<div class="prod-price" style="font-size:14px;">${formatPrice(price,currency)}</div><div class="qty-row"><button onclick="changeQty('${escAttr(e.key)}',-1)">−</button><span>${e.qty}</span><button onclick="changeQty('${escAttr(e.key)}',1)">+</button></div><div class="remove-line" onclick="removeLine('${escAttr(e.key)}')">سڕینەوە</div></div></div>`;
-  }).join('');
-  const parts=[]; if(totals.IQD) parts.push(formatPrice(totals.IQD,'IQD')); if(totals.USD) parts.push(formatPrice(totals.USD,'USD'));
-  document.getElementById('cartTotal').textContent=parts.join(' + ')||'0';
-}
-renderCart();
-function toggleCart(open){document.getElementById('cartDrawer').classList.toggle('show',open);document.getElementById('overlay').classList.toggle('show',open);}
-function checkout(){if(cartEntries().length===0)return;cart={};saveCart();renderCart();toggleCart(false);}
-
 /* ================= MENU / APPEARANCE / LOCATION ================= */
 function toggleMenu(open){
   document.getElementById('menuDrawer').classList.toggle('show', open);
   if(open){ document.getElementById('overlay').classList.add('show'); }
-  else if(!document.getElementById('cartDrawer').classList.contains('show')){ document.getElementById('overlay').classList.remove('show'); }
+  else { document.getElementById('overlay').classList.remove('show'); }
 }
 function setTheme(theme){
   document.body.classList.toggle('light-theme', theme === 'light');
