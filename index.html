@@ -843,6 +843,29 @@ body.light-theme .appearance-btn{background:#fff;color:#222;border-color:#ddd}bo
   .product-detail-info,.product-detail-section,.product-detail-description{visibility:visible!important;display:block!important;overflow:visible!important;}
   .product-detail-description{white-space:pre-wrap!important;overflow-wrap:anywhere!important;word-break:break-word!important;}
 }
+<style id="centered-menu-fix">
+@media (max-width:640px){
+  #menuDrawer.menu-drawer{
+    top:50%!important;
+    right:auto!important;
+    left:50%!important;
+    bottom:auto!important;
+    width:min(360px,92vw)!important;
+    height:auto!important;
+    max-height:82dvh!important;
+    border-radius:18px!important;
+    transform:translate(-50%,-50%) scale(.96)!important;
+    opacity:0!important;
+    visibility:hidden!important;
+    transition:transform .25s ease,opacity .2s ease,visibility .2s ease!important;
+  }
+  #menuDrawer.menu-drawer.show{
+    transform:translate(-50%,-50%) scale(1)!important;
+    opacity:1!important;
+    visibility:visible!important;
+  }
+}
+</style>
 </style>
 </head>
 <body>
