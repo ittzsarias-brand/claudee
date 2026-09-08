@@ -777,10 +777,17 @@ function applyBanner(data){
     return;
   }
   const url = String(data?.imageUrl || "").trim();
-  banner.src = url || "./IMG_9552.webp";
+  if (url) {
+    banner.src = url;
+    banner.style.display = "block";
+  } else {
+    banner.removeAttribute("src");
+    banner.style.display = "none";
+  }
   banner.onerror = () => {
     banner.onerror = null;
-    banner.src = "./IMG_9552.webp";
+    banner.removeAttribute("src");
+    banner.style.display = "none";
   };
 }
 
@@ -862,7 +869,7 @@ window.dispatchEvent(new Event("products-firebase-ready"));
 
 <!-- ============ HERO BANNER SLIDER ============ -->
 <section class="hero" id="home" aria-label="بەنەری پڕۆمۆشن">
-  <img class="hero-banner" id="heroBanner" src="./IMG_9552.webp" alt="PH.Tools main banner">
+  <img class="hero-banner" id="heroBanner" alt="PH.Tools main banner" style="display:none">
 </section>
 
 
