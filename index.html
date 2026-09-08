@@ -792,6 +792,209 @@ body.light-theme #menuDrawer .menu-links a:hover{background:linear-gradient(90de
 }
 </style>
 
+
+<style id="unified-action-surfaces">
+/* Unified premium surfaces for the three header actions: menu, location, contact. */
+:root{
+  --action-bg:#151516;
+  --action-panel:#1c1c1f;
+  --action-card:#202023;
+  --action-line:rgba(255,255,255,.09);
+  --action-muted:#8f8f94;
+  --action-yellow:#ffd21a;
+}
+
+/* Shared overlay language */
+#menuDrawer.menu-drawer,
+.contact-chooser-overlay,
+.location-modal-overlay,
+.location-chooser-overlay{
+  -webkit-backdrop-filter:blur(8px);
+  backdrop-filter:blur(8px);
+}
+
+/* Contact + location use the exact same premium panel language */
+.contact-chooser,
+.location-modal,
+.location-chooser{
+  width:min(410px,92vw);
+  box-sizing:border-box;
+  padding:24px;
+  border:1px solid var(--action-line);
+  border-radius:20px;
+  background:
+    radial-gradient(circle at 100% 0%,rgba(255,210,26,.10),transparent 34%),
+    linear-gradient(180deg,#18181a 0%,#111113 100%);
+  color:#fff;
+  box-shadow:0 24px 70px rgba(0,0,0,.48);
+}
+
+.contact-chooser::before,
+.location-modal::before,
+.location-chooser::before{
+  content:"";
+  display:block;
+  width:42px;
+  height:3px;
+  margin:0 0 18px auto;
+  border-radius:99px;
+  background:var(--action-yellow);
+  box-shadow:0 0 14px rgba(255,210,26,.30);
+}
+
+.contact-chooser-title,
+.location-modal-title,
+.location-chooser-title{
+  margin:0 0 5px;
+  color:#fff;
+  font-size:21px;
+  font-weight:900;
+  line-height:1.4;
+}
+
+.contact-chooser-subtitle,
+.location-modal-subtitle,
+.location-chooser-subtitle{
+  margin:0 0 18px;
+  color:var(--action-muted);
+  font-size:12px;
+  line-height:1.7;
+}
+
+.contact-chooser-close,
+.location-modal-close,
+.location-chooser-close{
+  top:16px;
+  left:16px;
+  width:38px;
+  height:38px;
+  border:1px solid var(--action-line);
+  border-radius:12px;
+  background:rgba(255,255,255,.045);
+  color:#aaa;
+  font-size:23px;
+  transition:transform .18s ease,background .18s ease,border-color .18s ease,color .18s ease;
+}
+
+.contact-chooser-close:hover,
+.location-modal-close:hover,
+.location-chooser-close:hover{
+  transform:translateY(-1px);
+  background:rgba(255,210,26,.10);
+  border-color:rgba(255,210,26,.35);
+  color:var(--action-yellow);
+}
+
+.contact-chooser-actions,
+.location-modal-actions,
+.location-chooser-actions{
+  gap:10px;
+}
+
+.contact-choice,
+.location-choice,
+.location-option{
+  min-height:64px;
+  box-sizing:border-box;
+  padding:12px 14px;
+  border:1px solid var(--action-line);
+  border-radius:15px;
+  background:linear-gradient(145deg,#242427,#1b1b1e);
+  color:#fff;
+  box-shadow:0 7px 20px rgba(0,0,0,.14),inset 0 1px 0 rgba(255,255,255,.035);
+  transition:transform .18s ease,border-color .18s ease,background .18s ease,box-shadow .18s ease;
+}
+
+.contact-choice:hover,
+.location-choice:hover,
+.location-option:hover{
+  transform:translateY(-2px);
+  background:linear-gradient(145deg,#29292d,#1d1d20);
+  border-color:rgba(255,210,26,.30);
+  box-shadow:0 10px 25px rgba(0,0,0,.20),inset 0 1px 0 rgba(255,255,255,.045);
+}
+
+.contact-choice-icon,
+.location-choice-icon,
+.location-option .location-icon{
+  width:40px;
+  height:40px;
+  flex:0 0 40px;
+  border-radius:12px;
+  background:#2b2b2f !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+  color:#f5f5f5 !important;
+}
+
+.contact-choice strong,
+.location-choice strong,
+.location-option .location-title{
+  color:#fff;
+  font-size:14px;
+  font-weight:800;
+}
+
+.contact-choice small,
+.location-choice small,
+.location-option .location-desc{
+  color:#8f8f94;
+  font-size:11px;
+}
+
+/* Keep the hamburger drawer in the same visual family. */
+#menuDrawer.menu-drawer{
+  background:
+    radial-gradient(circle at 100% 0%,rgba(255,210,26,.10),transparent 34%),
+    linear-gradient(180deg,#18181a 0%,#111113 100%);
+  border-left:1px solid var(--action-line);
+  box-shadow:-24px 0 70px rgba(0,0,0,.48);
+}
+#menuDrawer .appearance-btn,
+#menuDrawer .menu-links a{
+  background:linear-gradient(145deg,#242427,#1b1b1e);
+  border-color:var(--action-line);
+}
+
+/* Light theme: same structure, inverted surfaces — no layout changes. */
+body.light-theme .contact-chooser,
+body.light-theme .location-modal,
+body.light-theme .location-chooser{
+  background:
+    radial-gradient(circle at 100% 0%,rgba(255,210,26,.13),transparent 34%),
+    linear-gradient(180deg,#fff 0%,#f5f5f6 100%);
+  color:#171717;
+  border-color:#e2e2e5;
+  box-shadow:0 24px 70px rgba(0,0,0,.16);
+}
+body.light-theme .contact-chooser-title,
+body.light-theme .location-modal-title,
+body.light-theme .location-chooser-title{color:#171717;}
+body.light-theme .contact-chooser-subtitle,
+body.light-theme .location-modal-subtitle,
+body.light-theme .location-chooser-subtitle{color:#77777d;}
+body.light-theme .contact-choice,
+body.light-theme .location-choice,
+body.light-theme .location-option{
+  background:linear-gradient(145deg,#fff,#f3f3f5);
+  border-color:#dedee2;
+  color:#171717;
+  box-shadow:0 7px 20px rgba(0,0,0,.06),inset 0 1px 0 #fff;
+}
+body.light-theme .contact-choice strong,
+body.light-theme .location-choice strong,
+body.light-theme .location-option .location-title{color:#171717;}
+body.light-theme .contact-choice small,
+body.light-theme .location-choice small,
+body.light-theme .location-option .location-desc{color:#77777d;}
+body.light-theme .contact-choice-icon,
+body.light-theme .location-choice-icon,
+body.light-theme .location-option .location-icon{
+  background:#ececef !important;
+  border-color:#dedee2 !important;
+  color:#171717 !important;
+}
+</style>
+
 </head>
 <body>
 
