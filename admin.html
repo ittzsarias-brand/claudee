@@ -542,7 +542,8 @@
       ["shafra", "شفرە و ماڵە"],
       ["nail", "بورغی دەرزی"],
       ["cutting", "مشار"],
-      ["electronics", "ئەلیکترۆنی"]
+      ["electronics", "ئەلیکترۆنی"],
+      ["warawela", "وردەواڵە"]
     ];
     const categoryName = category =>
       categories.find(item => item[0] === category)?.[1] || category || "—";
@@ -1384,6 +1385,9 @@
             <option value="electronics">
               ئەلیکترۆنی
             </option>
+            <option value="warawela">
+              وردەواڵە
+            </option>
           </select>
           <select id="status" class="input">
             <option value="all">
@@ -1503,6 +1507,9 @@
               </option>
               <option value="electronics">
                 ئەلیکترۆنی
+              </option>
+              <option value="warawela">
+                وردەواڵە
               </option>
             </select>
           </div>
