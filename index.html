@@ -1108,8 +1108,7 @@ body.light-theme .location-option .location-icon{
 
 <script type="module" id="products-firebase-client">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
-
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 const firebaseConfig = {
   apiKey: "AIzaSyCH5-6OhuCVfZo8abiIHYfOzvbQTBQbEmw",
   authDomain: "ph-tools-4a82c.firebaseapp.com",
@@ -1119,50 +1118,14 @@ const firebaseConfig = {
   appId: "1:677581607396:web:7c63eee6537cdf7ccb37f1",
   measurementId: "G-DDCWBJVG1T"
 };
-
 const productsApp = initializeApp(firebaseConfig, "products-public");
 const productsDb = getFirestore(productsApp);
-const productsCollection = collection(productsDb, "products");
-
-let publicProducts = [];
-let firstLoadResolve;
-let firstLoadReject;
-
-const firstLoad = new Promise((resolve, reject) => {
-  firstLoadResolve = resolve;
-  firstLoadReject = reject;
-});
-
-onSnapshot(
-  productsCollection,
-  (snap) => {
-    publicProducts = snap.docs
-      .map(d => ({ id: d.id, ...d.data() }))
-      .filter(p => p.active !== false);
-
-    // First response for the existing loadSiteProducts() function.
-    firstLoadResolve(publicProducts);
-
-    // Every later admin add/edit/delete/toggle is pushed here automatically.
-    window.dispatchEvent(new CustomEvent("products-updated", {
-      detail: publicProducts
-    }));
-  },
-  (error) => {
-    console.error("PH.Tools products realtime sync error:", error);
-    firstLoadReject(error);
-    window.dispatchEvent(new CustomEvent("products-sync-error", {
-      detail: error
-    }));
-  }
-);
-
 window.PHToolsProducts = {
-  async load() {
-    return firstLoad;
+  async load(){
+    const snap = await getDocs(collection(productsDb, "products"));
+    return snap.docs.map(d => ({id:d.id, ...d.data()})).filter(p => p.active !== false);
   }
 };
-
 window.dispatchEvent(new Event("products-firebase-ready"));
 </script>
 </head>
@@ -1510,72 +1473,13 @@ document.getElementById('detailOrderBtn').addEventListener('click',()=>{
   cart[key]={productId:activeDetailProduct.id,qty:(cart[key]?.qty||0)+1,size:activeDetailSize?.name||'',price,currency};
   saveCart();renderCart();showToast('زیادکرا بۆ سەبەتە');closeProductDetail();toggleCart(true);
 });
-let productsRealtimeBound = false;
-
 async function loadSiteProducts(){
   try{
-    if(!window.PHToolsProducts){
-      await new Promise((resolve, reject)=>{
-        const ready=()=>resolve();
-        const failed=e=>reject(e.detail || e);
-        window.addEventListener('products-firebase-ready', ready, {once:true});
-        window.addEventListener('products-sync-error', failed, {once:true});
-      });
-    }
-
-    // Initial Firestore data.
+    if(!window.PHToolsProducts) await new Promise(r=>window.addEventListener('products-firebase-ready',r,{once:true}));
     siteProducts=(await window.PHToolsProducts.load()).map(normalizeProduct);
     renderProducts();
-
-    // Realtime Firestore updates: add, edit, delete and active/inactive changes
-    // made in the admin dashboard appear on the storefront without refresh.
-    if(!productsRealtimeBound){
-      productsRealtimeBound=true;
-      window.addEventListener('products-updated', (event)=>{
-        siteProducts=(event.detail || []).map(normalizeProduct);
-        renderProducts();
-
-        // Keep an already-open product detail modal consistent with Firestore.
-        if(activeDetailProduct){
-          const fresh=siteProducts.find(p=>String(p.id)===String(activeDetailProduct.id));
-          if(!fresh){
-            closeProductDetail();
-          }else{
-            activeDetailProduct=fresh;
-            if(activeDetailSize){
-              const freshSize=(fresh.sizes||[]).find(s=>String(s.name)===String(activeDetailSize.name));
-              activeDetailSize=freshSize || null;
-            }
-            updateDetailPrice();
-          }
-        }
-
-        // Remove cart lines for products that were deleted/deactivated.
-        const validIds=new Set(siteProducts.map(p=>String(p.id)));
-        let cartChanged=false;
-        Object.keys(cart).forEach(key=>{
-          const entry=cart[key];
-          const productId=typeof entry==='number' ? key : entry?.productId;
-          if(productId && !validIds.has(String(productId))){
-            delete cart[key];
-            cartChanged=true;
-          }
-        });
-        if(cartChanged){
-          saveCart();
-          renderCart();
-        }
-      });
-    }
-  }catch(e){
-    console.error('Products realtime load error:',e);
-    const grid=document.getElementById('productsGrid');
-    if(grid){
-      grid.innerHTML='<div class="product-empty">بەرهەمەکان بارنەکران. تکایە Firestore Rules و Firebase config بپشکنە.</div>';
-    }
-  }
+  }catch(e){console.error('Products load error:',e);renderProducts();}
 }
-
 
 /* ================= CATEGORY FILTERING ================= */
 const CATEGORY_FILTERS = {
@@ -1776,12 +1680,6 @@ function closeContactChooser(event){
   if(event && event.target && event.target.id !== 'contactChooserOverlay') return;
   const el = document.getElementById('contactChooserOverlay');
   if(el) el.classList.remove('show');
-}
-
-// Start product loading only after every storefront function/constant has been initialized.
-if(!window.__PHTOOLS_PRODUCTS_STARTED){
-  window.__PHTOOLS_PRODUCTS_STARTED=true;
-  loadSiteProducts();
 }
 
 </script>
