@@ -820,6 +820,109 @@ window.dispatchEvent(new Event("products-firebase-ready"));
     /* No white gap between the banner and category bar */
     .mainnav{margin-top:0 !important;}
   </style>
+<style id="location-flat-redesign">
+/* Location chooser — new flat design, NO SHADOWS */
+#locationChooserOverlay .contact-chooser{
+  width:min(400px,90vw);
+  padding:22px 18px 18px;
+  border-radius:22px;
+  background:#151518;
+  border:1px solid #33343a;
+  box-shadow:none !important;
+}
+#locationChooserOverlay .contact-chooser-close{
+  top:12px;
+  left:12px;
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  background:#222329;
+  border:1px solid #3a3b42;
+  color:#b9bac1;
+  box-shadow:none !important;
+  transition:background .18s ease,color .18s ease;
+}
+#locationChooserOverlay .contact-chooser-close:hover{
+  background:#2d2e35;
+  color:#fff;
+  transform:none;
+}
+#locationChooserOverlay .contact-chooser-title{
+  margin:4px 38px 5px;
+  font-size:21px;
+  font-weight:850;
+}
+#locationChooserOverlay .contact-chooser-subtitle{
+  margin-bottom:18px;
+  color:#92939b;
+  font-size:11.5px;
+}
+#locationChooserOverlay .contact-chooser-actions{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+#locationChooserOverlay .contact-choice{
+  min-height:60px;
+  padding:10px 12px;
+  border-radius:15px;
+  background:#1d1e22;
+  border:1px solid #303138;
+  box-shadow:none !important;
+  transition:background .18s ease,border-color .18s ease;
+}
+#locationChooserOverlay .contact-choice:hover{
+  transform:none;
+  background:#25262b;
+  border-color:#494a52;
+  box-shadow:none !important;
+}
+#locationChooserOverlay .contact-choice::after{
+  left:14px;
+  font-size:22px;
+  color:#777982;
+}
+#locationChooserOverlay .contact-choice:hover::after{
+  color:#fff;
+  transform:translateY(-52%);
+}
+#locationChooserOverlay .contact-choice-icon{
+  width:40px;
+  height:40px;
+  flex:0 0 40px;
+  border-radius:11px;
+  box-shadow:none !important;
+  border:1px solid #3b3c43;
+}
+#locationChooserOverlay .contact-choice:nth-child(1) .contact-choice-icon{
+  background:#202b3d;
+  color:#72a8ff;
+  border-color:#334765;
+}
+#locationChooserOverlay .contact-choice:nth-child(2) .contact-choice-icon{
+  background:#213332;
+  color:#64d5bd;
+  border-color:#36534f;
+}
+#locationChooserOverlay .contact-choice:nth-child(3) .contact-choice-icon{
+  background:#292a2f;
+  color:#f0f0f2;
+  border-color:#414249;
+}
+#locationChooserOverlay .contact-choice:hover .contact-choice-icon{
+  transform:none;
+}
+#locationChooserOverlay .contact-choice span:last-child{
+  gap:3px;
+}
+#locationChooserOverlay .contact-choice strong{
+  font-size:14px;
+}
+#locationChooserOverlay .contact-choice small{
+  color:#898a92;
+  font-size:10.5px;
+}
+</style>
 </head>
 <body>
 
