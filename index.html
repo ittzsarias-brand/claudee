@@ -419,7 +419,7 @@
 .hero-track{
   display:flex;
   flex-direction:row;
-  width:500%;
+  width:100%;
   height:100%;
   margin:0;
   padding:0;
@@ -719,19 +719,6 @@
   overflow:hidden !important;
   aspect-ratio:1536 / 602 !important;
 }
-.hero-track{
-  display:flex !important;
-  flex-direction:row !important;
-  width:500% !important;
-  height:100% !important;
-  margin:0 !important;
-  padding:0 !important;
-  direction:ltr !important;
-  overflow:visible !important;
-  transform:translate3d(0,0,0);
-  transition:transform 750ms cubic-bezier(.22,.61,.36,1);
-  will-change:transform;
-}
 .hero-track img{
   position:relative !important;
   inset:auto !important;
@@ -832,16 +819,12 @@
 </nav>
 
 <!-- ============ HERO BANNER SLIDER ============ -->
-<section class="hero" id="home" aria-label="بەنەرەکانی پڕۆمۆشن">
+<section class="hero" id="home" aria-label="بەنەری پڕۆمۆشن">
   <div class="hero-slider">
-        <div class="hero-track">
-          <img src="./IMG_9552.webp" alt="PH.Tools main banner">
-          <img src="./IMG_9555.webp" alt="DeWALT banner">
-          <img src="./IMG_9554.webp" alt="Knauf banner">
-          <img src="./IMG_9553.webp" alt="Bosch banner">
-          <img src="./IMG_9552.webp" alt="" aria-hidden="true">
-        </div>
-      </div>
+    <div class="hero-track">
+      <img src="./IMG_9552.webp" alt="PH.Tools main banner">
+    </div>
+  </div>
 </section>
 
 <!-- ============ FEATURES ============ -->
@@ -1182,84 +1165,6 @@ function closeContactChooser(event){
 /* FINAL HERO FIX - REAL HORIZONTAL SLIDE */
 (function(){
   function initRealHeroSlider(){
-    const slider = document.querySelector('.hero-slider');
-    const track = document.querySelector('.hero-track');
-    if(!slider || !track) return;
-
-    const slides = Array.from(track.querySelectorAll('img'));
-    if(slides.length < 2) return;
-
-    // Your HTML has 4 real banners + a copy of the first banner.
-    const realCount = Math.min(4, slides.length - 1);
-    let current = 0;
-    let timer = null;
-    let locked = false;
-
-    function moveTo(index, animate){
-      track.style.transition = animate
-        ? 'transform 750ms cubic-bezier(.22,.61,.36,1)'
-        : 'none';
-      track.style.transform = 'translate3d(-' + (index * 20) + '%,0,0)';
-      current = index;
-    }
-
-    function next(){
-      if(locked) return;
-      locked = true;
-
-      // Normal real slide: 1 -> 2 -> 3 -> 4
-      current += 1;
-      moveTo(current, true);
-
-      // After showing the cloned first banner, jump silently
-      // back to the real first banner.
-      if(current === realCount){
-        setTimeout(function(){
-          moveTo(0, false);
-          requestAnimationFrame(function(){
-            track.offsetHeight; // force the silent reset to apply
-            locked = false;
-          });
-        }, 780);
-      }else{
-        setTimeout(function(){
-          locked = false;
-        }, 780);
-      }
-    }
-
-    function start(){
-      clearInterval(timer);
-      timer = setInterval(next, 3500);
-    }
-
-    // Start at the first banner.
-    moveTo(0, false);
-    start();
-
-    slider.addEventListener('touchstart', function(){
-      clearInterval(timer);
-    }, {passive:true});
-
-    slider.addEventListener('touchend', function(){
-      start();
-    }, {passive:true});
-
-    document.addEventListener('visibilitychange', function(){
-      if(document.hidden){
-        clearInterval(timer);
-      }else{
-        moveTo(current, false);
-        start();
-      }
-    });
-  }
-
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', initRealHeroSlider);
-  }else{
-    initRealHeroSlider();
-  }
-})();
-</script></body>
+    // Single banner only — slider/autoplay removed.
+  </script></body>
 </html>
