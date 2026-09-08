@@ -751,7 +751,7 @@ body.light-theme .contact-choice-icon,
 
 <script type="module" id="products-firebase-client">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+import { getFirestore, collection, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCH5-6OhuCVfZo8abiIHYfOzvbQTBQbEmw",
@@ -765,6 +765,28 @@ const firebaseConfig = {
 
 const productsApp = initializeApp(firebaseConfig, "products-public");
 const productsDb = getFirestore(productsApp);
+
+const bannerRef = doc(productsDb, "settings", "banner");
+
+function applyBanner(data){
+  const banner = document.getElementById("heroBanner");
+  if (!banner) {
+    document.addEventListener("DOMContentLoaded", () => applyBanner(data), { once:true });
+    return;
+  }
+  const url = String(data?.imageUrl || "").trim();
+  banner.src = url || "./IMG_9552.webp";
+  banner.onerror = () => {
+    banner.onerror = null;
+    banner.src = "./IMG_9552.webp";
+  };
+}
+
+onSnapshot(
+  bannerRef,
+  snapshot => applyBanner(snapshot.exists() ? snapshot.data() : {}),
+  error => console.error("Firestore banner sync error:", error)
+);
 
 window.PHToolsProducts = {
   subscribe(callback, onError){
@@ -838,7 +860,7 @@ window.dispatchEvent(new Event("products-firebase-ready"));
 
 <!-- ============ HERO BANNER SLIDER ============ -->
 <section class="hero" id="home" aria-label="بەنەری پڕۆمۆشن">
-  <img class="hero-banner" src="./IMG_9552.webp" alt="PH.Tools main banner">
+  <img class="hero-banner" id="heroBanner" src="./IMG_9552.webp" alt="PH.Tools main banner">
 </section>
 
 
