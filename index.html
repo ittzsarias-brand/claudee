@@ -403,48 +403,6 @@
 </style>
 
 <style id="replaceable-store-images">
-/* HERO BANNER SLIDER */
-.hero{
-  position:relative;
-  width:100%;
-  min-height:0;
-  overflow:hidden;
-  background:#050505;
-}
-.hero-slider{
-  width:100%;
-  overflow:hidden;
-  aspect-ratio:1536 / 602;
-}
-.hero-track{
-  display:flex;
-  flex-direction:row;
-  width:100%;
-  height:100%;
-  margin:0;
-  padding:0;
-  direction:ltr;
-  animation:none;
-  will-change:transform;
-}
-.hero-track img{
-  display:block;
-  width:20%;
-  min-width:20%;
-  height:100%;
-  flex:0 0 20%;
-  margin:0;
-  padding:0;
-  object-fit:cover;
-  object-position:center;
-  user-select:none;
-  -webkit-user-drag:none;
-}
-@keyframes heroBannerSlide{from{transform:none;}to{transform:none;}}
-@media (prefers-reduced-motion: reduce){
-  .hero-track{animation-duration:10s;animation-timing-function:linear;}
-}
-
 /* Premium styling ONLY for the four header/footer action buttons */
 .icons-block .menu-trigger .hamburger-icon-wrap,
 .icons-block .cart-action .cart-icon-wrap,
@@ -711,31 +669,27 @@
 
 </style>
 
-<style id="hero-banner-final-override">
-/* FINAL HERO FIX - REAL HORIZONTAL SLIDE */
-.hero-slider{
-  position:relative !important;
-  width:100% !important;
-  overflow:hidden !important;
-  aspect-ratio:1536 / 602 !important;
+<style id="single-hero-banner">
+.hero{
+  width:100%;
+  margin:0;
+  padding:0;
+  overflow:hidden;
+  line-height:0;
+  background:#050505;
 }
-.hero-track img{
-  position:relative !important;
-  inset:auto !important;
-  display:block !important;
-  width:20% !important;
-  min-width:20% !important;
-  height:100% !important;
-  flex:0 0 20% !important;
-  margin:0 !important;
-  padding:0 !important;
-  opacity:1 !important;
-  visibility:visible !important;
-  pointer-events:none !important;
-  z-index:1 !important;
-  object-fit:cover !important;
-  object-position:center !important;
-  transition:none !important;
+.hero-banner{
+  display:block;
+  width:100%;
+  height:auto;
+  max-width:100%;
+  margin:0;
+  padding:0;
+  border:0;
+  transform:none !important;
+  object-fit:contain;
+  object-position:center;
+  vertical-align:top;
   user-select:none;
   -webkit-user-drag:none;
 }
@@ -820,11 +774,7 @@
 
 <!-- ============ HERO BANNER SLIDER ============ -->
 <section class="hero" id="home" aria-label="بەنەری پڕۆمۆشن">
-  <div class="hero-slider">
-    <div class="hero-track">
-      <img src="./IMG_9552.webp" alt="PH.Tools main banner">
-    </div>
-  </div>
+  <img class="hero-banner" src="./IMG_9552.webp" alt="PH.Tools main banner">
 </section>
 
 <!-- ============ FEATURES ============ -->
@@ -1161,10 +1111,5 @@ function closeContactChooser(event){
 
 
 
-<script>
-/* FINAL HERO FIX - REAL HORIZONTAL SLIDE */
-(function(){
-  function initRealHeroSlider(){
-    // Single banner only — slider/autoplay removed.
-  </script></body>
+</body>
 </html>
