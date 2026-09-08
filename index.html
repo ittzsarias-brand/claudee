@@ -958,9 +958,20 @@ function normalizeProduct(p){
   });
   return {...p, images, sizes, smallDescription:p.smallDescription||p.shortDescription||p.short_description||'', currency:p.currency||'IQD', videoUrl:p.videoUrl||p.video||''};
 }
-function formatPrice(price,currency){
+function formatSinglePrice(price,currency){
   const n=Number(price||0);
   return currency==='USD' ? `$${n.toLocaleString('en-US',{maximumFractionDigits:2})}` : `${n.toLocaleString('en-US')} د.ع`;
+}
+function formatPrice(price,currency){
+  const raw=String(price??'').trim();
+  if(raw.includes('-')){
+    const parts=raw.split('-').map(x=>x.trim());
+    if(parts.length===2 && parts[0]!=='' && parts[1]!==''){
+      const a=Number(parts[0]), b=Number(parts[1]);
+      if(Number.isFinite(a) && Number.isFinite(b)) return `${formatSinglePrice(a,currency)} - ${formatSinglePrice(b,currency)}`;
+    }
+  }
+  return formatSinglePrice(price,currency);
 }
 function productMatchesCategory(p, category){
   if(category==='all') return true;
@@ -980,8 +991,9 @@ function renderProducts(){
   if(!list.length){grid.innerHTML='<div class="product-empty">هیچ بەرهەمێک لەم بەشەدا نییە.</div>';return;}
   grid.innerHTML=list.map(p=>{
     const img=p.images[0]||'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="600" height="600"%3E%3Crect width="100%25" height="100%25" fill="%23eeeeee"/%3E%3C/svg%3E';
-    const price=(p.sizes&&p.sizes.length)?p.sizes[0].price:p.price;
-    const currency=(p.sizes&&p.sizes.length)?p.sizes[0].currency:p.currency;
+    const hasSizes=Array.isArray(p.sizes)&&p.sizes.length>0;
+    const price=hasSizes?p.sizes[0].price:p.price;
+    const currency=hasSizes?p.sizes[0].currency:p.currency;
     return `<article class="product-card-v2 prod-card" role="button" tabindex="0" onclick="openProductDetail('${escAttr(p.id)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openProductDetail('${escAttr(p.id)}')}" data-category="${escAttr(p.category||'')}" data-categories="${escAttr(p.categories||'')}">
       <div class="product-image"><img src="${escAttr(img)}" alt="${escAttr(p.name||'بەرهەم')}"></div>
       <div class="product-content">
