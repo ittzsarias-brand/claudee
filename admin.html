@@ -86,7 +86,62 @@ function openModal(p=null){$('form').reset();$('id').value=p?.id||'';$('title').
 function closeModal(){$('modal').classList.add('hidden')}
 function addPreview(url){const img=document.createElement('img');img.src=url;$('preview').appendChild(img)}
 async function uploadFiles(){const files=[...$('files').files];if(!files.length)return[];const user=auth.currentUser;if(!user)throw new Error('AUTH_REQUIRED');const out=[];for(const file of files){const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,'_');const r=ref(storage,`products/${user.uid}/${Date.now()}-${Math.random().toString(36).slice(2,8)}-${safe}`);await uploadBytes(r,file,{contentType:file.type||'image/jpeg'});out.push(await getDownloadURL(r))}return out}
-async function save(e){e.preventDefault();$('save').disabled=true;$('msg').innerHTML='';try{const manual=$('images').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);const uploaded=await uploadFiles();const images=[...manual,...uploaded];const payload={name:$('name').value.trim(),price:Number($('price').value||0),currency:$('currency').value,category:$('category').value,brand:$('brand').value.trim(),smallDescription:$('small').value.trim(),description:$('description').value.trim(),images,videoUrl:$('video').value.trim(),sizes:readSizes(),stock:Number($('stock').value||0),featured:$('featured').checked,active:$('active').checked,imageUrl:images[0]||'',updatedAt:serverTimestamp()};const id=$('id').value;if(id){await updateDoc(doc(db,'products',id),payload);toast('بەرهەمەکە نوێکرایەوە')}else{payload.createdAt=serverTimestamp();await addDoc(collection(db,'products'),payload);toast('بەرهەمەکە زیادکرا')}closeModal()}catch(err){console.error(err);$('msg').innerHTML='<div class="error">پاشەکەوتکردن سەرکەوتوو نەبوو. Firestore/Storage Rules بپشکنە.</div>'}finally{$('save').disabled=false}}
+async function save(e){
+  e.preventDefault();
+  const btn=$('save');
+  btn.disabled=true;
+  btn.textContent='پاشەکەوت دەکرێت...';
+  $('msg').innerHTML='';
+  try{
+    if(!auth.currentUser) throw new Error('AUTH_REQUIRED');
+    const name=$('name').value.trim();
+    if(!name) throw new Error('NAME_REQUIRED');
+    const manual=$('images').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+    const uploaded=await uploadFiles();
+    const images=[...manual,...uploaded];
+    const payload={
+      name,
+      price:Number($('price').value||0),
+      currency:$('currency').value,
+      category:$('category').value,
+      brand:$('brand').value.trim(),
+      smallDescription:$('small').value.trim(),
+      description:$('description').value.trim(),
+      images,
+      videoUrl:$('video').value.trim(),
+      sizes:readSizes(),
+      stock:Number($('stock').value||0),
+      featured:$('featured').checked,
+      active:$('active').checked,
+      imageUrl:images[0]||'',
+      updatedAt:serverTimestamp()
+    };
+    const id=$('id').value;
+    if(id){
+      await updateDoc(doc(db,'products',id),payload);
+      toast('بەرهەمەکە نوێکرایەوە');
+    }else{
+      payload.createdAt=serverTimestamp();
+      await addDoc(collection(db,'products'),payload);
+      toast('بەرهەمەکە زیادکرا');
+    }
+    closeModal();
+  }catch(err){
+    console.error('PRODUCT SAVE ERROR:',err);
+    const code=err?.code||'';
+    const message=err?.message||String(err);
+    let detail='';
+    if(code==='permission-denied' || code==='PERMISSION_DENIED') detail='Firebase ڕێگەی نووسین نادات. Firestore Rules بپشکنە.';
+    else if(code.startsWith('storage/')) detail='Firebase Storage ڕێگەی upload نادات. Storage Rules بپشکنە.';
+    else if(code==='AUTH_REQUIRED') detail='تکایە دووبارە login بکە.';
+    else if(code==='NAME_REQUIRED') detail='ناوی بەرهەم پڕبکەرەوە.';
+    else detail=`هەڵە: ${code||'UNKNOWN'} — ${message}`;
+    $('msg').innerHTML=`<div class="error">پاشەکەوتکردن سەرکەوتوو نەبوو.<br>${esc(detail)}</div>`;
+  }finally{
+    btn.disabled=false;
+    btn.textContent='پاشەکەوتکردن';
+  }
+}
 window.editProduct=id=>openModal(products.find(p=>p.id===id));
 window.removeProduct=async id=>{const p=products.find(x=>x.id===id);if(!p||!confirm(`دڵنیایت لە سڕینەوەی «${p.name}»؟`))return;try{await deleteDoc(doc(db,'products',id));toast('سڕایەوە')}catch(e){toast('سڕینەوە سەرکەوتوو نەبوو')}};
 window.toggleActive=async id=>{const p=products.find(x=>x.id===id);if(!p)return;try{await updateDoc(doc(db,'products',id),{active:p.active===false,updatedAt:serverTimestamp()});toast(p.active===false?'چالاک کرا':'ناچالاک کرا')}catch(e){toast('گۆڕینی دۆخ سەرکەوتوو نەبوو')}};
