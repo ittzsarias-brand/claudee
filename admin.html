@@ -26,6 +26,7 @@ import {
   serverTimestamp,
   setDoc
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-storage.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCH5-6OhuCVfZo8abiIHYfOzvbQTBQbEmw",
@@ -40,10 +41,12 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);
 
 window.PHToolsFirebase = {
   auth,
   db,
+  storage,
   signIn: (email, password) => signInWithEmailAndPassword(auth, email, password),
   signOut: () => signOut(auth),
   onAuth: (callback) => onAuthStateChanged(auth, callback),
@@ -886,6 +889,10 @@ tbody tr:hover{
 #images{direction:ltr;text-align:left;}
 @media(max-width:760px){.size-admin-row{grid-template-columns:1fr 1fr 1fr 42px;}.size-admin-row .size-name{grid-column:1/-1;}}
 </style>
+<style id="image-upload-ui">
+#imageFiles{padding:8px 10px;}
+#imageFiles::file-selector-button{border:0;border-radius:10px;padding:8px 12px;margin-left:8px;background:#ff7a00;color:#050505;font-weight:900;cursor:pointer;}
+</style>
 </head>
 <body>
 
@@ -958,8 +965,12 @@ tbody tr:hover{
       <div class="field"><label>براند</label><input id="brand" class="input"></div>
       <div class="field"><label>ستۆک</label><input id="stock" class="input" type="number" min="0" step="1" value="0"></div>
       <div class="field full"><label>وەسفی کورت</label><textarea id="smallDescription" rows="2" placeholder="لە کارتەکەی بەرهەمدا پیشان دەدرێت"></textarea></div>
-      <div class="field full"><label>وێنەکان — هەر URL لە هێڵێکی جیاواز</label><textarea id="images" rows="4" placeholder="https://.../image1.jpg
-https://.../image2.jpg"></textarea><img id="preview" class="preview hidden"></div>
+      <div class="field full"><label>وێنەکان</label>
+        <input id="imageFiles" class="input" type="file" accept="image/*" multiple>
+        <div id="uploadHint" class="muted" style="margin-top:7px">دەتوانیت یەک یان چەند وێنە لە مۆبایل/کۆمپیوتەرەکەت هەڵبژێریت.</div>
+        <textarea id="images" rows="4" placeholder="یان URL ـی وێنەکان لێرە بنووسە؛ هەر URL لە هێڵێکی جیاواز"></textarea>
+        <img id="preview" class="preview hidden">
+      </div>
       <div class="field full"><label>بەستەری ڤیدیۆ (ئەگەر هەبێت)</label><input id="videoUrl" class="input" type="url" placeholder="https://youtube.com/watch?v=..."></div>
       <div class="field full"><label>وەسفی تەواو</label><textarea id="description" rows="6"></textarea></div>
       <div class="field full"><label>قەبارە و نرخەکان (ئەگەر جیاوازن)</label><div id="sizesEditor"></div><button id="addSizeBtn" class="btn secondary" type="button" style="margin-top:8px">+ زیادکردنی قەبارە</button></div>
@@ -1148,12 +1159,33 @@ https://.../image2.jpg"></textarea><img id="preview" class="preview hidden"></di
     return [...document.querySelectorAll(".size-admin-row")].map(row=>({name:row.querySelector(".size-name").value.trim(),price:Number(row.querySelector(".size-price").value||0),currency:row.querySelector(".size-currency").value})).filter(x=>x.name);
   }
 
+  async function uploadSelectedImages() {
+    const input = $("imageFiles");
+    const files = [...(input?.files || [])];
+    if (!files.length) return [];
+
+    const user = window.PHToolsFirebase?.auth?.currentUser;
+    if (!user) throw new Error("AUTH_REQUIRED");
+
+    const uploaded = [];
+    for (const file of files) {
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+      const path = `products/${user.uid}/${Date.now()}-${Math.random().toString(36).slice(2,8)}-${safeName}`;
+      const storageRef = ref(window.PHToolsFirebase.storage, path);
+      await uploadBytes(storageRef, file, { contentType: file.type || "image/jpeg" });
+      uploaded.push(await getDownloadURL(storageRef));
+    }
+    return uploaded;
+  }
+
   function openModal(product = null) {
     $("productForm").reset();
     $("productId").value = "";
     $("modalTitle").textContent = product ? "دەستکاریی بەرهەم" : "زیادکردنی بەرهەم";
     $("formMsg").innerHTML = "";
     $("preview").classList.add("hidden");
+    if ($("imageFiles")) $("imageFiles").value = "";
+    $("uploadHint").textContent = "دەتوانیت یەک یان چەند وێنە لە مۆبایل/کۆمپیوتەرەکەت هەڵبژێریت.";
     $("active").checked = true;
     $("rating").value = "5";
     $("sortOrder").value = "0";
@@ -1290,6 +1322,18 @@ https://.../image2.jpg"></textarea><img id="preview" class="preview hidden"></di
       const value = $("images").value.trim().split(/\r?\n/).map(x=>x.trim()).filter(Boolean)[0] || "";
       if(value){$("preview").src=value;$("preview").classList.remove("hidden");}else{$("preview").classList.add("hidden");}
     });
+    $("imageFiles").addEventListener("change", () => {
+      const files = [...$("imageFiles").files];
+      if (!files.length) {
+        $("uploadHint").textContent = "دەتوانیت یەک یان چەند وێنە لە مۆبایل/کۆمپیوتەرەکەت هەڵبژێریت.";
+        return;
+      }
+      $("uploadHint").textContent = `${files.length} وێنە هەڵبژێردراوە — لە کاتی پاشەکەوتکردن Upload دەکرێن.`;
+      const first = files[0];
+      const previewUrl = URL.createObjectURL(first);
+      $("preview").src = previewUrl;
+      $("preview").classList.remove("hidden");
+    });
     $("addSizeBtn").addEventListener("click",()=>addSizeRow());
 
     $("productForm").addEventListener("submit", async event => {
@@ -1300,6 +1344,13 @@ https://.../image2.jpg"></textarea><img id="preview" class="preview hidden"></di
 
       try {
         const id = $("productId").value;
+        const existingImages = $("images").value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+        const selectedFiles = [...($("imageFiles").files || [])];
+        if (selectedFiles.length) {
+          $("formMsg").innerHTML = '<div class="ok">وێنەکان Upload دەکرێن... تکایە چاوەڕوان بە.</div>';
+        }
+        const uploadedImages = await uploadSelectedImages();
+        const allImages = [...existingImages, ...uploadedImages];
         const product = {
           name: $("name").value.trim(),
           price: Number($("price").value || 0),
@@ -1311,12 +1362,12 @@ https://.../image2.jpg"></textarea><img id="preview" class="preview hidden"></di
           sortOrder: Number($("sortOrder").value || 0),
           smallDescription: $("smallDescription").value.trim(),
           description: $("description").value.trim(),
-          images: $("images").value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean),
+          images: allImages,
           videoUrl: $("videoUrl").value.trim(),
           sizes: readSizes(),
           featured: $("featured").checked,
           active: $("active").checked,
-          imageUrl: ($("images").value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean)[0] || "")
+          imageUrl: (allImages[0] || "")
         };
 
         if (id) {
