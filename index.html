@@ -137,6 +137,33 @@
   .menu-body{padding:22px 20px;}
   .menu-section-title{font-size:13px;color:#aaa;margin-bottom:12px;}
   .appearance-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .appearance-options .appearance-btn:nth-child(3){grid-column:1/-1;}
+  .theme-dot{width:22px;height:22px;border-radius:50%;display:block;flex:0 0 22px;border:1px solid #555;}
+  .dark-dot{background:#090909;}
+  .light-dot{background:#fff;}
+  .redblue-dot{background:linear-gradient(135deg,#e21b23 0 50%,#1769d1 50% 100%);}
+  body.redblue-theme{background:#fff;color:#171717;}
+  body.redblue-theme header.top{background:#fff;border-bottom:1px solid #ddd;}
+  body.redblue-theme .icon-item{color:#333;}
+  body.redblue-theme .search-box{background:#f2f2f2;border-color:#ddd;}
+  body.redblue-theme .search-box input{color:#111;}
+  body.redblue-theme nav.mainnav{background:#fff;border-color:#ddd;}
+  body.redblue-theme .nav-item{color:#333;}
+  body.redblue-theme .nav-item.home{color:#fff;background:#1769d1;}
+  body.redblue-theme .menu-drawer{background:#fff;color:#111;}
+  body.redblue-theme .menu-head{border-color:#ddd;}
+  body.redblue-theme .menu-head .drawer-close{color:#111;}
+  body.redblue-theme .appearance-btn{background:#f5f5f5;color:#111;border-color:#ddd;}
+  body.redblue-theme .menu-links{border-color:#ddd;}
+  body.redblue-theme .menu-links a{border-color:#ddd;}
+  body.redblue-theme .sec{background:#fff;}
+  body.redblue-theme .prod-card,body.redblue-theme .cat-card{background:#fff;border-color:#111;}
+  body.redblue-theme .brands-strip{background:#f4f4f4;}
+  body.redblue-theme .product-more-btn,body.redblue-theme .order-btn-v2{background:#e21b23;}
+  body.redblue-theme .product-price,body.redblue-theme .modal-price,body.redblue-theme .product-detail-price{color:#e21b23;}
+  body.redblue-theme .appearance-btn.active{border-color:#1769d1;box-shadow:0 0 0 1px #1769d1 inset;}
+  body.redblue-theme #menuDrawer .menu-links a:hover{color:#1769d1;border-color:rgba(23,105,209,.4);background:rgba(23,105,209,.08);}
+
   .appearance-btn{display:flex;align-items:center;justify-content:center;gap:9px;padding:13px;border:1px solid #3a3a3c;border-radius:10px;background:#222225;color:#fff;font-family:inherit;font-weight:700;}
   .appearance-btn.active{border-color:#ffd21a;box-shadow:0 0 0 1px #ffd21a inset;}
   .appearance-swatch{width:22px;height:22px;border-radius:50%;display:block;border:1px solid #555;}
@@ -848,6 +875,18 @@ body.light-theme #menuDrawer .drawer-close{background:rgba(0,0,0,.035);border-co
 body.light-theme #menuDrawer .menu-section-title{color:#77777d;}
 body.light-theme #menuDrawer .appearance-btn{background:linear-gradient(145deg,#fff,#f3f3f5);border-color:#dedee2;color:#222;box-shadow:0 7px 20px rgba(0,0,0,.06),inset 0 1px 0 #fff;}
 body.light-theme #menuDrawer .appearance-btn.active{border-color:#ffd21a;box-shadow:0 0 0 1px #ffd21a inset,0 8px 24px rgba(0,0,0,.08);}
+
+/* Fix appearance controls inside the hamburger menu */
+#menuDrawer .appearance-btn{transition:background .2s ease,color .2s ease,border-color .2s ease,box-shadow .2s ease;}
+#menuDrawer .appearance-btn .appearance-swatch{flex:0 0 22px;}
+body.light-theme #menuDrawer .appearance-btn .dark-swatch{background:#090909;border-color:#555;}
+body.light-theme #menuDrawer .appearance-btn .light-swatch{background:#fff;border-color:#aaa;}
+body.light-theme #menuDrawer .appearance-btn.active{color:#111;}
+body:not(.light-theme) #menuDrawer .appearance-btn.active{color:#fff;}
+@media(max-width:520px){
+  #menuDrawer .appearance-options{grid-template-columns:1fr 1fr;gap:8px;}
+  #menuDrawer .appearance-btn{min-height:48px;padding:10px 8px;font-size:12px;}
+}
 body.light-theme #menuDrawer .menu-links a{background:rgba(0,0,0,.025);border-color:#e1e1e4;color:#222;}
 body.light-theme #menuDrawer .menu-links a:hover{background:linear-gradient(90deg,rgba(255,210,26,.13),rgba(0,0,0,.025));border-color:rgba(255,190,0,.45);color:#111;}
 @media(max-width:520px){
@@ -1335,8 +1374,9 @@ window.dispatchEvent(new Event("products-firebase-ready"));
   <div class="menu-body">
     <div class="menu-section-title">ڕووکار</div>
     <div class="appearance-options">
-      <button type="button" class="appearance-btn" data-theme="dark" onclick="setTheme('dark')"><span>ڕەش</span></button>
-      <button type="button" class="appearance-btn" data-theme="light" onclick="setTheme('light')"><span>سپی</span></button>
+      <button type="button" class="appearance-btn" data-theme="dark" onclick="setTheme('dark')"><span class="theme-dot dark-dot"></span><span>ڕەش</span></button>
+      <button type="button" class="appearance-btn" data-theme="light" onclick="setTheme('light')"><span class="theme-dot light-dot"></span><span>سپی</span></button>
+      <button type="button" class="appearance-btn" data-theme="redblue" onclick="setTheme('redblue')"><span class="theme-dot redblue-dot"></span><span>سور و شین</span></button>
     </div>
     <div class="menu-links">
       <a href="#home" onclick="toggleMenu(false)">سەرەتا</a>
@@ -1638,7 +1678,8 @@ function toggleMenu(open){
   else if(!document.getElementById('cartDrawer').classList.contains('show')){ document.getElementById('overlay').classList.remove('show'); }
 }
 function setTheme(theme){
-  document.body.classList.toggle('light-theme', theme === 'light');
+  document.body.classList.toggle('light-theme', theme === 'light' || theme === 'redblue');
+  document.body.classList.toggle('redblue-theme', theme === 'redblue');
   localStorage.setItem('ph_theme', theme);
   document.querySelectorAll('.appearance-btn').forEach(btn=>btn.classList.toggle('active', btn.dataset.theme === theme));
 }
