@@ -184,6 +184,9 @@ html{zoom:90%;}
   .product-detail-description{font-size:13.5px;color:#555;line-height:1.9;white-space:pre-line;}
   .product-video{position:relative;width:100%;aspect-ratio:16/9;margin-top:10px;border-radius:10px;overflow:hidden;background:#111;}
   .product-video iframe{width:100%;height:100%;border:0;}
+  .product-video-btn{display:none;margin-top:10px;width:100%;border:0;border-radius:9px;background:#111;color:#fff;padding:11px 14px;font-size:13px;font-weight:900;cursor:pointer;}
+  .product-video-btn:hover{opacity:.9;}
+  .product-video-btn.show{display:block;}
   .size-options{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
   .size-option{border:1px solid var(--line);background:#fff;border-radius:7px;padding:8px 11px;cursor:pointer;font-size:12px;font-weight:800;}
   .size-option.active{border-color:var(--red);color:var(--red);box-shadow:0 0 0 1px var(--red);}
@@ -881,8 +884,7 @@ window.dispatchEvent(new Event("products-firebase-ready"));
       <div class="product-detail-brand" id="productDetailBrand"></div>
       <div class="product-detail-price" id="productDetailPrice"></div>
       <div class="product-detail-section" id="sizeSection" style="display:none"><h4>قەبارە</h4><div class="size-options" id="sizeOptions"></div></div>
-      <div class="product-detail-section"><h4>وەسفی تەواو</h4><div class="product-detail-description" id="productDetailDescription"></div></div>
-      <div class="product-detail-section" id="videoSection" style="display:none"><h4>ڤیدیۆ</h4><div class="product-video"><iframe id="productVideoFrame" title="ڤیدیۆی بەرهەم" allowfullscreen></iframe></div></div>
+      <div class="product-detail-section"><h4>وەسفی تەواو</h4><div class="product-detail-description" id="productDetailDescription"></div><button class="product-video-btn" id="productVideoBtn" type="button" onclick="toggleProductVideo()">بینینی ڤیدیۆی ئەم بەرهەمە</button><div class="product-video" id="videoSection" style="display:none"><iframe id="productVideoFrame" title="ڤیدیۆی بەرهەم" allowfullscreen></iframe></div></div>
     </div>
   </div>
 </div>
@@ -1035,9 +1037,28 @@ function openProductDetail(id){
   updateDetailPrice();
   const video=toEmbedUrl(p.videoUrl);
   const vs=document.getElementById('videoSection');
-  if(video){vs.style.display='block';document.getElementById('productVideoFrame').src=video;}else{vs.style.display='none';document.getElementById('productVideoFrame').src='';}
+  const vb=document.getElementById('productVideoBtn');
+  if(video){
+    vb.classList.add('show');
+    vb.textContent='بینینی ڤیدیۆی ئەم بەرهەمە';
+    vs.style.display='none';
+    document.getElementById('productVideoFrame').src=video;
+  }else{
+    vb.classList.remove('show');
+    vs.style.display='none';
+    document.getElementById('productVideoFrame').src='';
+  }
   document.getElementById('productDetailModal').classList.add('show');
   document.getElementById('productDetailModal').setAttribute('aria-hidden','false');
+}
+function toggleProductVideo(){
+  const vs=document.getElementById('videoSection');
+  const vb=document.getElementById('productVideoBtn');
+  if(!vs || !vb) return;
+  const showing=vs.style.display!=='none';
+  vs.style.display=showing?'none':'block';
+  vb.textContent=showing?'بینینی ڤیدیۆی ئەم بەرهەمە':'داخستنی ڤیدیۆ';
+  if(showing){document.getElementById('productVideoFrame').src=document.getElementById('productVideoFrame').src;}
 }
 function selectProductImage(i){
   if(!activeDetailProduct) return;
