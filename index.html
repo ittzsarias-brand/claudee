@@ -184,7 +184,7 @@ html{zoom:90%;}
   .product-detail-description{font-size:13.5px;color:#555;line-height:1.9;white-space:pre-line;}
   .product-video{position:relative;width:100%;aspect-ratio:16/9;margin-top:10px;border-radius:10px;overflow:hidden;background:#111;}
   .product-video iframe{width:100%;height:100%;border:0;}
-  .product-video-btn{display:none;margin-top:10px;width:100%;border:0;border-radius:9px;background:#111;color:#fff;padding:11px 14px;font-size:13px;font-weight:900;cursor:pointer;}
+  .product-video-btn{display:none;margin-top:12px;width:100%;border:0;border-radius:9px;background:#111;color:#fff;padding:11px 14px;font-size:13px;font-weight:900;cursor:pointer;}
   .product-video-btn:hover{opacity:.9;}
   .product-video-btn.show{display:block;}
   .size-options{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
@@ -878,13 +878,14 @@ window.dispatchEvent(new Event("products-firebase-ready"));
     <div class="product-gallery">
       <div class="product-gallery-main"><img id="detailMainImage" alt=""></div>
       <div class="product-thumbs" id="detailThumbs"></div>
+      <button class="product-video-btn" id="productVideoBtn" type="button" onclick="toggleProductVideo()">بینینی ڤیدیۆی ئەم بەرهەمە</button>
     </div>
     <div class="product-detail-info">
       <h2 id="productDetailTitle"></h2>
       <div class="product-detail-brand" id="productDetailBrand"></div>
       <div class="product-detail-price" id="productDetailPrice"></div>
       <div class="product-detail-section" id="sizeSection" style="display:none"><h4>قەبارە</h4><div class="size-options" id="sizeOptions"></div></div>
-      <div class="product-detail-section"><h4>وەسفی تەواو</h4><div class="product-detail-description" id="productDetailDescription"></div><button class="product-video-btn" id="productVideoBtn" type="button" onclick="toggleProductVideo()">بینینی ڤیدیۆی ئەم بەرهەمە</button><div class="product-video" id="videoSection" style="display:none"><iframe id="productVideoFrame" title="ڤیدیۆی بەرهەم" allowfullscreen></iframe></div></div>
+      <div class="product-detail-section"><h4>وەسفی تەواو</h4><div class="product-detail-description" id="productDetailDescription"></div><div class="product-video" id="videoSection" style="display:none"><iframe id="productVideoFrame" title="ڤیدیۆی بەرهەم" allowfullscreen></iframe></div></div>
     </div>
   </div>
 </div>
