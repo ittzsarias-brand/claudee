@@ -22,10 +22,9 @@
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
 import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
 import {getFirestore,collection,addDoc,getDocs,doc,updateDoc,deleteDoc,serverTimestamp,onSnapshot} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
-import {getStorage,ref,uploadBytes,getDownloadURL} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-storage.js";
 const firebaseConfig={apiKey:"AIzaSyCH5-6OhuCVfZo8abiIHYfOzvbQTBQbEmw",authDomain:"ph-tools-4a82c.firebaseapp.com",projectId:"ph-tools-4a82c",storageBucket:"ph-tools-4a82c.firebasestorage.app",messagingSenderId:"677581607396",appId:"1:677581607396:web:7c63eee6537cdf7ccb37f1",measurementId:"G-DDCWBJVG1T"};
-const app=initializeApp(firebaseConfig,"ph-tools-admin-new");const auth=getAuth(app),db=getFirestore(app),storage=getStorage(app);
-window.FB={auth,db,storage,signIn:(e,p)=>signInWithEmailAndPassword(auth,e,p),signOut:()=>signOut(auth)};
+const app=initializeApp(firebaseConfig,"ph-tools-admin-new");const auth=getAuth(app),db=getFirestore(app);
+window.FB={auth,db,signIn:(e,p)=>signInWithEmailAndPassword(auth,e,p),signOut:()=>signOut(auth)};
 const $=id=>document.getElementById(id);let products=[],unsub=null;
 const categories=[
   ['drill','درێل'],
@@ -92,21 +91,6 @@ function withTimeout(promise,ms,label){
   ]);
 }
 
-async function uploadFiles(){
-  const files=[...$('files').files];
-  if(!files.length)return[];
-  const user=auth.currentUser;
-  if(!user)throw new Error('AUTH_REQUIRED');
-  const out=[];
-  for(const file of files){
-    const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
-    const r=ref(storage,`products/${user.uid}/${Date.now()}-${Math.random().toString(36).slice(2,8)}-${safe}`);
-    await withTimeout(uploadBytes(r,file,{contentType:file.type||'image/jpeg'}),30000,`IMAGE_UPLOAD:${file.name}`);
-    out.push(await withTimeout(getDownloadURL(r),15000,`IMAGE_URL:${file.name}`));
-  }
-  return out;
-}
-
 async function save(e){
   e.preventDefault();
   const btn=$('save');
@@ -120,8 +104,7 @@ async function save(e){
     if(!name)throw new Error('NAME_REQUIRED');
 
     const manual=$('images').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
-    const uploaded=await uploadFiles();
-    const images=[...manual,...uploaded];
+    const images=manual;
 
     const payload={
       name,
@@ -159,13 +142,10 @@ async function save(e){
     const message=err?.message||String(err);
     let detail='';
     if(code==='permission-denied' || code==='PERMISSION_DENIED') detail='Firebase ڕێگەی نووسین نادات. Firestore Rules پشکنە.';
-    else if(code.startsWith('storage/')) detail='Firebase Storage ڕێگەی upload نادات. Storage Rules پشکنە.';
     else if(code==='AUTH_REQUIRED') detail='تکایە دووبارە login بکە.';
     else if(code==='NAME_REQUIRED') detail='ناوی بەرهەم پڕبکەرەوە.';
     else if(message.startsWith('TIMEOUT:FIRESTORE_UPDATE')) detail='نوێکردنەوەی بەرهەم وەڵامی Firebase وەرنەگرت. زۆرجار ئەمە لە Firestore Rules یان پەیوەندی Firebase ـە.';
     else if(message.startsWith('TIMEOUT:FIRESTORE_CREATE')) detail='زیادکردنی بەرهەم وەڵامی Firebase وەرنەگرت. زۆرجار ئەمە لە Firestore Rules یان پەیوەندی Firebase ـە.';
-    else if(message.startsWith('TIMEOUT:IMAGE_UPLOAD')) detail='upload ـی وێنە وەڵامی Firebase وەرنەگرت. Storage Rules و پەیوەندی Firebase پشکنە.';
-    else if(message.startsWith('TIMEOUT:IMAGE_URL')) detail='وەرگرتنی URL ـی وێنە وەڵامی Firebase وەرنەگرت.';
     else detail=`هەڵە: ${code||'UNKNOWN'} — ${message}`;
     $('msg').innerHTML=`<div class="error">پاشەکەوتکردن سەرکەوتوو نەبوو.<br>${esc(detail)}<br><small>کۆدی هەڵە: ${esc(code||'none')}</small></div>`;
   }finally{
@@ -179,7 +159,7 @@ window.toggleActive=async id=>{const p=products.find(x=>x.id===id);if(!p)return;
 function subscribe(){if(unsub)unsub();unsub=onSnapshot(collection(db,'products'),snap=>{products=snap.docs.map(d=>({id:d.id,...d.data()}));$('syncState').innerHTML='<span class="sync-dot live"></span> هاوکاتە';render()},err=>{$('syncState').innerHTML='<span class="sync-dot"></span> کێشەی sync';console.error(err)})}
 window.addEventListener('DOMContentLoaded',()=>{
 $('loginBtn').onclick=async()=>{const e=$('email').value.trim(),p=$('password').value;$('loginMsg').innerHTML='';if(!e||!p){$('loginMsg').innerHTML='<div class="error">ئیمەیڵ و وشەی نهێنی پڕبکەرەوە.</div>';return}try{await FB.signIn(e,p)}catch(err){$('loginMsg').innerHTML='<div class="error">چوونەژوورەوە سەرکەوتوو نەبوو.</div>'}};
-$('logout').onclick=()=>FB.signOut();$('refresh').onclick=()=>render();$('search').oninput=render;$('categoryFilter').onchange=render;$('status').onchange=render;$('add').onclick=()=>openModal();$('close').onclick=closeModal;$('cancel').onclick=closeModal;$('bg').onclick=closeModal;$('form').onsubmit=save;$('addSize').onclick=()=>addSizeRow();$('files').onchange=()=>{const files=[...$('files').files];$('fileHint').textContent=files.length?`${files.length} وێنە هەڵبژێردراوە`:'هێشتا وێنە هەڵنەبژێردراوە';$('preview').innerHTML='';files.forEach(f=>addPreview(URL.createObjectURL(f)))};
+$('logout').onclick=()=>FB.signOut();$('refresh').onclick=()=>render();$('search').oninput=render;$('categoryFilter').onchange=render;$('status').onchange=render;$('add').onclick=()=>openModal();$('close').onclick=closeModal;$('cancel').onclick=closeModal;$('bg').onclick=closeModal;$('form').onsubmit=save;$('addSize').onclick=()=>addSizeRow();$('files').onchange=()=>{const files=[...$('files').files];$('fileHint').textContent=files.length?'تەنها URL ـی وێنە پشتیوانی دەکرێت؛ فایلەکان پاشەکەوت ناکرێن':'URL ـی وێنە لە خوارەوە دابنێ';$('preview').innerHTML='';};
 $('images').oninput=()=>{const urls=$('images').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);$('preview').innerHTML='';urls.forEach(addPreview)};
 onAuthStateChanged(auth,async user=>{if(!user){showLogin();if(unsub){unsub();unsub=null}return}showApp();subscribe()});
 });
@@ -212,6 +192,6 @@ onAuthStateChanged(auth,async user=>{if(!user){showLogin();if(unsub){unsub();uns
 <option value="nail">بورغی دەرزی</option>
 <option value="cutting">مشار</option>
 <option value="electronics">ئەلیکترۆنی</option>
-</select></div><div class="field"><label>براند</label><input id="brand" class="input"></div><div class="field"><label>ستۆک</label><input id="stock" class="input" type="number" min="0" value="0"></div><div class="field full"><label>وەسفی کورت</label><textarea id="small" class="input" rows="2"></textarea></div><div class="field full"><label>وێنەکان</label><div class="file-row"><input id="files" class="input" type="file" accept="image/*" multiple><span id="fileHint" class="muted">دەتوانیت چەند وێنە هەڵبژێریت.</span></div><textarea id="images" class="input" rows="3" style="margin-top:8px" placeholder="یان URL ـی وێنەکان، هەر URL لە هێڵێکی جیاواز"></textarea><div id="preview" class="preview-grid"></div></div><div class="field full"><label>ڤیدیۆ (URL)</label><input id="video" class="input" placeholder="YouTube / Vimeo / direct video URL"></div><div class="field full"><label>وەسفی تەواو</label><textarea id="description" class="input" rows="5"></textarea></div><div class="field full"><div class="panel-head" style="margin:0 0 6px"><label style="margin:0">قەبارە و نرخە جیاوازەکان</label><button id="addSize" type="button" class="btn">+ قەبارە</button></div><div id="sizes"></div></div><div class="field full"><div class="check-row"><label><input id="featured" type="checkbox"> نیشانکراو</label><label><input id="active" type="checkbox"> چالاک</label></div></div></div><div id="msg"></div><div class="footer-actions"><button id="cancel" type="button" class="btn">هەڵوەشاندنەوە</button><button id="save" type="submit" class="btn primary">پاشەکەوتکردن</button></div></form></div></div>
+</select></div><div class="field"><label>براند</label><input id="brand" class="input"></div><div class="field"><label>ستۆک</label><input id="stock" class="input" type="number" min="0" value="0"></div><div class="field full"><label>وەسفی کورت</label><textarea id="small" class="input" rows="2"></textarea></div><div class="field full"><label>وێنەکان</label><div class="file-row"><input id="files" class="input" type="file" accept="image/*" multiple><span id="fileHint" class="muted">تەنها URL ـی وێنە بەکاربهێنە؛ Firebase Storage پێویست نییە.</span></div><textarea id="images" class="input" rows="3" style="margin-top:8px" placeholder="یان URL ـی وێنەکان، هەر URL لە هێڵێکی جیاواز"></textarea><div id="preview" class="preview-grid"></div></div><div class="field full"><label>ڤیدیۆ (URL)</label><input id="video" class="input" placeholder="YouTube / Vimeo / direct video URL"></div><div class="field full"><label>وەسفی تەواو</label><textarea id="description" class="input" rows="5"></textarea></div><div class="field full"><div class="panel-head" style="margin:0 0 6px"><label style="margin:0">قەبارە و نرخە جیاوازەکان</label><button id="addSize" type="button" class="btn">+ قەبارە</button></div><div id="sizes"></div></div><div class="field full"><div class="check-row"><label><input id="featured" type="checkbox"> نیشانکراو</label><label><input id="active" type="checkbox"> چالاک</label></div></div></div><div id="msg"></div><div class="footer-actions"><button id="cancel" type="button" class="btn">هەڵوەشاندنەوە</button><button id="save" type="submit" class="btn primary">پاشەکەوتکردن</button></div></form></div></div>
 <div id="toast" class="hidden" style="position:fixed;bottom:18px;left:18px;z-index:100;background:#171717;border:1px solid #444;color:#fff;padding:11px 15px;border-radius:12px;box-shadow:0 15px 35px rgba(0,0,0,.35)"></div>
 </body></html>
