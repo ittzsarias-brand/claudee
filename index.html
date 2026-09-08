@@ -1205,6 +1205,106 @@ window.dispatchEvent(new Event("products-firebase-ready"));
     /* Small gap between the banner and category bar */
     .mainnav{margin-top:14px;}
   </style>
+
+<style id="theme-system-final">
+/* Final theme system: dark is the default, and every major surface/button follows the selected theme. */
+body.dark-theme{
+  background:#0b0b0c !important;color:#f5f5f5 !important;
+}
+body.dark-theme header.top,
+body.dark-theme nav.mainnav,
+body.dark-theme .sec,
+body.dark-theme footer,
+body.dark-theme .brands-strip{background:#0b0b0c !important;color:#f5f5f5 !important;}
+body.dark-theme .prod-card,body.dark-theme .cat-card,body.dark-theme .product-card-v2,
+body.dark-theme .product-detail,body.dark-theme .simple-modal-box,
+body.dark-theme .contact-chooser,body.dark-theme .location-modal,body.dark-theme .location-chooser{
+  background:#171719 !important;color:#f5f5f5 !important;border-color:#2f2f33 !important;
+}
+body.dark-theme .search-box{background:#1b1b1e !important;border-color:#343438 !important;}
+body.dark-theme .search-box input{color:#fff !important;}
+body.dark-theme .nav-item,body.dark-theme .icon-item{color:#eee !important;}
+body.dark-theme .menu-drawer{background:#111113 !important;color:#fff !important;}
+body.dark-theme .menu-links a{background:#1b1b1e !important;border-color:#303034 !important;color:#eee !important;}
+body.dark-theme .appearance-btn{background:#202023 !important;color:#fff !important;border-color:#3a3a3f !important;}
+body.dark-theme .appearance-btn.active{border-color:#ffd21a !important;box-shadow:0 0 0 1px #ffd21a inset !important;}
+body.dark-theme input,body.dark-theme textarea,body.dark-theme select{background:#1b1b1e !important;color:#fff !important;border-color:#343438 !important;}
+body.dark-theme button{color:#fff;}
+
+/* LIGHT */
+body.light-theme:not(.redblue-theme){
+  background:#fff !important;color:#171717 !important;
+}
+body.light-theme:not(.redblue-theme) header.top,
+body.light-theme:not(.redblue-theme) nav.mainnav,
+body.light-theme:not(.redblue-theme) .sec,
+body.light-theme:not(.redblue-theme) footer,
+body.light-theme:not(.redblue-theme) .brands-strip{background:#fff !important;color:#171717 !important;}
+body.light-theme:not(.redblue-theme) .prod-card,
+body.light-theme:not(.redblue-theme) .cat-card,
+body.light-theme:not(.redblue-theme) .product-card-v2,
+body.light-theme:not(.redblue-theme) .product-detail,
+body.light-theme:not(.redblue-theme) .simple-modal-box,
+body.light-theme:not(.redblue-theme) .contact-chooser,
+body.light-theme:not(.redblue-theme) .location-modal,
+body.light-theme:not(.redblue-theme) .location-chooser{
+  background:#fff !important;color:#171717 !important;border-color:#d9d9dd !important;
+}
+body.light-theme:not(.redblue-theme) .search-box{background:#f2f2f4 !important;border-color:#d5d5da !important;}
+body.light-theme:not(.redblue-theme) .search-box input{color:#111 !important;}
+body.light-theme:not(.redblue-theme) .nav-item,
+body.light-theme:not(.redblue-theme) .icon-item{color:#333 !important;}
+body.light-theme:not(.redblue-theme) .menu-drawer{background:#fff !important;color:#111 !important;}
+body.light-theme:not(.redblue-theme) .menu-links a{background:#f7f7f8 !important;border-color:#dddde1 !important;color:#222 !important;}
+body.light-theme:not(.redblue-theme) .appearance-btn{background:#f7f7f8 !important;color:#222 !important;border-color:#d8d8dd !important;}
+body.light-theme:not(.redblue-theme) .appearance-btn.active{border-color:#da1e28 !important;box-shadow:0 0 0 1px #da1e28 inset !important;}
+body.light-theme:not(.redblue-theme) input,body.light-theme:not(.redblue-theme) textarea,body.light-theme:not(.redblue-theme) select{background:#fff !important;color:#111 !important;border-color:#d5d5da !important;}
+
+/* RED + BLUE */
+body.redblue-theme{
+  background:#f4f6f9 !important;color:#161616 !important;
+}
+body.redblue-theme header.top{background:#fff !important;color:#111 !important;border-bottom:3px solid #1769d1 !important;}
+body.redblue-theme nav.mainnav{background:#1769d1 !important;border-color:#1769d1 !important;}
+body.redblue-theme .nav-item{color:#fff !important;}
+body.redblue-theme .nav-item:hover{color:#fff !important;background:#e21b23 !important;}
+body.redblue-theme .nav-item.home{background:#e21b23 !important;color:#fff !important;}
+body.redblue-theme .sec{background:#f4f6f9 !important;color:#161616 !important;}
+body.redblue-theme .prod-card,body.redblue-theme .cat-card,body.redblue-theme .product-card-v2{
+  background:#fff !important;color:#161616 !important;border:2px solid #111 !important;
+}
+body.redblue-theme .product-detail,body.redblue-theme .simple-modal-box,
+body.redblue-theme .contact-chooser,body.redblue-theme .location-modal,body.redblue-theme .location-chooser{
+  background:#fff !important;color:#161616 !important;border-color:#1769d1 !important;
+}
+body.redblue-theme .search-box{background:#f1f3f6 !important;border:2px solid #1769d1 !important;}
+body.redblue-theme .search-box input{color:#111 !important;}
+body.redblue-theme .search-box button,
+body.redblue-theme .product-more-btn,
+body.redblue-theme .order-btn-v2{background:#e21b23 !important;color:#fff !important;}
+body.redblue-theme .product-price,body.redblue-theme .modal-price,body.redblue-theme .product-detail-price{color:#e21b23 !important;}
+body.redblue-theme .menu-drawer{background:#fff !important;color:#111 !important;border-left:3px solid #1769d1 !important;}
+body.redblue-theme .menu-head{border-color:#1769d1 !important;}
+body.redblue-theme .menu-head .drawer-close{color:#111 !important;}
+body.redblue-theme .menu-section-title{color:#1769d1 !important;}
+body.redblue-theme .menu-links{border-color:#d7dce5 !important;}
+body.redblue-theme .menu-links a{background:#f7f8fa !important;border-color:#d7dce5 !important;color:#111 !important;}
+body.redblue-theme .menu-links a:hover{background:#eaf1ff !important;border-color:#1769d1 !important;color:#1769d1 !important;}
+body.redblue-theme .appearance-btn{background:#f7f8fa !important;color:#111 !important;border:2px solid #d7dce5 !important;}
+body.redblue-theme .appearance-btn:hover{background:#eaf1ff !important;border-color:#1769d1 !important;}
+body.redblue-theme .appearance-btn.active{border-color:#e21b23 !important;box-shadow:0 0 0 1px #e21b23 inset !important;}
+body.redblue-theme input,body.redblue-theme textarea,body.redblue-theme select{background:#fff !important;color:#111 !important;border-color:#1769d1 !important;}
+body.redblue-theme button{color:#111;}
+body.redblue-theme .icon-item{color:#333 !important;}
+body.redblue-theme .brands-strip{background:#fff !important;border-color:#d7dce5 !important;}
+body.redblue-theme .theme-dot{border-color:#777 !important;}
+
+/* All theme buttons and common controls animate with the theme. */
+.appearance-btn,.menu-links a,.search-box,.search-box input,button,input,textarea,select,
+.prod-card,.cat-card,.product-card-v2,.product-detail,.sec,.menu-drawer,header.top,nav.mainnav,.brands-strip{
+  transition:background-color .22s ease,color .22s ease,border-color .22s ease,box-shadow .22s ease !important;
+}
+</style>
 </head>
 <body>
 
@@ -1678,10 +1778,15 @@ function toggleMenu(open){
   else if(!document.getElementById('cartDrawer').classList.contains('show')){ document.getElementById('overlay').classList.remove('show'); }
 }
 function setTheme(theme){
+  if(!['dark','light','redblue'].includes(theme)) theme = 'dark';
+  document.body.classList.toggle('dark-theme', theme === 'dark');
   document.body.classList.toggle('light-theme', theme === 'light' || theme === 'redblue');
   document.body.classList.toggle('redblue-theme', theme === 'redblue');
   localStorage.setItem('ph_theme', theme);
-  document.querySelectorAll('.appearance-btn').forEach(btn=>btn.classList.toggle('active', btn.dataset.theme === theme));
+  document.querySelectorAll('.appearance-btn').forEach(btn=>{
+    btn.classList.toggle('active', btn.dataset.theme === theme);
+    btn.setAttribute('aria-pressed', btn.dataset.theme === theme ? 'true' : 'false');
+  });
 }
 function getLocation(){
   const lat = 35.114769;
@@ -1742,7 +1847,7 @@ function closeLocationChooser(){
   if(el) el.classList.remove('show');
 }
 
-const savedTheme = localStorage.getItem('ph_theme') || 'dark';
+const savedTheme = ['dark','light','redblue'].includes(localStorage.getItem('ph_theme')) ? localStorage.getItem('ph_theme') : 'dark';
 setTheme(savedTheme);
 
 /* ================= SIMPLE MODAL ================= */
