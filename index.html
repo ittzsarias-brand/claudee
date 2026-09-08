@@ -1481,7 +1481,7 @@ async function loadSiteProducts(){
     // ================= TEST PRODUCTS =================
     // These two products are temporary demo products and are always shown
     // together with the products loaded from Firestore.
-    const testProducts = [
+    var testProducts = [
       {
         id: 'test-product-1',
         name: 'PH.Tools Test Drill',
@@ -1529,8 +1529,16 @@ async function loadSiteProducts(){
 
     siteProducts = [...testProducts, ...firebaseProducts];
     renderProducts();
-  }catch(e){console.error('Products load error:',e);renderProducts();}
+  }catch(e){
+    console.error('Products load error:',e);
+    // Keep the test products visible even if Firebase is unavailable.
+    siteProducts = testProducts;
+    renderProducts();
+  }
 }
+
+// Load products after all product functions are defined.
+loadSiteProducts();
 
 /* ================= CATEGORY FILTERING ================= */
 const CATEGORY_FILTERS = {
