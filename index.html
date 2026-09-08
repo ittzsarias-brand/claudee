@@ -995,6 +995,69 @@ body.light-theme .location-option .location-icon{
 }
 </style>
 
+
+<style id="compact-unified-popups">
+/* Compact sizing only — visual language and functionality remain unchanged. */
+#menuDrawer.menu-drawer{width:min(330px,86vw);}
+#menuDrawer .menu-head{padding:16px 18px;}
+#menuDrawer .menu-head h3{font-size:18px;}
+#menuDrawer .menu-body{padding:20px 18px 24px;}
+#menuDrawer .drawer-close{width:38px;height:38px;font-size:24px;}
+#menuDrawer .appearance-btn{min-height:52px;padding:11px 12px;border-radius:13px;}
+#menuDrawer .menu-links{margin-top:22px;gap:8px;}
+#menuDrawer .menu-links a{min-height:52px;padding:0 15px;border-radius:13px;font-size:13px;}
+
+.contact-chooser,
+.location-modal,
+.location-chooser{
+  width:min(360px,88vw);
+  padding:20px;
+  border-radius:18px;
+}
+.contact-chooser::before,
+.location-modal::before,
+.location-chooser::before{
+  width:36px;height:3px;margin-bottom:15px;
+}
+.contact-chooser-title,
+.location-modal-title,
+.location-chooser-title{font-size:19px;}
+.contact-chooser-subtitle,
+.location-modal-subtitle,
+.location-chooser-subtitle{margin-bottom:15px;font-size:11px;}
+.contact-chooser-close,
+.location-modal-close,
+.location-chooser-close{top:13px;left:13px;width:34px;height:34px;font-size:21px;border-radius:10px;}
+.contact-chooser-actions,
+.location-modal-actions,
+.location-chooser-actions{gap:8px;}
+.contact-choice,
+.location-choice,
+.location-option{min-height:56px;padding:10px 12px;border-radius:13px;}
+.contact-choice-icon,
+.location-choice-icon,
+.location-option .location-icon{width:36px;height:36px;flex-basis:36px;border-radius:10px;}
+.contact-choice strong,
+.location-choice strong,
+.location-option .location-title{font-size:13px;}
+.contact-choice small,
+.location-choice small,
+.location-option .location-desc{font-size:10px;}
+@media(max-width:520px){
+  #menuDrawer.menu-drawer{width:min(330px,88vw);}
+  #menuDrawer .menu-body{padding:18px 16px 22px;}
+  #menuDrawer .menu-head{padding-inline:16px;}
+  .contact-chooser,
+  .location-modal,
+  .location-chooser{width:min(360px,90vw);padding:18px;}
+}
+</style>
+
+
+<style id="category-filter-active">
+.mainnav .category-filter.active:not(.home){color:var(--red);}
+.mainnav .category-filter.active.home{background:var(--red);color:#fff;}
+</style>
 </head>
 <body>
 
@@ -1043,33 +1106,16 @@ body.light-theme .location-option .location-icon{
 <!-- ============ NAV ============ -->
 <nav class="mainnav">
   <div class="container nav-row">
-    <a class="nav-item home" href="#home">
+    <a class="nav-item home category-filter active" href="#home" data-filter="all" onclick="filterProducts('all'); return false;">
       <svg class="icon" style="width:16px;height:16px;stroke:#fff" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
-      سەرەتا
+      گشتی
     </a>
-    <div class="nav-item">
-      بەرهەمەکان <span class="caret">▾</span>
-      <div class="dropdown">
-        <a href="#">ئامرازە کارەبایییەکان</a>
-        <a href="#">ئامرازە دەستییەکان</a>
-        <a href="#">تاسیسات</a>
-        <a href="#">ئامانجی سەلامەتی</a>
-      </div>
-    </div>
-    <div class="nav-item">
-      مارکەکان <span class="caret">▾</span>
-      <div class="dropdown">
-        <a href="#">DEWALT</a>
-        <a href="#">MILWAUKEE</a>
-        <a href="#">RONIX</a>
-        <a href="#">KNAUF</a>
-        <a href="#">VELLOO</a>
-      </div>
-    </div>
-    <a class="nav-item" href="#">پرۆژەی خۆت</a>
-    <a class="nav-item" href="#">چاکسازی</a>
-    <a class="nav-item" href="#">بەکارهێنانی پرۆفیشناڵ</a>
-    <a class="nav-item contact" href="#">پەیوەندیمان پێوە بکە</a>
+    <a class="nav-item category-filter" href="#products" data-filter="drill" onclick="filterProducts('drill'); return false;">درێل</a>
+    <a class="nav-item category-filter" href="#products" data-filter="charger" onclick="filterProducts('charger'); return false;">بابەت شەحن</a>
+    <a class="nav-item category-filter" href="#products" data-filter="shafra" onclick="filterProducts('shafra'); return false;">شفرە و ماڵە</a>
+    <a class="nav-item category-filter" href="#products" data-filter="nail" onclick="filterProducts('nail'); return false;">بورغی دەرزی</a>
+    <a class="nav-item category-filter" href="#products" data-filter="cutting" onclick="filterProducts('cutting'); return false;">مشار</a>
+    <a class="nav-item category-filter contact" href="#products" data-filter="electronics" onclick="filterProducts('electronics'); return false;">ئەلیکترۆنی</a>
   </div>
 </nav>
 
@@ -1204,6 +1250,47 @@ const BRANDS = [
 /* ================= STATE ================= */
 let cart = JSON.parse(localStorage.getItem('ph_cart') || '{}');
 let wishlist = JSON.parse(localStorage.getItem('ph_wish') || '[]');
+
+/* ================= CATEGORY FILTERING ================= */
+const CATEGORY_FILTERS = {
+  all: [],
+  drill: ['drill','درێل'],
+  charger: ['charger','شەحن','بابەت شەحن'],
+  shafra: ['shafra','شفرە','ماڵە','شفرە و ماڵە'],
+  nail: ['nail','بورغی دەرزی','بورغی','دەرزی'],
+  cutting: ['cutting','مشار'],
+  electronics: ['electronics','ئەلیکترۆنی']
+};
+
+function filterProducts(category){
+  const cards = document.querySelectorAll('.prod-card');
+  const terms = CATEGORY_FILTERS[category] || [];
+
+  cards.forEach(card=>{
+    if(category === 'all'){
+      card.style.display = '';
+      return;
+    }
+
+    const raw = [
+      card.dataset.category,
+      card.dataset.categories,
+      card.getAttribute('data-cat'),
+      card.textContent
+    ].filter(Boolean).join(' ').toLowerCase();
+
+    card.style.display = terms.some(term => raw.includes(term.toLowerCase())) ? '' : 'none';
+  });
+
+  document.querySelectorAll('.category-filter').forEach(item=>{
+    item.classList.toggle('active', item.dataset.filter === category);
+  });
+
+  const productSection = document.getElementById('products') || document.querySelector('.prod-grid') || document.querySelector('.products-grid');
+  if(productSection && category !== 'all'){
+    productSection.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+}
 
 /* ================= RENDER: CATEGORIES ================= */
 const catGrid = document.getElementById('catGrid');
