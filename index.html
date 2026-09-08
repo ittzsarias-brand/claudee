@@ -1033,6 +1033,18 @@ window.dispatchEvent(new Event("products-firebase-ready"));
 #locationChooserOverlay .contact-chooser-close { box-shadow:none !important; }
 @media (max-width:520px){ #locationChooserOverlay .location-map-icon { width:64px !important; height:64px !important; min-width:64px !important; } #locationChooserOverlay .location-map-icons{gap:12px !important;} }
 </style>
+
+<style id="final-location-logo-design">
+#locationChooserOverlay{position:fixed !important;inset:0 !important;display:none !important;align-items:center !important;justify-content:center !important;padding:20px !important;background:rgba(0,0,0,.62) !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;}
+#locationChooserOverlay.show{display:flex !important;}
+#locationChooserOverlay .location-icon-only{width:auto !important;max-width:none !important;margin:0 !important;padding:18px !important;display:flex !important;align-items:center !important;justify-content:center !important;background:#171719 !important;border:1px solid rgba(255,255,255,.12) !important;border-radius:20px !important;box-shadow:none !important;}
+#locationChooserOverlay .contact-chooser-title{display:none !important;}
+#locationChooserOverlay .location-map-icons{display:flex !important;align-items:center !important;justify-content:center !important;gap:14px !important;margin:0 !important;padding:0 !important;}
+#locationChooserOverlay .location-map-icon{width:76px !important;height:76px !important;min-width:76px !important;padding:0 !important;border-radius:18px !important;overflow:hidden !important;display:flex !important;align-items:center !important;justify-content:center !important;background:#232326 !important;border:1px solid rgba(255,255,255,.10) !important;box-shadow:none !important;transform:none !important;}
+#locationChooserOverlay .location-map-icon:hover{transform:scale(1.03) !important;box-shadow:none !important;}
+#locationChooserOverlay .location-map-icon img{width:100% !important;height:100% !important;object-fit:cover !important;display:block !important;border-radius:inherit !important;}
+#locationChooserOverlay .contact-chooser-close{box-shadow:none !important;}
+</style>
 </head>
 <body>
 
@@ -1421,16 +1433,15 @@ function getLocation(){
     overlay.innerHTML = `
       <div class="contact-chooser location-icon-only" role="dialog" aria-modal="true" aria-labelledby="locationChooserTitle" onclick="event.stopPropagation()">
         <button class="contact-chooser-close" type="button" onclick="closeLocationChooser()" aria-label="داخستن">×</button>
-        <div class="contact-chooser-title" id="locationChooserTitle">شوێنی فرۆشگا</div>
         <div class="location-map-icons">
           <a class="location-map-icon google" href="${googleMaps}" target="_blank" rel="noopener noreferrer" aria-label="Google Maps" title="Google Maps">
-            <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#4285F4" d="M24 4a16 16 0 0 0-16 16c0 11.5 16 24 16 24s16-12.5 16-24A16 16 0 0 0 24 4Z"/><circle cx="24" cy="20" r="6.5" fill="#fff"/><circle cx="24" cy="20" r="3" fill="#4285F4"/></svg>
+            <img src="https://img.sanishtech.com/u/960bca8bd9954e5eccd06775ac955dce.jpeg" alt="Google Maps">
           </a>
           <a class="location-map-icon waze" href="${waze}" target="_blank" rel="noopener noreferrer" aria-label="Waze" title="Waze">
-            <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#33CCFF" d="M39.5 22.2C39.5 12.6 32 6 22 6 12.4 6 6 12.2 6 20.7c0 6.2 3.2 10.3 8.8 12.4l-1.7 5.1 6.2-3.1c1.3.3 2.7.4 4.1.4 9.7 0 16.1-5.1 16.1-13.3Z"/><path fill="#fff" d="M15.5 21h.1M23.8 21h.1M32 21h.1M17.5 27.5c3.9 2.6 9.1 2.6 13 0" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/><path fill="none" d="M12 31.5 10 37l6.1-3" stroke="#33CCFF" stroke-width="2"/></svg>
+            <img src="https://img.sanishtech.com/u/9c07aa7c4fe2cc09e3d717f9610ab977.jpeg" alt="Waze">
           </a>
           <a class="location-map-icon apple" href="${appleMaps}" target="_blank" rel="noopener noreferrer" aria-label="Apple Maps" title="Apple Maps">
-            <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="5" y="5" width="38" height="38" rx="10" fill="#111"/><path fill="#fff" d="M28.5 15.2c.7-.9 1.1-2 1-3.2-1.1.1-2.4.7-3.1 1.6-.7.8-1.2 2-1.1 3.1 1.2.1 2.4-.6 3.2-1.5Zm4.7 9.5c0-3.4 2.8-5.1 2.9-5.2-1.6-2.3-4-2.6-4.9-2.6-2.1-.2-4.1 1.2-5.2 1.2-1.1 0-2.8-1.2-4.5-1.2-2.3 0-4.4 1.3-5.6 3.4-2.4 4.2-.6 10.5 1.7 13.9 1.2 1.7 2.5 3.5 4.3 3.4 1.7-.1 2.4-1.1 4.5-1.1 2.1 0 2.7 1.1 4.5 1.1 1.9 0 3.1-1.7 4.3-3.4 1.4-2 2-4 2-4.1-.1 0-4-.1-4-5.4Z"/></svg>
+            <img src="https://img.sanishtech.com/u/b0faf9b98c5944a6449d9d502f60bea9.jpeg" alt="Apple Maps">
           </a>
         </div>
       </div>`;
