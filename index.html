@@ -250,14 +250,29 @@ html{zoom:100%;}
 </style>
 
 <style id="main-page-only-zoom">
-/* 70% zoom ONLY for the initial/main page.
-   Product detail and other popup/drawer overlays stay at 100%. */
+/* Main page = 70%. Only popup/drawer CONTENT is reduced to 80%.
+   Backdrops remain full-screen so nothing is clipped or shifted. */
 body > header.top,
 body > .hero,
 body > nav.mainnav,
 body > section#products,
 body > section.features{
   zoom:70%;
+}
+
+/* Product detail popup = 80% */
+body > .product-modal-v2 .product-detail{
+  zoom:80%;
+}
+
+/* Menu popup/drawer = 80% */
+body > .menu-drawer{
+  zoom:80%;
+}
+
+/* Contact + location popup panels = 80% */
+body > .contact-chooser-overlay .contact-chooser{
+  zoom:80%;
 }
 </style>
 
