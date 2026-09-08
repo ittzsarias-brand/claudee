@@ -775,6 +775,43 @@
   -webkit-user-drag:none;
 }
 </style>
+<style id="hero-single-slider-fix">
+.hero-slider{
+  position:relative !important;
+  width:100% !important;
+  overflow:hidden !important;
+  aspect-ratio:1536 / 602 !important;
+}
+.hero-track{
+  display:flex !important;
+  flex-direction:row !important;
+  width:500% !important;
+  height:100% !important;
+  direction:ltr !important;
+  margin:0 !important;
+  padding:0 !important;
+  animation:none !important;
+  transition:none !important;
+  will-change:transform;
+}
+.hero-track img{
+  position:relative !important;
+  top:auto !important;
+  left:auto !important;
+  inset:auto !important;
+  display:block !important;
+  width:20% !important;
+  min-width:20% !important;
+  height:100% !important;
+  flex:0 0 20% !important;
+  opacity:1 !important;
+  visibility:visible !important;
+  margin:0 !important;
+  padding:0 !important;
+  object-fit:cover !important;
+  pointer-events:none !important;
+}
+</style>
 </head>
 <body>
 
@@ -1200,10 +1237,11 @@ function closeContactChooser(event){
 
 
 
+
 <script>
-/* FINAL HERO FIX - REAL HORIZONTAL SLIDE */
+/* PH.TOOLS HERO - SINGLE REAL SLIDE CONTROLLER */
 (function(){
-  function initRealHeroSlider(){
+  function init(){
     const slider = document.querySelector('.hero-slider');
     const track = document.querySelector('.hero-track');
     if(!slider || !track) return;
@@ -1211,42 +1249,40 @@ function closeContactChooser(event){
     const slides = Array.from(track.querySelectorAll('img'));
     if(slides.length < 2) return;
 
-    // Your HTML has 4 real banners + a copy of the first banner.
-    const realCount = Math.min(4, slides.length - 1);
+    const realCount = slides.length - 1; // last image is the first-banner clone
     let current = 0;
     let timer = null;
-    let locked = false;
+    let busy = false;
 
-    function moveTo(index, animate){
+    function move(index, animate){
+      const distance = slider.clientWidth * index;
       track.style.transition = animate
         ? 'transform 750ms cubic-bezier(.22,.61,.36,1)'
         : 'none';
-      track.style.transform = 'translate3d(-' + (index * 20) + '%,0,0)';
+      track.style.transform = 'translate3d(' + (-distance) + 'px,0,0)';
       current = index;
     }
 
     function next(){
-      if(locked) return;
-      locked = true;
+      if(busy) return;
+      busy = true;
 
-      // Normal real slide: 1 -> 2 -> 3 -> 4
-      current += 1;
-      moveTo(current, true);
+      const target = current + 1;
+      move(target, true);
 
-      // After showing the cloned first banner, jump silently
-      // back to the real first banner.
-      if(current === realCount){
+      if(target === realCount){
+        // Let the cloned first banner finish sliding into view, then
+        // silently reset to the real first banner.
         setTimeout(function(){
-          moveTo(0, false);
+          move(0, false);
           requestAnimationFrame(function(){
-            track.offsetHeight; // force the silent reset to apply
-            locked = false;
+            busy = false;
           });
-        }, 780);
+        }, 800);
       }else{
         setTimeout(function(){
-          locked = false;
-        }, 780);
+          busy = false;
+        }, 800);
       }
     }
 
@@ -1255,86 +1291,13 @@ function closeContactChooser(event){
       timer = setInterval(next, 3500);
     }
 
-    // Start at the first banner.
-    moveTo(0, false);
+    function resize(){
+      move(current, false);
+    }
+
+    move(0, false);
     start();
-
-    slider.addEventListener('touchstart', function(){
-      clearInterval(timer);
-    }, {passive:true});
-
-    slider.addEventListener('touchend', function(){
-      start();
-    }, {passive:true});
-
-    document.addEventListener('visibilitychange', function(){
-      if(document.hidden){
-        clearInterval(timer);
-      }else{
-        moveTo(current, false);
-        start();
-      }
-    });
-  }
-
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', initRealHeroSlider);
-  }else{
-    initRealHeroSlider();
-  }
-})();
-</script>
-<script>
-/* HERO BANNER SLIDER - ONE REAL SLIDER */
-(function(){
-  function initHeroSlider(){
-    const slider = document.querySelector('.hero-slider');
-    const track = document.querySelector('.hero-track');
-    if(!slider || !track) return;
-
-    const slides = Array.from(track.querySelectorAll('img'));
-    if(slides.length < 2) return;
-
-    const realCount = slides.length - 1;
-    let current = 0;
-    let timer = null;
-    let moving = false;
-
-    function position(index, animate){
-      track.style.transition = animate
-        ? 'transform 750ms cubic-bezier(.22,.61,.36,1)'
-        : 'none';
-      track.style.transform = 'translate3d(-' + (index * 20) + '%,0,0)';
-      current = index;
-    }
-
-    function next(){
-      if(moving) return;
-      moving = true;
-      current++;
-      position(current, true);
-
-      if(current === realCount){
-        setTimeout(function(){
-          position(0, false);
-          requestAnimationFrame(function(){
-            moving = false;
-          });
-        }, 780);
-      }else{
-        setTimeout(function(){
-          moving = false;
-        }, 780);
-      }
-    }
-
-    function start(){
-      clearInterval(timer);
-      timer = setInterval(next, 3500);
-    }
-
-    position(0, false);
-    start();
+    window.addEventListener('resize', resize);
 
     slider.addEventListener('touchstart', function(){
       clearInterval(timer);
@@ -1346,17 +1309,18 @@ function closeContactChooser(event){
       if(document.hidden){
         clearInterval(timer);
       }else{
-        position(current, false);
+        move(current, false);
         start();
       }
     });
   }
 
   if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', initHeroSlider);
+    document.addEventListener('DOMContentLoaded', init);
   }else{
-    initHeroSlider();
+    init();
   }
 })();
-</script></body>
+</script>
+</body>
 </html>
