@@ -1082,6 +1082,16 @@ window.dispatchEvent(new Event("products-firebase-ready"));
   box-shadow:none !important;
 }
 </style>
+
+<style id="location-close-position-fix">
+/* Move the red close button slightly upward while keeping it visible. */
+#locationChooserOverlay .contact-chooser-close{
+  top:-8px !important;
+  right:8px !important;
+  color:#ff3030 !important;
+  z-index:999 !important;
+}
+</style>
 </head>
 <body>
 
@@ -1216,24 +1226,73 @@ window.dispatchEvent(new Event("products-firebase-ready"));
 </section>
 
 
+
+<style id="contact-logo-only-design">
+/* Contact chooser — same centered logo-only design as Location */
+#contactChooserOverlay{
+  position:fixed !important; inset:0 !important; display:none !important;
+  align-items:center !important; justify-content:center !important; padding:20px !important;
+  background:rgba(0,0,0,.62) !important; backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
+}
+#contactChooserOverlay.show{display:flex !important;}
+#contactChooserOverlay .contact-icon-only{
+  position:relative !important; width:auto !important; max-width:none !important;
+  margin:0 !important; padding:18px !important; box-sizing:border-box !important;
+  display:flex !important; align-items:center !important; justify-content:center !important;
+  background:#171719 !important; border:1px solid rgba(255,255,255,.12) !important;
+  border-radius:20px !important; box-shadow:none !important;
+}
+#contactChooserOverlay .contact-chooser-title{display:none !important;}
+#contactChooserOverlay .contact-map-icons{
+  display:flex !important; align-items:center !important; justify-content:center !important;
+  gap:14px !important; margin:0 !important; padding:0 !important;
+}
+#contactChooserOverlay .contact-map-icon{
+  width:76px !important; height:76px !important; min-width:76px !important;
+  padding:0 !important; border-radius:18px !important; overflow:hidden !important;
+  display:flex !important; align-items:center !important; justify-content:center !important;
+  background:#232326 !important; border:none !important; outline:none !important;
+  box-shadow:none !important; text-decoration:none !important; transform:none !important;
+  transition:transform .15s ease !important;
+}
+#contactChooserOverlay .contact-map-icon:hover{transform:scale(1.03) !important; box-shadow:none !important;}
+#contactChooserOverlay .contact-map-icon:focus,
+#contactChooserOverlay .contact-map-icon:focus-visible{outline:none !important; box-shadow:none !important;}
+#contactChooserOverlay .contact-map-icon img{
+  width:100% !important; height:100% !important; object-fit:cover !important;
+  display:block !important; border-radius:inherit !important;
+}
+#contactChooserOverlay .contact-chooser-close{
+  position:absolute !important; top:8px !important; right:8px !important; left:auto !important;
+  width:38px !important; height:38px !important; padding:0 !important;
+  border:none !important; background:transparent !important; color:#ff3030 !important;
+  font-size:34px !important; font-weight:900 !important; line-height:38px !important;
+  display:flex !important; align-items:center !important; justify-content:center !important;
+  z-index:20 !important; text-shadow:none !important; box-shadow:none !important;
+}
+#contactChooserOverlay .contact-chooser-close:hover,
+#contactChooserOverlay .contact-chooser-close:focus,
+#contactChooserOverlay .contact-chooser-close:focus-visible{
+  background:transparent !important; color:#ff3030 !important; border:none !important;
+  outline:none !important; transform:none !important; box-shadow:none !important;
+}
+@media(max-width:520px){
+  #contactChooserOverlay .contact-map-icon{width:64px !important;height:64px !important;min-width:64px !important;}
+  #contactChooserOverlay .contact-map-icons{gap:12px !important;}
+}
+</style>
+
 <!-- ============ CONTACT CHOOSER ============ -->
 <div class="contact-chooser-overlay" id="contactChooserOverlay" onclick="closeContactChooser(event)">
-  <div class="contact-chooser" role="dialog" aria-modal="true" aria-labelledby="contactChooserTitle" onclick="event.stopPropagation()">
+  <div class="contact-chooser contact-icon-only" role="dialog" aria-modal="true" aria-labelledby="contactChooserTitle" onclick="event.stopPropagation()">
     <button class="contact-chooser-close" type="button" onclick="closeContactChooser()" aria-label="داخستن">×</button>
     <div class="contact-chooser-title" id="contactChooserTitle">پەیوەندی</div>
-    <div class="contact-chooser-subtitle">ڕێگای پەیوەندی هەڵبژێرە</div>
-    <div class="contact-chooser-actions">
-      <a class="contact-choice" href="tel:+9647774242436" aria-label="پەیوەندی بە تەلەفۆن">
-        <span class="contact-choice-icon phone-choice">
-          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 3.5l3 1.2-1.4 3.4-1.5.8a13.5 13.5 0 0 0 8.5 8.5l.8-1.5 3.4-1.4 1.2 3c.3.8-.1 1.7-.9 2.1-1.1.5-2.3.7-3.5.4A17 17 0 0 1 4.4 7.4c-.3-1.2-.1-2.4.4-3.5.4-.8 1.3-1.2 2.1-.9z"/></svg>
-        </span>
-        <span><strong>پەیوەندی بە تەلەفۆن</strong><small>+964 777 424 2436</small></span>
+    <div class="contact-map-icons">
+      <a class="contact-map-icon" href="tel:+9647774242436" aria-label="پەیوەندی بە تەلەفۆن">
+        <img src="https://img.sanishtech.com/u/3a61a79b85095c0191b836eeaad218e4.jpeg" alt="Phone">
       </a>
-      <a class="contact-choice" href="https://wa.me/9647774242436" target="_blank" rel="noopener" aria-label="پەیوەندی لە واتساپ">
-        <span class="contact-choice-icon whatsapp-choice">
-          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 11.5a8.5 8.5 0 0 1-12.8 7.3L4 20l1.2-3.5A8.5 8.5 0 1 1 20.5 11.5z"/><path d="M8.5 8.5c.4 2 2 4.1 4 5.1.6.3 1.2.1 1.6-.4l.6-.8"/></svg>
-        </span>
-        <span><strong>واتساپ</strong><small>چات لە واتساپ</small></span>
+      <a class="contact-map-icon" href="https://wa.me/9647774242436" target="_blank" rel="noopener" aria-label="پەیوەندی لە واتساپ">
+        <img src="https://img.sanishtech.com/u/925ba2cf2083f3f9180346108367712a.jpeg" alt="WhatsApp">
       </a>
     </div>
   </div>
