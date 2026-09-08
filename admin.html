@@ -62,9 +62,14 @@ window.PHToolsFirebase = {
     const payload = {
       name: product.name || "",
       price: Number(product.price || 0),
+      currency: product.currency || "IQD",
       category: product.category || "",
       brand: product.brand || "",
+      smallDescription: product.smallDescription || "",
       description: product.description || "",
+      images: Array.isArray(product.images) ? product.images.filter(Boolean) : [],
+      videoUrl: product.videoUrl || "",
+      sizes: Array.isArray(product.sizes) ? product.sizes : [],
       stock: Number(product.stock || 0),
       rating: Number(product.rating || 0),
       sortOrder: Number(product.sortOrder || 0),
@@ -82,9 +87,14 @@ window.PHToolsFirebase = {
     const payload = {
       name: product.name || "",
       price: Number(product.price || 0),
+      currency: product.currency || "IQD",
       category: product.category || "",
       brand: product.brand || "",
+      smallDescription: product.smallDescription || "",
       description: product.description || "",
+      images: Array.isArray(product.images) ? product.images.filter(Boolean) : [],
+      videoUrl: product.videoUrl || "",
+      sizes: Array.isArray(product.sizes) ? product.sizes : [],
       stock: Number(product.stock || 0),
       rating: Number(product.rating || 0),
       sortOrder: Number(product.sortOrder || 0),
@@ -868,6 +878,14 @@ tbody tr:hover{
 }
 </style>
 
+
+<style id="product-v2-admin-fields">
+#sizesEditor{display:grid;gap:8px;}
+.size-admin-row{display:grid;grid-template-columns:1fr 140px 150px 42px;gap:8px;align-items:center;}
+.size-admin-row .remove-size{min-height:44px;}
+#images{direction:ltr;text-align:left;}
+@media(max-width:760px){.size-admin-row{grid-template-columns:1fr 1fr 1fr 42px;}.size-admin-row .size-name{grid-column:1/-1;}}
+</style>
 </head>
 <body>
 
@@ -933,17 +951,22 @@ tbody tr:hover{
   <form id="productForm">
     <input type="hidden" id="productId">
     <div class="form-grid">
-      <div class="field"><label>ناوی بەرهەم *</label><input id="name" class="input" required></div>
-      <div class="field"><label>نرخ *</label><input id="price" class="input" type="number" min="0" step="0.01" required></div>
-      <div class="field"><label>بەش</label><input id="category" class="input"></div>
+      <div class="field"><label>ناوی پیشاندان *</label><input id="name" class="input" required></div>
+      <div class="field"><label>نرخی سەرەکی *</label><input id="price" class="input" type="number" min="0" step="0.01" required></div>
+      <div class="field"><label>دراو</label><select id="currency" class="input"><option value="IQD">IQD — دینار</option><option value="USD">USD — دۆلار</option></select></div>
+      <div class="field"><label>کەتەگۆری</label><select id="category" class="input"><option value="drill">درێل</option><option value="charger">بابەت شەحن</option><option value="shafra">شفرە و ماڵە</option><option value="nail">بورغی دەرزی</option><option value="cutting">مشار</option><option value="electronics">ئەلیکترۆنی</option></select></div>
       <div class="field"><label>براند</label><input id="brand" class="input"></div>
       <div class="field"><label>ستۆک</label><input id="stock" class="input" type="number" min="0" step="1" value="0"></div>
+      <div class="field full"><label>وەسفی کورت</label><textarea id="smallDescription" rows="2" placeholder="لە کارتەکەی بەرهەمدا پیشان دەدرێت"></textarea></div>
+      <div class="field full"><label>وێنەکان — هەر URL لە هێڵێکی جیاواز</label><textarea id="images" rows="4" placeholder="https://.../image1.jpg
+https://.../image2.jpg"></textarea><img id="preview" class="preview hidden"></div>
+      <div class="field full"><label>بەستەری ڤیدیۆ (ئەگەر هەبێت)</label><input id="videoUrl" class="input" type="url" placeholder="https://youtube.com/watch?v=..."></div>
+      <div class="field full"><label>وەسفی تەواو</label><textarea id="description" rows="6"></textarea></div>
+      <div class="field full"><label>قەبارە و نرخەکان (ئەگەر جیاوازن)</label><div id="sizesEditor"></div><button id="addSizeBtn" class="btn secondary" type="button" style="margin-top:8px">+ زیادکردنی قەبارە</button></div>
       <div class="field"><label>هەڵسەنگاندن</label><select id="rating" class="input"><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option><option>0</option></select></div>
       <div class="field"><label>ڕیزبەندی</label><input id="sortOrder" class="input" type="number" step="1" value="0"></div>
-      <div class="field"><label>سەرچاوەی وێنە</label><input id="image" class="input" type="text" placeholder="index-product-1"><img id="preview" class="preview hidden"></div>
-      <div class="field full"><label>وەسف</label><textarea id="description" rows="5"></textarea></div>
       <div class="field"><label class="check"><input id="featured" type="checkbox"> بەرهەمی تایبەت</label></div>
-      <div class="field"><label class="check"><input id="active" type="checkbox" checked> لە ماڵپەڕدا پیشان بدرێت</label></div>
+      <div class="field"><label class="check"><input id="active" type="checkbox" checked> چالاک — لە ماڵپەڕدا پیشان بدرێت</label></div>
     </div>
     <div id="formMsg"></div>
     <div class="footer-actions"><button class="btn" type="submit" id="saveBtn">پاشەکەوتکردن</button><button class="btn secondary" type="button" id="cancelBtn">هەڵوەشاندنەوە</button></div>
@@ -1103,7 +1126,7 @@ tbody tr:hover{
         <td>${image ? `<img class="thumb" src="${esc(image)}">` : "—"}</td>
         <td><b>${esc(p.name)}</b>${p.featured ? '<div class="muted">⭐ تایبەت</div>' : ""}</td>
         <td>${esc(p.category || "—")}<div class="muted">${esc(p.brand || "")}</div></td>
-        <td>$${Number(p.price || 0).toFixed(2)}</td>
+        <td>${p.currency === "USD" ? "$" + Number(p.price || 0).toLocaleString("en-US",{maximumFractionDigits:2}) : Number(p.price || 0).toLocaleString("en-US") + " د.ع"}</td>
         <td>${Number(p.stock || 0)}</td>
         <td>${p.active ? '<span class="badge">چالاک</span>' : '<span class="badge off">ناچالاک</span>'}</td>
         <td><div class="actions">
@@ -1112,6 +1135,17 @@ tbody tr:hover{
         </div></td>
       </tr>`;
     }).join("") || '<tr><td colspan="7" class="muted">هیچ بەرهەمێک نییە.</td></tr>';
+  }
+
+  function addSizeRow(size = {name:"", price:"", currency:"IQD"}) {
+    const row = document.createElement("div");
+    row.className = "size-admin-row";
+    row.innerHTML = `<input class="input size-name" placeholder="ناوی قەبارە" value="${esc(size.name)}"><input class="input size-price" type="number" min="0" step="0.01" placeholder="نرخ" value="${esc(size.price)}"><select class="input size-currency"><option value="IQD" ${size.currency==="IQD"?"selected":""}>IQD</option><option value="USD" ${size.currency==="USD"?"selected":""}>USD</option></select><button class="btn danger small remove-size" type="button">×</button>`;
+    row.querySelector(".remove-size").addEventListener("click",()=>row.remove());
+    $("sizesEditor").appendChild(row);
+  }
+  function readSizes(){
+    return [...document.querySelectorAll(".size-admin-row")].map(row=>({name:row.querySelector(".size-name").value.trim(),price:Number(row.querySelector(".size-price").value||0),currency:row.querySelector(".size-currency").value})).filter(x=>x.name);
   }
 
   function openModal(product = null) {
@@ -1123,27 +1157,35 @@ tbody tr:hover{
     $("active").checked = true;
     $("rating").value = "5";
     $("sortOrder").value = "0";
+    $("currency").value = "IQD";
+    $("category").value = "drill";
+    $("sizesEditor").innerHTML = "";
 
     if (product) {
       $("productId").value = product.id;
       $("name").value = product.name || "";
       $("price").value = product.price ?? 0;
-      $("category").value = product.category || "";
+      $("currency").value = product.currency || "IQD";
+      $("category").value = product.category || "drill";
       $("brand").value = product.brand || "";
       $("stock").value = product.stock ?? 0;
       $("rating").value = product.rating ?? 5;
       $("sortOrder").value = product.sortOrder ?? product.sort_order ?? 0;
+      $("smallDescription").value = product.smallDescription || product.shortDescription || "";
       $("description").value = product.description || "";
+      $("videoUrl").value = product.videoUrl || product.video || "";
       $("featured").checked = !!product.featured;
       $("active").checked = product.active !== false;
 
       const legacyImage = product.legacyId ? (indexProductImages.get(String(product.legacyId)) || "") : "";
       const image = legacyImage || product.imageUrl || product.image_url || "";
-      $("image").value = product.imageRef || image;
+      const images = Array.isArray(product.images) && product.images.length ? product.images : (image ? [image] : []);
+      $("images").value = images.join("\n");
       if (image) {
         $("preview").src = image;
         $("preview").classList.remove("hidden");
       }
+      (Array.isArray(product.sizes) ? product.sizes : []).forEach(addSizeRow);
     }
 
     $("modal").classList.remove("hidden");
@@ -1169,6 +1211,21 @@ tbody tr:hover{
       toast("سڕینەوە سەرکەوتوو نەبوو");
     }
   };
+
+
+  async function seedExamplesIfEmpty(){
+    try{
+      const existing=await window.PHToolsFirebase.listProducts();
+      if(existing.length) return;
+      const examples=[
+        {name:"DEWALT درێلی بێ‌وایەر",price:150,currency:"USD",category:"drill",brand:"DEWALT",smallDescription:"درێلی بێ‌وایەری پیشەیی",description:"درێلی نموونەیی بۆ پیشاندانی شێوازی بەرهەم. ئەمە تەنها نموونەیە و دەتوانیت لە داشبۆردەوە بگۆڕیت.",images:["https://placehold.co/700x700/png?text=DEWALT+DRILL"],videoUrl:"",sizes:[{name:"18V",price:150,currency:"USD"}],stock:10,rating:5,sortOrder:1,featured:true,active:true},
+        {name:"شەحنی USB-C",price:25000,currency:"IQD",category:"charger",brand:"PH.Tools",smallDescription:"شەحنێکی خێرا بۆ ئەلیکترۆنی",description:"بەرهەمی نموونەیی بۆ کەتەگۆری بابەت شەحن. دەتوانیت وێنە، ڤیدیۆ، وەسف و نرخەکان لە داشبۆردەوە بگۆڕیت.",images:["https://placehold.co/700x700/png?text=CHARGER"],videoUrl:"",sizes:[{name:"Standard",price:25000,currency:"IQD"},{name:"Premium",price:35000,currency:"IQD"}],stock:20,rating:5,sortOrder:2,featured:false,active:true}
+      ];
+      for(const p of examples) await window.PHToolsFirebase.addProduct(p);
+      await loadProducts();
+      toast("٢ نموونەی بەرهەم زیادکران");
+    }catch(e){console.warn("Example seed skipped:",e);}
+  }
 
   function setup() {
     const loginForm = $("loginView").querySelector(".login-card");
@@ -1229,17 +1286,11 @@ tbody tr:hover{
     $("cancelBtn").addEventListener("click", closeModal);
     $("modalBg").addEventListener("click", closeModal);
 
-    $("image").addEventListener("input", () => {
-      const value = $("image").value.trim();
-      const match = value.match(/^index-product-(\d+)$/);
-      const image = match ? (indexProductImages.get(match[1]) || "") : value;
-      if (image) {
-        $("preview").src = image;
-        $("preview").classList.remove("hidden");
-      } else {
-        $("preview").classList.add("hidden");
-      }
+    $("images").addEventListener("input", () => {
+      const value = $("images").value.trim().split(/\r?\n/).map(x=>x.trim()).filter(Boolean)[0] || "";
+      if(value){$("preview").src=value;$("preview").classList.remove("hidden");}else{$("preview").classList.add("hidden");}
     });
+    $("addSizeBtn").addEventListener("click",()=>addSizeRow());
 
     $("productForm").addEventListener("submit", async event => {
       event.preventDefault();
@@ -1252,15 +1303,20 @@ tbody tr:hover{
         const product = {
           name: $("name").value.trim(),
           price: Number($("price").value || 0),
-          category: $("category").value.trim(),
+          currency: $("currency").value,
+          category: $("category").value,
           brand: $("brand").value.trim(),
           stock: Number($("stock").value || 0),
           rating: Number($("rating").value || 0),
           sortOrder: Number($("sortOrder").value || 0),
+          smallDescription: $("smallDescription").value.trim(),
           description: $("description").value.trim(),
+          images: $("images").value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean),
+          videoUrl: $("videoUrl").value.trim(),
+          sizes: readSizes(),
           featured: $("featured").checked,
           active: $("active").checked,
-          imageUrl: $("image").value.trim()
+          imageUrl: ($("images").value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean)[0] || "")
         };
 
         if (id) {
@@ -1284,6 +1340,7 @@ tbody tr:hover{
     window.PHToolsFirebase.onAuth(async user => {
       if (user) {
         showApp();
+        await seedExamplesIfEmpty();
         await loadProducts();
         await autoSyncExistingProducts();
       } else {

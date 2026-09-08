@@ -242,6 +242,53 @@
   }
   .add-btn:hover{background:var(--red-dark);}
 
+
+  /* ---------- PRODUCTS V2 ---------- */
+  #products{padding:44px 0;}
+  .products-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px;}
+  .products-head h2{font-size:22px;font-weight:800;border-bottom:3px solid var(--red);padding-bottom:8px;display:inline-block;}
+  .products-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
+  .product-card-v2{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;transition:.2s;min-width:0;}
+  .product-card-v2:hover{box-shadow:0 8px 22px rgba(0,0,0,.09);transform:translateY(-3px);}
+  .product-card-v2 .product-image{aspect-ratio:1/1;background:var(--gray-bg);overflow:hidden;}
+  .product-card-v2 .product-image img{width:100%;height:100%;object-fit:cover;display:block;}
+  .product-card-v2 .product-content{padding:13px;display:flex;flex-direction:column;gap:7px;flex:1;}
+  .product-card-v2 .product-name{font-size:15px;font-weight:800;line-height:1.5;}
+  .product-card-v2 .product-small-desc{font-size:12px;color:#777;line-height:1.7;min-height:41px;}
+  .product-card-v2 .product-price{font-size:17px;color:var(--red);font-weight:900;margin-top:auto;}
+  .product-more-btn{border:0;background:var(--red);color:#fff;border-radius:6px;padding:10px 12px;font-size:12.5px;font-weight:800;cursor:pointer;margin-top:4px;}
+  .product-more-btn:hover{background:var(--red-dark);}
+  .product-empty{grid-column:1/-1;text-align:center;padding:50px 10px;color:#999;}
+  .product-modal-v2{position:fixed;inset:0;z-index:180;display:none;align-items:center;justify-content:center;padding:18px;}
+  .product-modal-v2.show{display:flex;}
+  .product-modal-v2 .modal-overlay{position:absolute;inset:0;background:rgba(0,0,0,.66);}
+  .product-detail{position:relative;z-index:1;width:min(900px,96vw);max-height:92vh;overflow:auto;background:#fff;border-radius:16px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);box-shadow:0 24px 70px rgba(0,0,0,.35);}
+  .product-detail-close{position:absolute;top:12px;left:12px;width:34px;height:34px;border:0;border-radius:50%;background:#f1f1f1;color:#555;font-size:20px;z-index:4;cursor:pointer;}
+  .product-gallery{padding:18px;background:var(--gray-bg);min-width:0;}
+  .product-gallery-main{width:100%;aspect-ratio:1/1;border-radius:10px;overflow:hidden;background:#fff;}
+  .product-gallery-main img{width:100%;height:100%;object-fit:cover;display:block;}
+  .product-thumbs{display:flex;gap:8px;overflow:auto;margin-top:10px;padding-bottom:2px;}
+  .product-thumb{width:58px;height:58px;flex:0 0 58px;border:1px solid var(--line);border-radius:7px;overflow:hidden;padding:0;background:#fff;cursor:pointer;}
+  .product-thumb.active{border-color:var(--red);box-shadow:0 0 0 1px var(--red);}
+  .product-thumb img{width:100%;height:100%;object-fit:cover;}
+  .product-detail-info{padding:30px 28px;min-width:0;}
+  .product-detail-info h2{font-size:24px;font-weight:900;margin:0 0 8px;}
+  .product-detail-brand{font-size:12px;color:#888;margin-bottom:14px;}
+  .product-detail-price{font-size:24px;font-weight:900;color:var(--red);margin:12px 0 16px;}
+  .product-detail-section{margin-top:18px;}
+  .product-detail-section h4{font-size:14px;font-weight:900;margin-bottom:7px;}
+  .product-detail-description{font-size:13.5px;color:#555;line-height:1.9;white-space:pre-line;}
+  .product-video{position:relative;width:100%;aspect-ratio:16/9;margin-top:10px;border-radius:10px;overflow:hidden;background:#111;}
+  .product-video iframe{width:100%;height:100%;border:0;}
+  .size-options{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
+  .size-option{border:1px solid var(--line);background:#fff;border-radius:7px;padding:8px 11px;cursor:pointer;font-size:12px;font-weight:800;}
+  .size-option.active{border-color:var(--red);color:var(--red);box-shadow:0 0 0 1px var(--red);}
+  .order-btn-v2{width:100%;border:0;background:var(--red);color:#fff;border-radius:7px;padding:13px;font-size:14px;font-weight:900;cursor:pointer;margin-top:20px;}
+  .order-btn-v2:hover{background:var(--red-dark);}
+  body.light-theme .product-card-v2{background:#fff;}
+  @media(max-width:900px){.products-grid{grid-template-columns:repeat(3,1fr);}.product-detail{grid-template-columns:1fr;max-height:94vh;}.product-gallery{padding:14px;}.product-detail-info{padding:22px 18px 24px;}}
+  @media(max-width:640px){.products-head{margin-bottom:18px;}.products-grid{grid-template-columns:repeat(2,1fr);gap:10px;}.product-card-v2 .product-content{padding:10px;}.product-card-v2 .product-name{font-size:13px;}.product-card-v2 .product-small-desc{font-size:11px;min-height:38px;}.product-card-v2 .product-price{font-size:15px;}.product-more-btn{padding:9px 10px;font-size:11.5px;}.product-detail-info h2{font-size:20px;}.product-detail-price{font-size:21px;}}
+
   /* ---------- BRANDS STRIP ---------- */
   .brands-strip{background:var(--gray-bg);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:22px 0;}
   .brands-row{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
@@ -1058,6 +1105,29 @@ body.light-theme .location-option .location-icon{
 .mainnav .category-filter.active:not(.home){color:var(--red);}
 .mainnav .category-filter.active.home{background:var(--red);color:#fff;}
 </style>
+
+<script type="module" id="products-firebase-client">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyCH5-6OhuCVfZo8abiIHYfOzvbQTBQbEmw",
+  authDomain: "ph-tools-4a82c.firebaseapp.com",
+  projectId: "ph-tools-4a82c",
+  storageBucket: "ph-tools-4a82c.firebasestorage.app",
+  messagingSenderId: "677581607396",
+  appId: "1:677581607396:web:7c63eee6537cdf7ccb37f1",
+  measurementId: "G-DDCWBJVG1T"
+};
+const productsApp = initializeApp(firebaseConfig, "products-public");
+const productsDb = getFirestore(productsApp);
+window.PHToolsProducts = {
+  async load(){
+    const snap = await getDocs(collection(productsDb, "products"));
+    return snap.docs.map(d => ({id:d.id, ...d.data()})).filter(p => p.active !== false);
+  }
+};
+window.dispatchEvent(new Event("products-firebase-ready"));
+</script>
 </head>
 <body>
 
@@ -1123,6 +1193,36 @@ body.light-theme .location-option .location-icon{
 <section class="hero" id="home" aria-label="بەنەری پڕۆمۆشن">
   <img class="hero-banner" src="./IMG_9552.webp" alt="PH.Tools main banner">
 </section>
+
+
+<!-- ============ PRODUCTS ============ -->
+<section class="sec" id="products">
+  <div class="container">
+    <div class="products-head"><h2>بەرهەمەکان</h2></div>
+    <div class="products-grid" id="productsGrid"></div>
+  </div>
+</section>
+
+<!-- ============ PRODUCT DETAIL ============ -->
+<div class="product-modal-v2" id="productDetailModal" aria-hidden="true">
+  <div class="modal-overlay" onclick="closeProductDetail()"></div>
+  <div class="product-detail" role="dialog" aria-modal="true" aria-labelledby="productDetailTitle">
+    <button class="product-detail-close" type="button" onclick="closeProductDetail()" aria-label="داخستن">×</button>
+    <div class="product-gallery">
+      <div class="product-gallery-main"><img id="detailMainImage" alt=""></div>
+      <div class="product-thumbs" id="detailThumbs"></div>
+    </div>
+    <div class="product-detail-info">
+      <h2 id="productDetailTitle"></h2>
+      <div class="product-detail-brand" id="productDetailBrand"></div>
+      <div class="product-detail-price" id="productDetailPrice"></div>
+      <div class="product-detail-section" id="sizeSection" style="display:none"><h4>قەبارە</h4><div class="size-options" id="sizeOptions"></div></div>
+      <div class="product-detail-section"><h4>وەسفی تەواو</h4><div class="product-detail-description" id="productDetailDescription"></div></div>
+      <div class="product-detail-section" id="videoSection" style="display:none"><h4>ڤیدیۆ</h4><div class="product-video"><iframe id="productVideoFrame" title="ڤیدیۆی بەرهەم" allowfullscreen></iframe></div></div>
+      <button class="order-btn-v2" id="detailOrderBtn" type="button">داوا کردن 🛒</button>
+    </div>
+  </div>
+</div>
 
 <!-- ============ FEATURES ============ -->
 <section class="features">
@@ -1251,6 +1351,136 @@ const BRANDS = [
 let cart = JSON.parse(localStorage.getItem('ph_cart') || '{}');
 let wishlist = JSON.parse(localStorage.getItem('ph_wish') || '[]');
 
+
+/* ================= FIRESTORE PRODUCTS ================= */
+let siteProducts = [];
+let activeDetailProduct = null;
+let activeDetailSize = null;
+
+const CATEGORY_LABELS = {
+  drill:'درێل', charger:'بابەت شەحن', shafra:'شفرە و ماڵە', nail:'بورغی دەرزی', cutting:'مشار', electronics:'ئەلیکترۆنی'
+};
+
+function normalizeProduct(p){
+  const images = Array.isArray(p.images) ? p.images.filter(Boolean) : (p.img ? [p.img] : (p.imageUrl ? [p.imageUrl] : []));
+  let sizes = Array.isArray(p.sizes) ? p.sizes : [];
+  sizes = sizes.map((x,i)=>{
+    if(typeof x === 'string') return {name:x, price:Number(p.price||0), currency:p.currency||'IQD'};
+    return {name:x.name||x.size||`قەبارە ${i+1}`, price:Number(x.price ?? p.price ?? 0), currency:x.currency||p.currency||'IQD'};
+  });
+  return {...p, images, sizes, smallDescription:p.smallDescription||p.shortDescription||p.short_description||'', currency:p.currency||'IQD', videoUrl:p.videoUrl||p.video||''};
+}
+function formatPrice(price,currency){
+  const n=Number(price||0);
+  return currency==='USD' ? `$${n.toLocaleString('en-US',{maximumFractionDigits:2})}` : `${n.toLocaleString('en-US')} د.ع`;
+}
+function productMatchesCategory(p, category){
+  if(category==='all') return true;
+  const terms=CATEGORY_FILTERS[category]||[];
+  const raw=[p.category,p.categories,p.brand,p.name].filter(Boolean).join(' ').toLowerCase();
+  return terms.some(t=>raw.includes(String(t).toLowerCase()));
+}
+function currentFilteredProducts(){
+  const active=document.querySelector('.category-filter.active');
+  const category=active?.dataset.filter||'all';
+  return siteProducts.filter(p=>productMatchesCategory(p,category));
+}
+function renderProducts(){
+  const grid=document.getElementById('productsGrid');
+  if(!grid) return;
+  const list=currentFilteredProducts();
+  if(!list.length){grid.innerHTML='<div class="product-empty">هیچ بەرهەمێک لەم بەشەدا نییە.</div>';return;}
+  grid.innerHTML=list.map(p=>{
+    const img=p.images[0]||'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="600" height="600"%3E%3Crect width="100%25" height="100%25" fill="%23eeeeee"/%3E%3C/svg%3E';
+    const price=(p.sizes&&p.sizes.length)?p.sizes[0].price:p.price;
+    const currency=(p.sizes&&p.sizes.length)?p.sizes[0].currency:p.currency;
+    return `<article class="product-card-v2 prod-card" data-category="${escAttr(p.category||'')}" data-categories="${escAttr(p.categories||'')}">
+      <div class="product-image"><img src="${escAttr(img)}" alt="${escAttr(p.name||'بەرهەم')}"></div>
+      <div class="product-content">
+        <div class="product-name">${escHtml(p.name||'بەرهەم')}</div>
+        <div class="product-small-desc">${escHtml(p.smallDescription||'')}</div>
+        <div class="product-price">${formatPrice(price,currency)}</div>
+        <button class="product-more-btn" type="button" onclick="openProductDetail('${escAttr(p.id)}')">زانیاری زیاتر</button>
+      </div>
+    </article>`;
+  }).join('');
+}
+function escHtml(v){return String(v??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function escAttr(v){return escHtml(v).replace(/'/g,'&#39;');}
+function toEmbedUrl(url){
+  if(!url) return '';
+  try{
+    const u=new URL(url);
+    if(u.hostname.includes('youtube.com')){const id=u.searchParams.get('v'); if(id) return `https://www.youtube.com/embed/${id}`;}
+    if(u.hostname==='youtu.be'){return `https://www.youtube.com/embed/${u.pathname.slice(1)}`;}
+    if(u.hostname.includes('vimeo.com')){const id=u.pathname.split('/').filter(Boolean).pop(); if(id) return `https://player.vimeo.com/video/${id}`;}
+  }catch(e){}
+  return url;
+}
+function openProductDetail(id){
+  const p=siteProducts.find(x=>String(x.id)===String(id));
+  if(!p) return;
+  activeDetailProduct=p; activeDetailSize=(p.sizes&&p.sizes.length)?p.sizes[0]:null;
+  document.getElementById('productDetailTitle').textContent=p.name||'';
+  document.getElementById('productDetailBrand').textContent=p.brand||'';
+  document.getElementById('productDetailDescription').textContent=p.description||'وەسفی تەواو بەردەست نییە.';
+  const imgs=p.images.length?p.images:['data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="600" height="600"%3E%3Crect width="100%25" height="100%25" fill="%23eeeeee"/%3E%3C/svg%3E'];
+  document.getElementById('detailMainImage').src=imgs[0];
+  document.getElementById('detailMainImage').alt=p.name||'';
+  document.getElementById('detailThumbs').innerHTML=imgs.map((img,i)=>`<button class="product-thumb ${i===0?'active':''}" type="button" onclick="selectProductImage(${i})"><img src="${escAttr(img)}" alt=""></button>`).join('');
+  const sizeSection=document.getElementById('sizeSection');
+  if(p.sizes&&p.sizes.length){
+    sizeSection.style.display='block';
+    document.getElementById('sizeOptions').innerHTML=p.sizes.map((sz,i)=>`<button class="size-option ${i===0?'active':''}" type="button" onclick="selectProductSize(${i})">${escHtml(sz.name)} — ${formatPrice(sz.price,sz.currency)}</button>`).join('');
+  }else{sizeSection.style.display='none';document.getElementById('sizeOptions').innerHTML='';}
+  updateDetailPrice();
+  const video=toEmbedUrl(p.videoUrl);
+  const vs=document.getElementById('videoSection');
+  if(video){vs.style.display='block';document.getElementById('productVideoFrame').src=video;}else{vs.style.display='none';document.getElementById('productVideoFrame').src='';}
+  document.getElementById('productDetailModal').classList.add('show');
+  document.getElementById('productDetailModal').setAttribute('aria-hidden','false');
+}
+function selectProductImage(i){
+  if(!activeDetailProduct) return;
+  const imgs=activeDetailProduct.images||[]; if(!imgs[i]) return;
+  document.getElementById('detailMainImage').src=imgs[i];
+  document.querySelectorAll('#detailThumbs .product-thumb').forEach((b,idx)=>b.classList.toggle('active',idx===i));
+}
+function selectProductSize(i){
+  if(!activeDetailProduct?.sizes?.[i]) return;
+  activeDetailSize=activeDetailProduct.sizes[i];
+  document.querySelectorAll('#sizeOptions .size-option').forEach((b,idx)=>b.classList.toggle('active',idx===i));
+  updateDetailPrice();
+}
+function updateDetailPrice(){
+  if(!activeDetailProduct) return;
+  const price=activeDetailSize?activeDetailSize.price:activeDetailProduct.price;
+  const currency=activeDetailSize?activeDetailSize.currency:activeDetailProduct.currency;
+  document.getElementById('productDetailPrice').textContent=formatPrice(price,currency);
+}
+function closeProductDetail(){
+  const modal=document.getElementById('productDetailModal');
+  modal.classList.remove('show');modal.setAttribute('aria-hidden','true');
+  document.getElementById('productVideoFrame').src='';
+  activeDetailProduct=null;activeDetailSize=null;
+}
+window.openProductDetail=openProductDetail;window.closeProductDetail=closeProductDetail;window.selectProductImage=selectProductImage;window.selectProductSize=selectProductSize;
+document.getElementById('detailOrderBtn').addEventListener('click',()=>{
+  if(!activeDetailProduct) return;
+  const key=String(activeDetailProduct.id)+(activeDetailSize?`::${activeDetailSize.name}`:'');
+  const price=activeDetailSize?activeDetailSize.price:activeDetailProduct.price;
+  const currency=activeDetailSize?activeDetailSize.currency:activeDetailProduct.currency;
+  cart[key]={productId:activeDetailProduct.id,qty:(cart[key]?.qty||0)+1,size:activeDetailSize?.name||'',price,currency};
+  saveCart();renderCart();showToast('زیادکرا بۆ سەبەتە');closeProductDetail();toggleCart(true);
+});
+async function loadSiteProducts(){
+  try{
+    if(!window.PHToolsProducts) await new Promise(r=>window.addEventListener('products-firebase-ready',r,{once:true}));
+    siteProducts=(await window.PHToolsProducts.load()).map(normalizeProduct);
+    renderProducts();
+  }catch(e){console.error('Products load error:',e);renderProducts();}
+}
+
 /* ================= CATEGORY FILTERING ================= */
 const CATEGORY_FILTERS = {
   all: [],
@@ -1263,30 +1493,11 @@ const CATEGORY_FILTERS = {
 };
 
 function filterProducts(category){
-  const cards = document.querySelectorAll('.prod-card');
-  const terms = CATEGORY_FILTERS[category] || [];
-
-  cards.forEach(card=>{
-    if(category === 'all'){
-      card.style.display = '';
-      return;
-    }
-
-    const raw = [
-      card.dataset.category,
-      card.dataset.categories,
-      card.getAttribute('data-cat'),
-      card.textContent
-    ].filter(Boolean).join(' ').toLowerCase();
-
-    card.style.display = terms.some(term => raw.includes(term.toLowerCase())) ? '' : 'none';
-  });
-
   document.querySelectorAll('.category-filter').forEach(item=>{
     item.classList.toggle('active', item.dataset.filter === category);
   });
-
-  const productSection = document.getElementById('products') || document.querySelector('.prod-grid') || document.querySelector('.products-grid');
+  renderProducts();
+  const productSection = document.getElementById('products');
   if(productSection && category !== 'all'){
     productSection.scrollIntoView({behavior:'smooth', block:'start'});
   }
@@ -1316,73 +1527,50 @@ BRANDS.forEach(b=>{
 
 /* ================= CART ================= */
 function saveCart(){ localStorage.setItem('ph_cart', JSON.stringify(cart)); }
+function cartEntries(){
+  return Object.entries(cart).map(([key,val])=>{
+    if(typeof val==='number') return {key,productId:key,qty:val,size:'',price:null,currency:null};
+    return {key,...val,qty:Number(val.qty||0)};
+  }).filter(x=>x.qty>0);
+}
 function addToCart(id){
-  cart[id] = (cart[id] || 0) + 1;
-  saveCart(); renderCart(); showToast('زیادکرا بۆ سەبەتە');
+  const p=siteProducts.find(x=>String(x.id)===String(id));
+  if(!p) return;
+  const size=(p.sizes&&p.sizes.length)?p.sizes[0]:null;
+  const key=String(p.id)+(size?`::${size.name}`:'');
+  cart[key]={productId:p.id,qty:(cart[key]?.qty||0)+1,size:size?.name||'',price:size?.price??p.price,currency:size?.currency||p.currency};
+  saveCart();renderCart();showToast('زیادکرا بۆ سەبەتە');
 }
-function changeQty(id, delta){
-  cart[id] = (cart[id]||0) + delta;
-  if(cart[id] <= 0) delete cart[id];
-  saveCart(); renderCart();
+function changeQty(key,delta){
+  const entry=cartEntries().find(x=>x.key===key);
+  if(!entry) return;
+  if(typeof cart[key]==='number') cart[key]+=delta; else cart[key].qty=(cart[key].qty||0)+delta;
+  const q=typeof cart[key]==='number'?cart[key]:cart[key].qty;
+  if(q<=0) delete cart[key];
+  saveCart();renderCart();
 }
-function removeLine(id){ delete cart[id]; saveCart(); renderCart(); }
-
+function removeLine(key){delete cart[key];saveCart();renderCart();}
 function renderCart(){
-  const body = document.getElementById('cartBody');
-  const ids = Object.keys(cart);
-  const countTotal = ids.reduce((s,id)=>s+cart[id],0);
-  document.getElementById('cartBadge').textContent = countTotal;
-  if(ids.length === 0){
-    body.innerHTML = '<div class="empty-msg">سەبەتەکەت بەتاڵە</div>';
-    document.getElementById('cartTotal').textContent = '$0';
-    return;
-  }
-  let total = 0;
-  body.innerHTML = ids.map(id=>{
-    const p = PRODUCTS.find(x=>x.id==id);
-    const qty = cart[id];
-    total += p.price * qty;
-    return `
-      <div class="cart-line">
-        <img src="${p.img}" alt="${p.name}">
-        <div class="cart-line-info">
-          <h5>${p.name}</h5>
-          <div class="prod-price" style="font-size:14px;">$${p.price}</div>
-          <div class="qty-row">
-            <button onclick="changeQty(${p.id},-1)">−</button>
-            <span>${qty}</span>
-            <button onclick="changeQty(${p.id},1)">+</button>
-          </div>
-          <div class="remove-line" onclick="removeLine(${p.id})">سڕینەوە</div>
-        </div>
-      </div>`;
+  const body=document.getElementById('cartBody');
+  if(!body) return;
+  const entries=cartEntries();
+  const countTotal=entries.reduce((s,e)=>s+e.qty,0);
+  document.getElementById('cartBadge').textContent=countTotal;
+  if(entries.length===0){body.innerHTML='<div class="empty-msg">سەبەتەکەت بەتاڵە</div>';document.getElementById('cartTotal').textContent='0';return;}
+  const totals={USD:0,IQD:0};
+  body.innerHTML=entries.map(e=>{
+    const p=siteProducts.find(x=>String(x.id)===String(e.productId));
+    if(!p) return '';
+    const price=e.price??p.price; const currency=e.currency||p.currency||'IQD'; totals[currency]=(totals[currency]||0)+Number(price||0)*e.qty;
+    return `<div class="cart-line"><img src="${escAttr(p.images?.[0]||'')}" alt="${escAttr(p.name)}"><div class="cart-line-info"><h5>${escHtml(p.name)}</h5>${e.size?`<div class="muted">${escHtml(e.size)}</div>`:''}<div class="prod-price" style="font-size:14px;">${formatPrice(price,currency)}</div><div class="qty-row"><button onclick="changeQty('${escAttr(e.key)}',-1)">−</button><span>${e.qty}</span><button onclick="changeQty('${escAttr(e.key)}',1)">+</button></div><div class="remove-line" onclick="removeLine('${escAttr(e.key)}')">سڕینەوە</div></div></div>`;
   }).join('');
-  document.getElementById('cartTotal').textContent = '$' + total;
+  const parts=[]; if(totals.IQD) parts.push(formatPrice(totals.IQD,'IQD')); if(totals.USD) parts.push(formatPrice(totals.USD,'USD'));
+  document.getElementById('cartTotal').textContent=parts.join(' + ')||'0';
 }
 renderCart();
-
-function toggleCart(open){
-  document.getElementById('cartDrawer').classList.toggle('show', open);
-  document.getElementById('overlay').classList.toggle('show', open);
-}
-function closeAllOverlays(){
-  toggleCart(false);
-  toggleMenu(false);
-  document.getElementById('simpleModal').classList.remove('show');
-  document.getElementById('productModal').classList.remove('show');
-  document.getElementById('overlay').classList.remove('show');
-}
-function checkout(){
-  if(Object.keys(cart).length === 0) return;
-  showToast('سوپاس! داواکاریەکەت تۆمار کرا ✓');
-  cart = {}; saveCart(); renderCart(); toggleCart(false);
-}
-
-/* ================= WISHLIST ================= */
-function saveWish(){ localStorage.setItem('ph_wish', JSON.stringify(wishlist)); }
-
-document.getElementById('wishBadge').textContent = wishlist.length;
-document.getElementById('wishBadge').style.display = wishlist.length ? 'flex' : 'none';
+function toggleCart(open){document.getElementById('cartDrawer').classList.toggle('show',open);document.getElementById('overlay').classList.toggle('show',open);}
+function closeAllOverlays(){toggleCart(false);toggleMenu(false);document.getElementById('simpleModal').classList.remove('show');document.getElementById('productDetailModal').classList.remove('show');document.getElementById('overlay').classList.remove('show');}
+function checkout(){if(cartEntries().length===0)return;showToast('سوپاس! داواکاریەکەت تۆمار کرا ✓');cart={};saveCart();renderCart();toggleCart(false);}
 
 /* ================= MENU / APPEARANCE / LOCATION ================= */
 function toggleMenu(open){
