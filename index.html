@@ -1569,16 +1569,13 @@ async function loadSiteProducts(){
     }
   }catch(e){
     console.error('Products realtime load error:',e);
-    renderProducts();
+    const grid=document.getElementById('productsGrid');
+    if(grid){
+      grid.innerHTML='<div class="product-empty">بەرهەمەکان بارنەکران. تکایە Firestore Rules و Firebase config بپشکنە.</div>';
+    }
   }
 }
 
-
-// Start the storefront product listener once.
-if(!window.__PHTOOLS_PRODUCTS_STARTED){
-  window.__PHTOOLS_PRODUCTS_STARTED=true;
-  loadSiteProducts();
-}
 
 /* ================= CATEGORY FILTERING ================= */
 const CATEGORY_FILTERS = {
@@ -1779,6 +1776,12 @@ function closeContactChooser(event){
   if(event && event.target && event.target.id !== 'contactChooserOverlay') return;
   const el = document.getElementById('contactChooserOverlay');
   if(el) el.classList.remove('show');
+}
+
+// Start product loading only after every storefront function/constant has been initialized.
+if(!window.__PHTOOLS_PRODUCTS_STARTED){
+  window.__PHTOOLS_PRODUCTS_STARTED=true;
+  loadSiteProducts();
 }
 
 </script>
