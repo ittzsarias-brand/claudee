@@ -91,10 +91,12 @@ window.editProduct=id=>openModal(products.find(p=>p.id===id));
 window.removeProduct=async id=>{const p=products.find(x=>x.id===id);if(!p||!confirm(`دڵنیایت لە سڕینەوەی «${p.name}»؟`))return;try{await deleteDoc(doc(db,'products',id));toast('سڕایەوە')}catch(e){toast('سڕینەوە سەرکەوتوو نەبوو')}};
 window.toggleActive=async id=>{const p=products.find(x=>x.id===id);if(!p)return;try{await updateDoc(doc(db,'products',id),{active:p.active===false,updatedAt:serverTimestamp()});toast(p.active===false?'چالاک کرا':'ناچالاک کرا')}catch(e){toast('گۆڕینی دۆخ سەرکەوتوو نەبوو')}};
 function subscribe(){if(unsub)unsub();unsub=onSnapshot(collection(db,'products'),snap=>{products=snap.docs.map(d=>({id:d.id,...d.data()}));$('syncState').innerHTML='<span class="sync-dot live"></span> هاوکاتە';render()},err=>{$('syncState').innerHTML='<span class="sync-dot"></span> کێشەی sync';console.error(err)})}
+window.addEventListener('DOMContentLoaded',()=>{
 $('loginBtn').onclick=async()=>{const e=$('email').value.trim(),p=$('password').value;$('loginMsg').innerHTML='';if(!e||!p){$('loginMsg').innerHTML='<div class="error">ئیمەیڵ و وشەی نهێنی پڕبکەرەوە.</div>';return}try{await FB.signIn(e,p)}catch(err){$('loginMsg').innerHTML='<div class="error">چوونەژوورەوە سەرکەوتوو نەبوو.</div>'}};
 $('logout').onclick=()=>FB.signOut();$('refresh').onclick=()=>render();$('search').oninput=render;$('categoryFilter').onchange=render;$('status').onchange=render;$('add').onclick=()=>openModal();$('close').onclick=closeModal;$('cancel').onclick=closeModal;$('bg').onclick=closeModal;$('form').onsubmit=save;$('addSize').onclick=()=>addSizeRow();$('files').onchange=()=>{const files=[...$('files').files];$('fileHint').textContent=files.length?`${files.length} وێنە هەڵبژێردراوە`:'هێشتا وێنە هەڵنەبژێردراوە';$('preview').innerHTML='';files.forEach(f=>addPreview(URL.createObjectURL(f)))};
 $('images').oninput=()=>{const urls=$('images').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);$('preview').innerHTML='';urls.forEach(addPreview)};
 onAuthStateChanged(auth,async user=>{if(!user){showLogin();if(unsub){unsub();unsub=null}return}showApp();subscribe()});
+});
 </script>
 </head>
 <body>
