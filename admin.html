@@ -6,12 +6,498 @@
   <meta name="theme-color" content="#070707">
   <title>PH.Tools — داشبۆردی بەڕێوەبردن</title>
   <style>
-:root{--bg:#0b0d10;--surface:#111419;--surface2:#171a20;--line:#292e36;--text:#f5f6f7;--muted:#8f98a5;--accent:#fff;--danger:#ff5c5c;--ok:#65d391;--radius:16px}
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif}body{min-height:100vh}button,input,textarea,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}.hidden{display:none!important}img{display:block}.muted{color:var(--muted);font-size:12px}.input{width:100%;background:#0d1014;color:var(--text);border:1px solid var(--line);border-radius:11px;padding:11px 12px;outline:none}.input:focus{border-color:#777;box-shadow:0 0 0 3px #fff1}.btn{border:1px solid var(--line);background:#171a20;color:var(--text);border-radius:10px;padding:10px 13px;font-weight:800}.btn:hover:not(:disabled){border-color:#777;background:#20242b}.btn.primary{background:#fff;color:#090a0c;border-color:#fff}.btn.danger{color:#ff7777;border-color:#4a2929}.wrap{max-width:1440px;margin:auto;padding:22px}.dashboard{display:grid;grid-template-columns:220px minmax(0,1fr);gap:20px;direction:ltr}.sidebar{background:#0f1216;border:1px solid var(--line);border-radius:20px;padding:18px;position:sticky;top:22px;height:calc(100vh - 44px);display:flex;flex-direction:column;direction:rtl}.brand{font-size:27px;font-weight:950;padding:6px 8px 24px}.brand span{color:#aaa}.side-title{font-size:10px;color:#666f7b;margin:5px 8px 9px}.navitem{border:0;background:transparent;color:#aab2bd;width:100%;text-align:right;padding:11px 12px;border-radius:10px;font-weight:800;margin-bottom:4px}.navitem.active,.navitem:hover{background:#1a1e25;color:#fff}.side-bottom{margin-top:auto;border-top:1px solid var(--line);padding-top:14px}.main{direction:rtl;min-width:0}.topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:20px}.topbar h1{font-size:25px;margin:0 0 5px}.top-actions{display:flex;gap:8px}.sync{padding:8px 11px;border:1px solid var(--line);border-radius:999px;background:#111419}.sync-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#777;margin-left:6px}.sync-dot.live{background:var(--ok);box-shadow:0 0 0 4px #65d39118}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}.stat{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;position:relative;overflow:hidden}.stat:after{content:"";position:absolute;inset:auto 0 0;height:2px;background:#fff}.stat.click{cursor:pointer}.stat.click:hover{background:#171b21}.stat b{display:block;font-size:30px;margin-top:8px}.stat .label{font-size:12px;color:var(--muted)}.stat.active-filter{background:#fff;color:#111}.stat.active-filter .label{color:#666}.section{background:var(--surface);border:1px solid var(--line);border-radius:18px;margin-bottom:18px;overflow:hidden}.section-head{padding:17px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.section-head h2{margin:0;font-size:17px}.section-body{padding:18px}.banner-layout{display:grid;grid-template-columns:1.05fr .95fr;gap:18px}.banner-preview{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#090b0e;min-height:150px}.banner-preview img{width:100%;aspect-ratio:7/5;object-fit:cover}.banner-tools{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}.banner-tools .btn{flex:1}.field{margin-top:11px}.field label{display:block;font-size:11px;font-weight:800;color:#b5bdc8;margin-bottom:6px}.products-head{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:18px;border-bottom:1px solid var(--line)}.toolbar{display:grid;grid-template-columns:minmax(0,1fr) 210px 160px;gap:8px;padding:14px 18px;border-bottom:1px solid var(--line)}.products-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line)}.product-card{background:var(--surface);min-width:0}.product-card:hover{background:#15191f}.product-image{width:100%;aspect-ratio:1/0.82;object-fit:cover;background:#0b0d10}.product-image.empty{display:grid;place-items:center;color:#66707c}.product-body{padding:13px}.product-name{font-weight:900;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.product-price{font-weight:900;font-size:14px;margin:8px 0}.product-meta{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:11px}.badge{display:inline-flex;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:900;border:1px solid var(--line)}.badge.on{background:#183b28;color:#79e0a1;border-color:#285d3e}.badge.off{color:#8b929d}.product-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px}.product-actions .btn{padding:8px 5px;font-size:11px}.empty{text-align:center;padding:40px;color:#707986;background:var(--surface);grid-column:1/-1}.login{min-height:100vh;display:grid;place-items:center;padding:20px;background:#080a0d}.login-card{width:min(410px,100%);background:#111419;border:1px solid var(--line);border-radius:22px;padding:28px;box-shadow:0 30px 90px #0008}.login-card h1{margin:8px 0;font-size:22px}.login-card .brand{padding:0 0 14px}.error,.ok{margin-top:11px;padding:10px 12px;border-radius:10px;line-height:1.7}.error{background:#30171a;color:#ff9292;border:1px solid #5b292d}.ok{background:#15291e;color:#8be0aa;border:1px solid #28563a}.modal{position:fixed;inset:0;background:#000b;z-index:50;display:grid;place-items:center;padding:16px}.modal-card{width:min(820px,100%);max-height:94vh;overflow:auto;background:#111419;border:1px solid #363c45;border-radius:20px;padding:20px;box-shadow:0 30px 100px #000b}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.full{grid-column:1/-1}.preview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;margin-top:9px}.preview-grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:9px}.file-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.price-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 130px auto;gap:7px;margin-top:7px}.check-row{display:flex;gap:18px;flex-wrap:wrap;margin-top:9px}.check-row label{display:flex;gap:7px;align-items:center}.footer-actions{display:flex;gap:8px;margin-top:17px;padding-top:13px;border-top:1px solid var(--line)}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px}#toast{position:fixed;bottom:18px;right:18px;z-index:100;background:#fff;color:#111;padding:11px 15px;border-radius:10px;box-shadow:0 15px 35px #0008}
-@media(max-width:1050px){.dashboard{grid-template-columns:1fr}.sidebar{position:static;height:auto;display:block}.sidebar nav{display:flex;overflow:auto;gap:5px}.navitem{white-space:nowrap}.side-bottom{margin-top:10px}.products-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.banner-layout{grid-template-columns:1fr}}
-@media(max-width:650px){.price-row{grid-template-columns:1fr 1fr}.price-row .pr-name{grid-column:1/-1}.wrap{padding:10px}.topbar{align-items:flex-start;flex-direction:column}.top-actions{width:100%}.top-actions .btn{flex:1}.stats{grid-template-columns:1fr 1fr}.stats .stat:first-child{grid-column:1/-1}.toolbar{grid-template-columns:1fr}.products-grid{grid-template-columns:1fr 1fr}.form-grid{grid-template-columns:1fr}.full{grid-column:auto}.modal{align-items:end;padding:0}.modal-card{border-radius:18px 18px 0 0;max-height:95vh}.products-head{align-items:flex-start;flex-direction:column}.products-head .btn{width:100%}}
-@media(max-width:420px){.products-grid{grid-template-columns:1fr}.product-image{aspect-ratio:1}.stats b{font-size:25px}}
-</style>
+    :root{
+      --bg:#070707;
+      --panel:#101010;
+      --panel2:#151515;
+      --line:#292929;
+      --text:#fff;
+      --muted:#a7a7a7;
+      --orange:#ff7a00;
+      --orange2:#ff9a3d;
+      --danger:#ff5757;
+      --radius:18px;
+    }
+    *{
+      box-sizing:border-box;
+    }
+    html,
+    body{
+      margin:0;
+      min-height:100%;
+      background:
+        radial-gradient(
+          800px 400px at 85% -10%,
+          rgba(255,122,0,.09),
+          transparent 60%
+        ),
+        var(--bg);
+      color:var(--text);
+      font-family:Tahoma,Arial,sans-serif;
+    }
+    body{
+      min-height:100vh;
+    }
+    button,
+    input,
+    textarea,
+    select{
+      font:inherit;
+    }
+    button{
+      cursor:pointer;
+    }
+    button:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+    }
+    img{
+      display:block;
+    }
+    .hidden{
+      display:none!important;
+    }
+    .wrap{
+      width:100%;
+      max-width:1200px;
+      margin:auto;
+      padding:22px;
+    }
+    .top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:15px;
+      margin-bottom:20px;
+    }
+    .brand{
+      font-size:25px;
+      font-weight:900;
+    }
+    .brand span{
+      color:var(--orange);
+    }
+    .muted{
+      color:var(--muted);
+      font-size:13px;
+    }
+    .actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .btn{
+      border:1px solid var(--line);
+      background:#171717;
+      color:#fff;
+      border-radius:12px;
+      padding:10px 14px;
+      font-weight:800;
+      transition:
+        background .15s ease,
+        border-color .15s ease,
+        transform .15s ease;
+    }
+    .btn:hover:not(:disabled){
+      border-color:#444;
+      background:#1d1d1d;
+    }
+    .btn:active:not(:disabled){
+      transform:translateY(1px);
+    }
+    .btn.primary{
+      background:var(--orange);
+      color:#090909;
+      border-color:var(--orange2);
+    }
+    .btn.primary:hover:not(:disabled){
+      background:var(--orange2);
+    }
+    .btn.danger{
+      background:#241010;
+      color:#ff8b8b;
+      border-color:#542020;
+    }
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:12px;
+      margin-bottom:18px;
+    }
+    .stat,
+    .panel{
+      background:linear-gradient(145deg,#141414,#0d0d0d);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:0 18px 45px rgba(0,0,0,.22);
+    }
+    .stat{
+      padding:17px;
+    }
+    .stat b{
+      display:block;
+      font-size:28px;
+      margin-top:7px;
+    }
+    .panel{
+      padding:18px;
+      margin-bottom:18px;
+    }
+    .panel-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+    }
+    .panel-head h2{
+      margin:0;
+      font-size:18px;
+    }
+    .toolbar{
+      display:flex;
+      gap:9px;
+      flex-wrap:wrap;
+    }
+    .toolbar .search{
+      flex:1;
+      min-width:240px;
+    }
+    .toolbar select{
+      max-width:180px;
+    }
+    .input{
+      width:100%;
+      background:#090909;
+      color:#fff;
+      border:1px solid #383838;
+      border-radius:12px;
+      padding:11px 12px;
+      outline:none;
+    }
+    .input:focus{
+      border-color:var(--orange);
+      box-shadow:0 0 0 3px rgba(255,122,0,.12);
+    }
+    textarea.input{
+      resize:vertical;
+    }
+    .table-wrap{
+      overflow:auto;
+    }
+    .table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0 8px;
+      min-width:850px;
+    }
+    .table th{
+      color:#aaa;
+      font-size:12px;
+      text-align:right;
+      padding:8px 10px;
+    }
+    .table td{
+      padding:11px 10px;
+      background:#0d0d0d;
+      border-top:1px solid #202020;
+      border-bottom:1px solid #202020;
+      vertical-align:middle;
+    }
+    .table td:first-child{
+      border-radius:0 12px 12px 0;
+    }
+    .table td:last-child{
+      border-radius:12px 0 0 12px;
+    }
+    .thumb{
+      width:58px;
+      height:58px;
+      object-fit:cover;
+      border-radius:12px;
+      background:#191919;
+    }
+    .badge{
+      display:inline-flex;
+      padding:5px 9px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:800;
+      border:1px solid #333;
+    }
+    .badge.on{
+      color:#ffb06a;
+      border-color:rgba(255,122,0,.4);
+      background:rgba(255,122,0,.08);
+    }
+    .badge.off{
+      color:#999;
+      background:#171717;
+    }
+    .row-actions{
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+    }
+    .login{
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      padding:20px;
+    }
+    .login-card{
+      width:min(430px,100%);
+      background:#101010;
+      border:1px solid #303030;
+      border-radius:22px;
+      padding:25px;
+      box-shadow:0 25px 70px rgba(0,0,0,.45);
+    }
+    .login-card h1{
+      margin:14px 0 8px;
+      font-size:23px;
+    }
+    .field{
+      margin-top:12px;
+    }
+    .field label{
+      display:block;
+      font-size:12px;
+      font-weight:800;
+      margin-bottom:7px;
+    }
+    .error,
+    .ok{
+      margin-top:12px;
+      padding:10px 12px;
+      border-radius:10px;
+      line-height:1.7;
+    }
+    .error{
+      background:#241010;
+      color:#ff9b9b;
+    }
+    .ok{
+      background:#15210f;
+      color:#b9e59e;
+    }
+    .modal{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.72);
+      z-index:50;
+      display:grid;
+      place-items:center;
+      padding:14px;
+    }
+    .modal-card{
+      width:min(780px,100%);
+      max-height:94vh;
+      overflow:auto;
+      background:#101010;
+      border:1px solid #343434;
+      border-radius:22px;
+      padding:20px;
+      box-shadow:0 30px 90px rgba(0,0,0,.6);
+      position:relative;
+      z-index:1;
+    }
+    .form-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:11px;
+    }
+    .full{
+      grid-column:1/-1;
+    }
+    .preview-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(90px,1fr));
+      gap:8px;
+      margin-top:9px;
+    }
+    .preview-grid img{
+      width:100%;
+      aspect-ratio:1;
+      border-radius:11px;
+      object-fit:cover;
+      background:#171717;
+    }
+    .file-row{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .file-row input[type=file]{
+      flex:1;
+      min-width:220px;
+    }
+    .size-row{
+      display:grid;
+      grid-template-columns:1fr 130px 130px auto;
+      gap:7px;
+      margin-top:7px;
+    }
+    .check-row{
+      display:flex;
+      gap:16px;
+      flex-wrap:wrap;
+      margin-top:9px;
+    }
+    .check-row label{
+      display:flex;
+      align-items:center;
+      gap:7px;
+      font-size:13px;
+    }
+    .footer-actions{
+      display:flex;
+      justify-content:flex-start;
+      gap:8px;
+      margin-top:17px;
+      padding-top:13px;
+      border-top:1px solid #252525;
+    }
+    .empty{
+      text-align:center;
+      padding:30px!important;
+      color:#999;
+    }
+    .sync-dot{
+      display:inline-block;
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:#7d7d7d;
+      margin-left:6px;
+    }
+    .sync-dot.live{
+      background:var(--orange);
+      box-shadow:0 0 12px rgba(255,122,0,.7);
+    }
+    #toast{
+      position:fixed;
+      bottom:18px;
+      left:18px;
+      z-index:100;
+      background:#171717;
+      border:1px solid #444;
+      color:#fff;
+      padding:11px 15px;
+      border-radius:12px;
+      box-shadow:0 15px 35px rgba(0,0,0,.35);
+    }
+    .banner-preview{margin-top:10px;border:1px solid #292929;border-radius:14px;overflow:hidden;background:#090909;min-height:70px;display:grid;place-items:center}
+    .banner-preview img{width:100%;max-height:260px;object-fit:cover}
+    .banner-tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
+    .banner-tools .btn{flex:0 0 auto}
+
+    @media(max-width:760px){
+      .wrap{
+        padding:14px;
+      }
+      .top{
+        align-items:stretch;
+        flex-direction:column;
+      }
+      .actions{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+      }
+      .actions .btn{
+        width:100%;
+      }
+      .stats{
+        grid-template-columns:1fr 1fr;
+      }
+      .panel{
+        padding:14px;
+      }
+      .form-grid{
+        grid-template-columns:1fr;
+      }
+      .full{
+        grid-column:auto;
+      }
+      .modal{
+        align-items:end;
+        padding:0;
+      }
+      .modal-card{
+        width:100%;
+        max-height:94vh;
+        border-radius:20px 20px 0 0;
+        padding:16px;
+      }
+      .size-row{
+        grid-template-columns:1fr 105px 105px auto;
+      }
+      .toolbar{
+        display:grid;
+        grid-template-columns:1fr;
+      }
+      .toolbar select,
+      .toolbar .search{
+        max-width:none;
+        min-width:0;
+      }
+      .table-wrap{
+        overflow:visible;
+      }
+      .table{
+        min-width:0;
+      }
+      .table thead{
+        display:none;
+      }
+      .table tbody{
+        display:grid;
+        gap:9px;
+      }
+      .table tbody tr{
+        display:grid;
+        grid-template-columns:60px 1fr;
+        padding:10px;
+        border:1px solid #242424;
+        border-radius:15px;
+        background:#0d0d0d;
+      }
+      .table tbody td{
+        border:0!important;
+        background:transparent;
+        padding:3px;
+      }
+      .table tbody td:first-child{
+        grid-row:1/span 4;
+        border-radius:0;
+      }
+      .thumb{
+        width:60px;
+        height:60px;
+      }
+      .row-actions{
+        margin-top:5px;
+      }
+      .login-card{
+        padding:20px;
+      }
+    }
+    @media(max-width:390px){
+      .stats{
+        gap:8px;
+      }
+      .stat{
+        padding:13px;
+      }
+      .stat b{
+        font-size:23px;
+      }
+      .size-row{
+        grid-template-columns:1fr 85px 85px auto;
+      }
+    }
+  </style>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
     import {
@@ -56,8 +542,7 @@
       ["shafra", "شفرە و ماڵە"],
       ["nail", "بورغی دەرزی"],
       ["cutting", "مشار"],
-      ["electronics", "ئەلیکترۆنی"],
-      ["warawela", "وردەواڵە"]
+      ["electronics", "ئەلیکترۆنی"]
     ];
     const categoryName = category =>
       categories.find(item => item[0] === category)?.[1] || category || "—";
@@ -79,17 +564,6 @@
         })}`;
       }
       return `${number.toLocaleString("en-US")} د.ع`;
-    }
-    function displayPrice(value, currency) {
-      const raw = String(value ?? "").trim();
-      if (raw.includes("-")) {
-        const parts = raw.split("-").map(x => x.trim());
-        if (parts.length === 2 && parts.every(Boolean)) {
-          const a = Number(parts[0]), b = Number(parts[1]);
-          if (Number.isFinite(a) && Number.isFinite(b)) return `${money(a, currency)} - ${money(b, currency)}`;
-        }
-      }
-      return money(value, currency);
     }
     function showToast(message) {
       $("toast").textContent = message;
@@ -200,70 +674,171 @@
       const status = $("status").value;
       const category = $("categoryFilter").value;
       const filteredProducts = products.filter(product => {
-        const searchableText = [product.name, product.brand, product.category, product.smallDescription].join(" ").toLowerCase();
-        if (query && !searchableText.includes(query)) return false;
-        if (category !== "all" && product.category !== category) return false;
-        if (status === "active" && product.active === false) return false;
-        if (status === "inactive" && product.active !== false) return false;
+        const searchableText = [
+          product.name,
+          product.brand,
+          product.category,
+          product.smallDescription
+        ]
+          .join(" ")
+          .toLowerCase();
+        if (query && !searchableText.includes(query)) {
+          return false;
+        }
+        if (category !== "all" && product.category !== category) {
+          return false;
+        }
+        if (status === "active" && product.active === false) {
+          return false;
+        }
+        if (status === "inactive" && product.active !== false) {
+          return false;
+        }
         return true;
       });
       $("total").textContent = products.length;
-      $("activeCount").textContent = products.filter(product => product.active !== false).length;
-      $("inactiveCount").textContent = products.filter(product => product.active === false).length;
-      const container = $("rows");
+      $("activeCount").textContent =
+        products.filter(product => product.active !== false).length;
+      $("inactiveCount").textContent =
+        products.filter(product => product.active === false).length;
+      $("featuredCount").textContent =
+        products.filter(product => product.featured).length;
       if (!filteredProducts.length) {
-        container.innerHTML = `<div class="empty">هیچ بابەتێک نییە.</div>`;
+        $("rows").innerHTML = `
+          <tr>
+            <td colspan="7" class="empty">
+              هیچ بەرهەمێک نییە.
+            </td>
+          </tr>
+        `;
         return;
       }
-      container.innerHTML = filteredProducts.map(product => {
-        const image = Array.isArray(product.images) && product.images[0] ? product.images[0] : product.imageUrl || "";
-        const prices = Array.isArray(product.prices) && product.prices.length ? product.prices : [{price:product.price, currency:product.currency}];
-        const price = prices.map(item => displayPrice(item.price, item.currency)).join(" · ");
+      $("rows").innerHTML = filteredProducts.map(product => {
+        const image =
+          Array.isArray(product.images) && product.images[0]
+            ? product.images[0]
+            : product.imageUrl || "";
+        const price = product.sizes?.length
+          ? money(product.sizes[0].price, product.sizes[0].currency)
+          : money(product.price, product.currency);
         const active = product.active !== false;
         return `
-          <article class="product-card">
-            ${image
-              ? `<img class="product-image" src="${escapeAttribute(image)}" alt="${escapeAttribute(product.name || "")}" loading="lazy" referrerpolicy="no-referrer">`
-              : `<div class="product-image empty">وێنە نییە</div>`}
-            <div class="product-body">
-              <div class="product-name">${escapeHtml(product.name || "بێ ناو")}</div>
-              <div class="muted">${escapeHtml(categoryName(product.category))}${product.brand ? ` · ${escapeHtml(product.brand)}` : ""}</div>
-              <div class="product-price">${price}</div>
-              <div class="product-meta">
-                <span class="badge ${active ? "on" : "off"}">${active ? "چالاک" : "ناچالاک"}</span>
-                <span class="muted">ستۆک: ${Number(product.stock || 0)}</span>
+          <tr>
+            <td>
+              ${
+                image
+                  ? `<img
+                      class="thumb"
+                      src="${escapeAttribute(image)}"
+                      alt=""
+                      loading="lazy"
+                      referrerpolicy="no-referrer"
+                    >`
+                  : "—"
+              }
+            </td>
+            <td>
+              <b>${escapeHtml(product.name || "بێ ناو")}</b>
+              <div class="muted">
+                ${escapeHtml(product.smallDescription || "")}
               </div>
-              <div class="product-actions">
-                <button class="btn" type="button" data-action="edit" data-id="${escapeAttribute(product.id)}">دەستکاری</button>
-                <button class="btn ${active ? "danger" : "primary"}" type="button" data-action="toggle" data-id="${escapeAttribute(product.id)}">${active ? "ناچالاک" : "چالاک"}</button>
-                <button class="btn danger" type="button" data-action="delete" data-id="${escapeAttribute(product.id)}">سڕینەوە</button>
+            </td>
+            <td>
+              ${escapeHtml(categoryName(product.category))}
+              <br>
+              <span class="muted">
+                ${escapeHtml(product.brand || "")}
+              </span>
+            </td>
+            <td>${price}</td>
+            <td>${Number(product.stock || 0)}</td>
+            <td>
+              <span class="badge ${active ? "on" : "off"}">
+                ${active ? "چالاک" : "ناچالاک"}
+              </span>
+            </td>
+            <td>
+              <div class="row-actions">
+                <button
+                  class="btn"
+                  type="button"
+                  data-action="edit"
+                  data-id="${escapeAttribute(product.id)}"
+                >
+                  دەستکاری
+                </button>
+                <button
+                  class="btn ${active ? "danger" : "primary"}"
+                  type="button"
+                  data-action="toggle"
+                  data-id="${escapeAttribute(product.id)}"
+                >
+                  ${active ? "ناچالاک" : "چالاک"}
+                </button>
+                <button
+                  class="btn danger"
+                  type="button"
+                  data-action="delete"
+                  data-id="${escapeAttribute(product.id)}"
+                >
+                  سڕینەوە
+                </button>
               </div>
-            </div>
-          </article>`;
+            </td>
+          </tr>
+        `;
       }).join("");
     }
-    function addPriceRow(size = {}) {
+    function addSizeRow(size = {}) {
       const row = document.createElement("div");
-      row.className = "price-row";
+      row.className = "size-row";
       row.innerHTML = `
-        <input class="input pr-name" type="text" placeholder="ناوی قەبارە، مۆدێل یان جۆر" value="${escapeAttribute(size.name ?? "")}">
-        <input class="input pr-price" type="text" inputmode="decimal" placeholder="25000 یان 25000-35000" value="${escapeAttribute(size.price ?? "")}">
-        <select class="input pr-cur">
-          <option value="IQD" ${size.currency === "IQD" || !size.currency ? "selected" : ""}>IQD</option>
-          <option value="USD" ${size.currency === "USD" ? "selected" : ""}>USD</option>
+        <input
+          class="input sz-name"
+          placeholder="قەبارە"
+          value="${escapeAttribute(size.name || "")}"
+        >
+        <input
+          class="input sz-price"
+          type="number"
+          min="0"
+          step="0.01"
+          placeholder="نرخ"
+          value="${escapeAttribute(size.price ?? "")}"
+        >
+        <select class="input sz-cur">
+          <option
+            value="IQD"
+            ${size.currency === "IQD" || !size.currency ? "selected" : ""}
+          >
+            IQD
+          </option>
+          <option
+            value="USD"
+            ${size.currency === "USD" ? "selected" : ""}
+          >
+            USD
+          </option>
         </select>
-        <button type="button" class="btn danger" data-action="remove-price" aria-label="سڕینەوەی نرخ">×</button>
+        <button
+          type="button"
+          class="btn danger"
+          data-action="remove-size"
+          aria-label="سڕینەوەی قەبارە"
+        >
+          ×
+        </button>
       `;
-      $("prices").appendChild(row);
+      $("sizes").appendChild(row);
     }
-    function readPrices() {
-      return [...$("prices").children]
+    function readSizes() {
+      return [...$("sizes").children]
         .map(row => ({
-          name: row.querySelector(".pr-name").value.trim(),
-          price: row.querySelector(".pr-price").value.trim(),
-          currency: row.querySelector(".pr-cur").value
+          name: row.querySelector(".sz-name").value.trim(),
+          price: Number(row.querySelector(".sz-price").value || 0),
+          currency: row.querySelector(".sz-cur").value
         }))
-        .filter(item => item.price);
+        .filter(size => size.name);
     }
     function addPreview(url) {
       const image = document.createElement("img");
@@ -292,13 +867,13 @@
       $("stock").value =
         product?.stock ?? 0;
       $("price").value =
-        product?.price ?? "";
+        product?.price ?? 0;
       $("images").value =
         Array.isArray(product?.images)
           ? product.images.join("\n")
           : "";
       $("preview").innerHTML = "";
-      $("prices").innerHTML = "";
+      $("sizes").innerHTML = "";
       $("msg").innerHTML = "";
       if (product) {
         $("name").value = product.name || "";
@@ -307,17 +882,7 @@
         $("description").value = product.description || "";
         $("video").value = product.videoUrl || product.video || "";
         (product.images || []).forEach(addPreview);
-        if (Array.isArray(product.sizes) && product.sizes.length) {
-          product.sizes.forEach(addPriceRow);
-        } else if (Array.isArray(product.prices) && product.prices.length) {
-          product.prices.forEach((price, index) =>
-            addPriceRow({
-              name: price.name || price.label || `نرخ ${index + 1}`,
-              price: price.price,
-              currency: price.currency
-            })
-          );
-        }
+        (product.sizes || []).forEach(addSizeRow);
       }
       $("modal").classList.remove("hidden");
       $("name").focus();
@@ -361,10 +926,9 @@
           .split(/\r?\n/)
           .map(url => url.trim())
           .filter(Boolean);
-        const sizes = readPrices();
         const payload = {
           name,
-          price: $("price").value.trim(),
+          price: Number($("price").value || 0),
           currency: $("currency").value,
           category: $("category").value,
           brand: $("brand").value.trim(),
@@ -372,8 +936,7 @@
           description: $("description").value.trim(),
           images,
           videoUrl: $("video").value.trim(),
-          sizes,
-          prices: sizes,
+          sizes: readSizes(),
           stock: Number($("stock").value || 0),
           featured: $("featured").checked,
           active: $("active").checked,
@@ -534,10 +1097,14 @@
         removeProduct(id);
       }
     }
-    function handlePriceAction(event) {
-      const button = event.target.closest('[data-action="remove-price"]');
-      if (!button) return;
-      button.closest(".price-row")?.remove();
+    function handleSizeAction(event) {
+      const button = event.target.closest(
+        '[data-action="remove-size"]'
+      );
+      if (!button) {
+        return;
+      }
+      button.closest(".size-row")?.remove();
     }
     function updateImagePreview() {
       const urls = $("images")
@@ -599,17 +1166,6 @@
       $("add").addEventListener("click", () => {
         openModal();
       });
-      $("addTop").addEventListener("click", () => {
-        openModal();
-      });
-      $("activeStat").addEventListener("click", () => {
-        $("status").value = $("status").value === "active" ? "all" : "active";
-        render();
-      });
-      $("inactiveStat").addEventListener("click", () => {
-        $("status").value = $("status").value === "inactive" ? "all" : "inactive";
-        render();
-      });
       $("search").addEventListener("input", render);
       $("categoryFilter").addEventListener("change", render);
       $("status").addEventListener("change", render);
@@ -617,21 +1173,28 @@
       $("cancel").addEventListener("click", closeModal);
       $("bg").addEventListener("click", closeModal);
       $("form").addEventListener("submit", saveProduct);
-      $("addPrice").addEventListener("click", () => {
-        addPriceRow();
+      $("addSize").addEventListener("click", () => {
+        addSizeRow();
       });
       $("rows").addEventListener(
         "click",
         handleProductAction
       );
-      $("prices").addEventListener(
+      $("sizes").addEventListener(
         "click",
-        handlePriceAction
+        handleSizeAction
       );
       $("images").addEventListener(
         "input",
         updateImagePreview
       );
+      $("files").addEventListener("change", () => {
+        const count = $("files").files.length;
+        $("fileHint").textContent = count
+          ? "تەنها URL ـی وێنە پشتیوانی دەکرێت؛ فایلەکان پاشەکەوت ناکرێن"
+          : "URL ـی وێنە لە خوارەوە دابنێ";
+        $("files").value = "";
+      });
       document.addEventListener("keydown", event => {
         if (
           event.key === "Escape" &&
@@ -663,54 +1226,194 @@
   </script>
 </head>
 <body>
+  <!-- LOGIN -->
   <div id="loginView" class="login">
     <div class="login-card">
-      <div class="brand">PH<span>.</span>Tools</div>
+      <div class="brand">
+        PH<span>.</span>Tools
+      </div>
       <h1>چوونەژوورەوەی ئەدمین</h1>
-      <div class="muted">بەڕێوەبردنی ماڵپەڕ و بەرهەمەکان</div>
-      <div class="field"><label for="email">ئیمەیڵ</label><input id="email" class="input" type="email" autocomplete="username"></div>
-      <div class="field"><label for="password">وشەی نهێنی</label><input id="password" class="input" type="password" autocomplete="current-password"></div>
-      <button id="loginBtn" class="btn primary" type="button" style="width:100%;margin-top:15px">چوونەژوورەوە</button>
+      <div class="muted">
+        بەڕێوەبردنی بەرهەمەکان و sync ـی ڕاستەوخۆ لەگەڵ ماڵپەڕ.
+      </div>
+      <div class="field">
+        <label for="email">ئیمەیڵ</label>
+        <input
+          id="email"
+          class="input"
+          type="email"
+          autocomplete="username"
+        >
+      </div>
+      <div class="field">
+        <label for="password">وشەی نهێنی</label>
+        <input
+          id="password"
+          class="input"
+          type="password"
+          autocomplete="current-password"
+        >
+      </div>
+      <button
+        id="loginBtn"
+        class="btn primary"
+        type="button"
+        style="width:100%;margin-top:15px"
+      >
+        چوونەژوورەوە
+      </button>
       <div id="loginMsg"></div>
     </div>
   </div>
+  <!-- APP -->
   <div id="appView" class="hidden">
     <div class="wrap">
-      <div class="dashboard">
-        <aside class="sidebar">
-          <div class="brand">PH<span>.</span>Tools</div>
-          <div class="side-title">بەڕێوەبردن</div>
-          <button class="navitem active" type="button">▣ داشبۆرد</button>
-          <button class="navitem" type="button" onclick="document.getElementById('productsSection').scrollIntoView({behavior:'smooth'})">▤ بابەتەکان</button>
-          <button class="navitem" type="button" onclick="document.getElementById('bannerSection').scrollIntoView({behavior:'smooth'})">▰ بەنەر</button>
-          <div class="side-bottom">
-            <div class="sync"><span id="syncState"><span class="sync-dot"></span>چاوەڕوانی sync...</span></div>
-            <button id="logout" class="btn" type="button" style="width:100%;margin-top:9px">چوونەدەرەوە</button>
+      <!-- HEADER -->
+      <div class="top">
+        <div>
+          <div class="brand">
+            PH<span>.</span>Tools
           </div>
-        </aside>
-        <main class="main">
-          <div class="topbar">
-            <div><h1>سەنتەری بەڕێوەبردن</h1><div class="muted">کۆنترۆڵی بابەتەکان و بەنەری ماڵپەڕ</div></div>
-            <div class="top-actions"><button id="refresh" class="btn" type="button">↻ نوێکردنەوە</button><button id="add" class="btn primary" type="button">+ زیادکردنی بابەت</button></div>
+          <div class="muted">
+            داشبۆردی نوێی بەرهەمەکان ·
+            <span id="syncState">
+              <span class="sync-dot"></span>
+              چاوەڕوانی sync...
+            </span>
           </div>
-          <div class="stats">
-            <div class="stat"><div class="label">بابەتەکان</div><b id="total">0</b></div>
-            <div id="activeStat" class="stat click"><div class="label">چالاک</div><b id="activeCount">0</b></div>
-            <div id="inactiveStat" class="stat click"><div class="label">ناچالاک</div><b id="inactiveCount">0</b></div>
+        </div>
+        <div class="actions">
+          <button id="refresh" class="btn" type="button">
+            نوێکردنەوە
+          </button>
+          <button id="add" class="btn primary" type="button">
+            + زیادکردنی بەرهەم
+          </button>
+          <button id="logout" class="btn" type="button">
+            چوونەدەرەوە
+          </button>
+        </div>
+      </div>
+      <!-- STATS -->
+      <div class="stats">
+        <div class="stat">
+          <div class="muted">
+            کۆی بەرهەمەکان
           </div>
-          <section id="bannerSection" class="section">
-            <div class="section-head"><div><h2>بەنەری سەرەکی</h2><div class="muted">لینکی وێنەکە دابنێ و بەنەری ماڵپەڕ نوێ بکەرەوە.</div></div></div>
-            <div class="section-body banner-layout">
-              <div><div class="field"><label for="bannerUrl">Link ـی بەنەر</label><input id="bannerUrl" class="input" type="url" placeholder="https://.../banner.webp"></div><div class="banner-tools"><button id="saveBanner" class="btn primary" type="button">Update</button><button id="resetBanner" class="btn" type="button">Restore Previous banner</button></div><div id="bannerMsg"></div></div>
-              <div><div id="bannerPreviewHint" class="muted">پێشبینین</div><div id="bannerPreview" class="banner-preview"></div></div>
-            </div>
-          </section>
-          <section id="productsSection" class="section">
-            <div class="products-head"><div><h2 style="margin:0">بابەتەکان</h2><div class="muted">بەرهەمەکانت بە شێوەی لیستی نوێ و خاوێن.</div></div><button id="addTop" class="btn primary" type="button">+ زیادکردنی بابەت</button></div>
-            <div class="toolbar"><input id="search" class="input" type="search" placeholder="گەڕان بە ناو، براند یان کەتەگۆری..." autocomplete="off"><select id="categoryFilter" class="input"><option value="all">هەموو کەتەگۆرییەکان</option><option value="drill">درێل</option><option value="charger">بابەت شەحن</option><option value="shafra">شفرە و ماڵە</option><option value="nail">بورغی دەرزی</option><option value="cutting">مشار</option><option value="electronics">ئەلیکترۆنی</option><option value="warawela">وردەواڵە</option></select><select id="status" class="input"><option value="all">هەموو دۆخەکان</option><option value="active">چالاک</option><option value="inactive">ناچالاک</option></select></div>
-            <div id="rows" class="products-grid"></div>
-          </section>
-        </main>
+          <b id="total">0</b>
+        </div>
+        <div class="stat">
+          <div class="muted">
+            چالاک
+          </div>
+          <b id="activeCount">0</b>
+        </div>
+        <div class="stat">
+          <div class="muted">
+            ناچالاک
+          </div>
+          <b id="inactiveCount">0</b>
+        </div>
+        <div class="stat">
+          <div class="muted">
+            نیشانکراو
+          </div>
+          <b id="featuredCount">0</b>
+        </div>
+      </div>
+      <!-- BANNER MANAGEMENT -->
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>بەڕێوەبردنی بەنەر</h2>
+            <div class="muted">بەنەری سەرەکیی ماڵپەڕ لێرەوە بگۆڕە.</div>
+          </div>
+        </div>
+        <div class="field">
+          <label for="bannerUrl">URL ـی وێنەی بەنەر</label>
+          <input
+            id="bannerUrl"
+            class="input"
+            type="url"
+            placeholder="https://.../banner.webp"
+          >
+          <div id="bannerPreviewHint" class="muted" style="margin-top:7px">پێشبینین</div>
+          <div id="bannerPreview" class="banner-preview"></div>
+          <div class="banner-tools">
+            <button id="saveBanner" class="btn primary" type="button">پاشەکەوتکردنی بەنەر</button>
+            <button id="resetBanner" class="btn" type="button">گەڕاندنەوەی بەنەری بنەڕەتی</button>
+          </div>
+          <div id="bannerMsg"></div>
+        </div>
+      </div>
+      <!-- FILTERS -->
+      <div class="panel">
+        <div class="panel-head">
+          <h2>بەرهەمەکان</h2>
+          <span class="muted">
+            گۆڕانەکان خۆکارانە sync دەبن
+          </span>
+        </div>
+        <div class="toolbar">
+          <input
+            id="search"
+            class="input search"
+            type="search"
+            placeholder="گەڕان بە ناو، براند یان کەتەگۆری..."
+            autocomplete="off"
+          >
+          <select id="categoryFilter" class="input">
+            <option value="all">
+              هەموو کەتەگۆرییەکان
+            </option>
+            <option value="drill">
+              درێل
+            </option>
+            <option value="charger">
+              بابەت شەحن
+            </option>
+            <option value="shafra">
+              شفرە و ماڵە
+            </option>
+            <option value="nail">
+              بورغی دەرزی
+            </option>
+            <option value="cutting">
+              مشار
+            </option>
+            <option value="electronics">
+              ئەلیکترۆنی
+            </option>
+          </select>
+          <select id="status" class="input">
+            <option value="all">
+              هەموو دۆخەکان
+            </option>
+            <option value="active">
+              چالاک
+            </option>
+            <option value="inactive">
+              ناچالاک
+            </option>
+          </select>
+        </div>
+      </div>
+      <!-- PRODUCTS TABLE -->
+      <div class="panel table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>وێنە</th>
+              <th>ناو</th>
+              <th>کەتەگۆری / براند</th>
+              <th>نرخ</th>
+              <th>ستۆک</th>
+              <th>دۆخ</th>
+              <th>کردار</th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -757,9 +1460,9 @@
             <input
               id="price"
               class="input"
-              type="text"
-              inputmode="decimal"
-              placeholder="25000-35000 یان تەنها 25000"
+              type="number"
+              min="0"
+              step="0.01"
               required
             >
           </div>
@@ -800,9 +1503,6 @@
               </option>
               <option value="electronics">
                 ئەلیکترۆنی
-              </option>
-              <option value="warawela">
-                وردەواڵە
               </option>
             </select>
           </div>
@@ -846,7 +1546,18 @@
             <label for="images">
               وێنەکان
             </label>
-            <div class="muted">هەر URL ـێک لە هێڵێکی جیاواز بنووسە. Firebase Storage پێویست نییە.</div>
+            <div class="file-row">
+              <input
+                id="files"
+                class="input"
+                type="file"
+                accept="image/*"
+                multiple
+              >
+              <span id="fileHint" class="muted">
+                تەنها URL ـی وێنە بەکاربهێنە؛ Firebase Storage پێویست نییە.
+              </span>
+            </div>
             <textarea
               id="images"
               class="input"
@@ -882,14 +1593,24 @@
               rows="5"
             ></textarea>
           </div>
-          <!-- MULTIPLE PRICES -->
+          <!-- SIZES -->
           <div class="field full">
-            <div class="panel-head" style="margin:0 0 6px">
-              <label style="margin:0">قەبارە و نرخەکان</label>
-              <button id="addPrice" type="button" class="btn">+ نرخ</button>
+            <div
+              class="panel-head"
+              style="margin:0 0 6px"
+            >
+              <label style="margin:0">
+                قەبارە و نرخە جیاوازەکان
+              </label>
+              <button
+                id="addSize"
+                type="button"
+                class="btn"
+              >
+                + قەبارە
+              </button>
             </div>
-            <div id="prices"></div>
-            <div class="muted" style="margin-top:7px">ئەگەر بەرهەمەکە چەند قەبارە/جۆرێکی هەیە، ناوی هەر یەک و نرخی بنووسە. بۆ مەودای نرخ، وەک 25000-35000 بنووسە.</div>
+            <div id="sizes"></div>
           </div>
           <!-- FLAGS -->
           <div class="field full">
