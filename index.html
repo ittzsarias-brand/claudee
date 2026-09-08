@@ -186,28 +186,8 @@
       radial-gradient(circle at 50% 40%, #3a2412 0%, #100c0a 55%, #050505 100%);
     min-height:440px;display:flex;align-items:center;
   }
-  .hero-inner{display:none;}
-  .hero-tagline{
-    position:absolute;top:30px;right:0;text-align:right;font-family:'Anton',sans-serif;
-    font-size:30px;line-height:1.1;text-transform:uppercase;color:#fff;letter-spacing:1px;
-  }
-  .hero-tagline .accent{color:var(--red);}
-  .hero-tagline2{
-    position:absolute;top:60px;left:0;text-align:left;font-family:'Anton',sans-serif;
-    font-size:34px;line-height:1;text-transform:uppercase;color:#fff;letter-spacing:1px;font-style:italic;
-  }
-  .hero-tagline2 .accent{color:var(--red);}
-  /* .hero-logo replaced by .logo-icon-hero (real logo image) */
-  .hero-strap{margin-top:18px;font-family:'Anton',sans-serif;font-size:22px;color:#fff;text-transform:uppercase;}
-  .hero-strap span{color:var(--red);}
-  .hero-strap2{font-family:'Anton',sans-serif;font-size:14px;color:#d8d8d8;letter-spacing:2px;margin-top:2px;}
-  .hero-cta{
-    margin-top:22px;display:inline-flex;align-items:center;gap:8px;background:var(--red);
-    color:#fff;padding:13px 30px;border-radius:6px;font-weight:700;font-size:15px;
-  }
-  .hero-cta:hover{background:var(--red-dark);}
-
-  /* ---------- FEATURES ---------- */
+/* .hero-logo replaced by .logo-icon-hero (real logo image) */
+/* ---------- FEATURES ---------- */
   .features{background:var(--black);padding:26px 0;border-top:1px solid #202022;}
   .features-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;}
   .feature{display:flex;align-items:center;gap:12px;color:#fff;flex:1;min-width:220px;}
@@ -343,8 +323,7 @@
   /* ---------- RESPONSIVE ---------- */
   @media(max-width:1000px){
     .cat-grid{grid-template-columns:repeat(3,1fr);}
-    .hero-tagline,.hero-tagline2{position:static;text-align:center;margin-bottom:10px;}
-  }
+}
   @media(max-width:640px){
      html,body{width:100%;overflow-x:hidden;}
      body{-webkit-text-size-adjust:100%;}
@@ -372,8 +351,7 @@
      .nav-item.contact{margin-inline-start:0;}
      .dropdown{display:none !important;}
      .hero{width:100%;height:auto;min-height:0;}
-     .hero-inner{display:none;}
-     .features{padding:16px 0;}
+.features{padding:16px 0;}
      .features-row{display:grid;grid-template-columns:1fr 1fr;gap:12px 10px;}
      .feature{min-width:0;gap:8px;align-items:center;}
      .feature .ficon{width:38px;height:38px;border-width:2px;}
@@ -773,43 +751,6 @@
   transition:none !important;
   user-select:none;
   -webkit-user-drag:none;
-}
-</style>
-<style id="hero-single-slider-fix">
-.hero-slider{
-  position:relative !important;
-  width:100% !important;
-  overflow:hidden !important;
-  aspect-ratio:1536 / 602 !important;
-}
-.hero-track{
-  display:flex !important;
-  flex-direction:row !important;
-  width:500% !important;
-  height:100% !important;
-  direction:ltr !important;
-  margin:0 !important;
-  padding:0 !important;
-  animation:none !important;
-  transition:none !important;
-  will-change:transform;
-}
-.hero-track img{
-  position:relative !important;
-  top:auto !important;
-  left:auto !important;
-  inset:auto !important;
-  display:block !important;
-  width:20% !important;
-  min-width:20% !important;
-  height:100% !important;
-  flex:0 0 20% !important;
-  opacity:1 !important;
-  visibility:visible !important;
-  margin:0 !important;
-  padding:0 !important;
-  object-fit:cover !important;
-  pointer-events:none !important;
 }
 </style>
 </head>
@@ -1237,11 +1178,10 @@ function closeContactChooser(event){
 
 
 
-
 <script>
-/* PH.TOOLS HERO - SINGLE REAL SLIDE CONTROLLER */
+/* FINAL HERO FIX - REAL HORIZONTAL SLIDE */
 (function(){
-  function init(){
+  function initRealHeroSlider(){
     const slider = document.querySelector('.hero-slider');
     const track = document.querySelector('.hero-track');
     if(!slider || !track) return;
@@ -1249,40 +1189,42 @@ function closeContactChooser(event){
     const slides = Array.from(track.querySelectorAll('img'));
     if(slides.length < 2) return;
 
-    const realCount = slides.length - 1; // last image is the first-banner clone
+    // Your HTML has 4 real banners + a copy of the first banner.
+    const realCount = Math.min(4, slides.length - 1);
     let current = 0;
     let timer = null;
-    let busy = false;
+    let locked = false;
 
-    function move(index, animate){
-      const distance = slider.clientWidth * index;
+    function moveTo(index, animate){
       track.style.transition = animate
         ? 'transform 750ms cubic-bezier(.22,.61,.36,1)'
         : 'none';
-      track.style.transform = 'translate3d(' + (-distance) + 'px,0,0)';
+      track.style.transform = 'translate3d(-' + (index * 20) + '%,0,0)';
       current = index;
     }
 
     function next(){
-      if(busy) return;
-      busy = true;
+      if(locked) return;
+      locked = true;
 
-      const target = current + 1;
-      move(target, true);
+      // Normal real slide: 1 -> 2 -> 3 -> 4
+      current += 1;
+      moveTo(current, true);
 
-      if(target === realCount){
-        // Let the cloned first banner finish sliding into view, then
-        // silently reset to the real first banner.
+      // After showing the cloned first banner, jump silently
+      // back to the real first banner.
+      if(current === realCount){
         setTimeout(function(){
-          move(0, false);
+          moveTo(0, false);
           requestAnimationFrame(function(){
-            busy = false;
+            track.offsetHeight; // force the silent reset to apply
+            locked = false;
           });
-        }, 800);
+        }, 780);
       }else{
         setTimeout(function(){
-          busy = false;
-        }, 800);
+          locked = false;
+        }, 780);
       }
     }
 
@@ -1291,36 +1233,33 @@ function closeContactChooser(event){
       timer = setInterval(next, 3500);
     }
 
-    function resize(){
-      move(current, false);
-    }
-
-    move(0, false);
+    // Start at the first banner.
+    moveTo(0, false);
     start();
-    window.addEventListener('resize', resize);
 
     slider.addEventListener('touchstart', function(){
       clearInterval(timer);
     }, {passive:true});
 
-    slider.addEventListener('touchend', start, {passive:true});
+    slider.addEventListener('touchend', function(){
+      start();
+    }, {passive:true});
 
     document.addEventListener('visibilitychange', function(){
       if(document.hidden){
         clearInterval(timer);
       }else{
-        move(current, false);
+        moveTo(current, false);
         start();
       }
     });
   }
 
   if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', initRealHeroSlider);
   }else{
-    init();
+    initRealHeroSlider();
   }
 })();
-</script>
-</body>
+</script></body>
 </html>
