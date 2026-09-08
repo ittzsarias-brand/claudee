@@ -1007,6 +1007,32 @@ window.dispatchEvent(new Event("products-firebase-ready"));
   #locationChooserOverlay .contact-choice small{font-size:8px;}
 }
 </style>
+
+<style id="location-icon-only-design">
+/* Location chooser: logo-only design, no yellow tint and no shadows */
+.location-chooser-overlay, #locationChooserOverlay { background: rgba(0,0,0,.62) !important; }
+#locationChooserOverlay .location-icon-only {
+  background: #171719 !important;
+  border: 1px solid rgba(255,255,255,.12) !important;
+  box-shadow: none !important;
+  border-radius: 22px !important;
+  padding: 24px !important;
+}
+#locationChooserOverlay .contact-chooser-title { color: #fff !important; margin-bottom: 20px !important; }
+#locationChooserOverlay .location-map-icons { display:flex !important; justify-content:center !important; align-items:center !important; gap:18px !important; }
+#locationChooserOverlay .location-map-icon {
+  width:72px !important; height:72px !important; min-width:72px !important;
+  display:flex !important; align-items:center !important; justify-content:center !important;
+  border-radius:18px !important; background:#232326 !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+  box-shadow:none !important; text-decoration:none !important;
+  transition:transform .15s ease, border-color .15s ease !important;
+}
+#locationChooserOverlay .location-map-icon:hover { transform:scale(1.04) !important; border-color:rgba(255,255,255,.28) !important; box-shadow:none !important; }
+#locationChooserOverlay .location-map-icon svg { width:48px !important; height:48px !important; display:block !important; }
+#locationChooserOverlay .contact-chooser-close { box-shadow:none !important; }
+@media (max-width:520px){ #locationChooserOverlay .location-map-icon { width:64px !important; height:64px !important; min-width:64px !important; } #locationChooserOverlay .location-map-icons{gap:12px !important;} }
+</style>
 </head>
 <body>
 
@@ -1393,30 +1419,18 @@ function getLocation(){
     overlay.className = 'contact-chooser-overlay';
     overlay.id = 'locationChooserOverlay';
     overlay.innerHTML = `
-      <div class="contact-chooser" role="dialog" aria-modal="true" aria-labelledby="locationChooserTitle" onclick="event.stopPropagation()">
+      <div class="contact-chooser location-icon-only" role="dialog" aria-modal="true" aria-labelledby="locationChooserTitle" onclick="event.stopPropagation()">
         <button class="contact-chooser-close" type="button" onclick="closeLocationChooser()" aria-label="داخستن">×</button>
         <div class="contact-chooser-title" id="locationChooserTitle">شوێنی فرۆشگا</div>
-        <div class="contact-chooser-subtitle">نەخشەیەک هەڵبژێرە بۆ دۆزینەوەی شوێنی PH.Tools</div>
-        <div class="contact-chooser-actions">
-          <a class="contact-choice" href="${googleMaps}" target="_blank" rel="noopener noreferrer" aria-label="Google Maps">
-            <span class="contact-choice-icon">
-              <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>
-            </span>
-            <span><strong>Google Maps</strong><small>کردنەوەی شوێنی فرۆشگا</small></span>
+        <div class="location-map-icons">
+          <a class="location-map-icon google" href="${googleMaps}" target="_blank" rel="noopener noreferrer" aria-label="Google Maps" title="Google Maps">
+            <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#4285F4" d="M24 4a16 16 0 0 0-16 16c0 11.5 16 24 16 24s16-12.5 16-24A16 16 0 0 0 24 4Z"/><circle cx="24" cy="20" r="6.5" fill="#fff"/><circle cx="24" cy="20" r="3" fill="#4285F4"/></svg>
           </a>
-
-          <a class="contact-choice" href="${waze}" target="_blank" rel="noopener noreferrer" aria-label="Waze">
-            <span class="contact-choice-icon">
-              <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 11.5c0 4.7-4 7.5-8.6 7.5-1.2 0-2.4-.2-3.4-.6L5 20l.8-2.8C3.8 15.7 3 13.7 3 11.5 3 7.6 6.5 4.5 11.7 4.5c5.1 0 8.8 2.8 8.8 7Z"/><path d="M8 11h.01M12 11h.01M16 11h.01M9 15c1.8 1.2 4.2 1.2 6 0"/></svg>
-            </span>
-            <span><strong>Waze</strong><small>ڕێنمایی ڕێگا بۆ فرۆشگاکە</small></span>
+          <a class="location-map-icon waze" href="${waze}" target="_blank" rel="noopener noreferrer" aria-label="Waze" title="Waze">
+            <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#33CCFF" d="M39.5 22.2C39.5 12.6 32 6 22 6 12.4 6 6 12.2 6 20.7c0 6.2 3.2 10.3 8.8 12.4l-1.7 5.1 6.2-3.1c1.3.3 2.7.4 4.1.4 9.7 0 16.1-5.1 16.1-13.3Z"/><path fill="#fff" d="M15.5 21h.1M23.8 21h.1M32 21h.1M17.5 27.5c3.9 2.6 9.1 2.6 13 0" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/><path fill="none" d="M12 31.5 10 37l6.1-3" stroke="#33CCFF" stroke-width="2"/></svg>
           </a>
-
-          <a class="contact-choice" href="${appleMaps}" target="_blank" rel="noopener noreferrer" aria-label="Apple Maps">
-            <span class="contact-choice-icon">
-              <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 12.5c0-2 1.6-3 1.7-3.1-.9-1.4-2.4-1.6-2.9-1.6-1.2-.1-2.3.7-2.9.7-.6 0-1.5-.7-2.5-.7-1.3 0-2.5.8-3.2 1.9-1.4 2.4-.4 6 1 7.9.7.9 1.5 2 2.5 2 .9 0 1.3-.6 2.5-.6s1.5.6 2.5.6c1 0 1.7-.9 2.4-1.9.8-1.1 1.1-2.2 1.1-2.3-.1 0-2.2-.8-2.2-2.9ZM14.7 6.6c.5-.7.9-1.6.8-2.6-.8 0-1.8.5-2.3 1.1-.5.6-.9 1.5-.8 2.4.9.1 1.8-.4 2.3-.9Z"/></svg>
-            </span>
-            <span><strong>Apple Maps</strong><small>کردنەوەی شوێنی فرۆشگا</small></span>
+          <a class="location-map-icon apple" href="${appleMaps}" target="_blank" rel="noopener noreferrer" aria-label="Apple Maps" title="Apple Maps">
+            <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="5" y="5" width="38" height="38" rx="10" fill="#111"/><path fill="#fff" d="M28.5 15.2c.7-.9 1.1-2 1-3.2-1.1.1-2.4.7-3.1 1.6-.7.8-1.2 2-1.1 3.1 1.2.1 2.4-.6 3.2-1.5Zm4.7 9.5c0-3.4 2.8-5.1 2.9-5.2-1.6-2.3-4-2.6-4.9-2.6-2.1-.2-4.1 1.2-5.2 1.2-1.1 0-2.8-1.2-4.5-1.2-2.3 0-4.4 1.3-5.6 3.4-2.4 4.2-.6 10.5 1.7 13.9 1.2 1.7 2.5 3.5 4.3 3.4 1.7-.1 2.4-1.1 4.5-1.1 2.1 0 2.7 1.1 4.5 1.1 1.9 0 3.1-1.7 4.3-3.4 1.4-2 2-4 2-4.1-.1 0-4-.1-4-5.4Z"/></svg>
           </a>
         </div>
       </div>`;
