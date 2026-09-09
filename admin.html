@@ -328,8 +328,8 @@ function setChecked(ids, value) {
 }
 
 function showDashboard(show) {
-  const login = $("loginScreen");
-  const dashboard = $("dashboard");
+  const login = $("loginView");
+  const dashboard = $("app");
   if (login) login.classList.toggle("hidden", show);
   if (dashboard) dashboard.classList.toggle("hidden", !show);
 }
@@ -469,6 +469,12 @@ function bindForm() {
   if (loginForm && !loginForm.dataset.firebaseBound) {
     loginForm.dataset.firebaseBound = "1";
     loginForm.addEventListener("submit", doLogin);
+  }
+
+  const logoutBtn = $("logoutBtn");
+  if (logoutBtn && !logoutBtn.dataset.firebaseBound) {
+    logoutBtn.dataset.firebaseBound = "1";
+    logoutBtn.addEventListener("click", () => window.logout());
   }
 }
 
