@@ -558,13 +558,23 @@
     const escapeAttribute = value =>
       escapeHtml(value);
     function money(value, currency) {
-      const number = Number(value || 0);
-      if (currency === "USD") {
-        return `$${number.toLocaleString("en-US", {
-          maximumFractionDigits: 2
-        })}`;
+      const raw = String(value ?? "").trim().replace(/,/g, "").replace(/[–—]/g, "-");
+      const formatOne = part => {
+        const number = Number(part || 0);
+        if (currency === "USD") {
+          return `$${number.toLocaleString("en-US", {
+            maximumFractionDigits: 2
+          })}`;
+        }
+        return `${number.toLocaleString("en-US")} د.ع`;
+      };
+      if (raw.includes("-")) {
+        const parts = raw.split("-").map(part => part.trim());
+        if (parts.length === 2 && parts.every(part => /^\d+(?:\.\d+)?$/.test(part))) {
+          return `${formatOne(parts[0])} - ${formatOne(parts[1])}`;
+        }
       }
-      return `${number.toLocaleString("en-US")} د.ع`;
+      return formatOne(raw);
     }
     function showToast(message) {
       $("toast").textContent = message;
