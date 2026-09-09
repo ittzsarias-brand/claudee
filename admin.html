@@ -2,889 +2,116 @@
 <html lang="ckb" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0f1012">
-<title>PH.Tools | بەڕێوەبردن</title>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><style>
-.hidden{display:none!important;}
-@font-face {
-  font-family: 'PHKurdish';
-  src: url('kurdish-font/Rudaw-Bold.woff2') format('woff2');
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-}
-
-:root{
-  --bg:#0b0c0e;--panel:#151619;--panel2:#1b1c20;--line:#2a2b30;
-  --text:#f5f5f6;--muted:#92949b;--yellow:#ffd21a;--red:#ff3b30;
-  --green:#39d98a;--blue:#6ea8fe;--radius:18px;
-}
-*{box-sizing:border-box}
-html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:'PHKurdish',Tahoma,Arial,sans-serif;max-width:720px;margin:auto}
-.topbar{
-  position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;
-  gap:12px;padding:13px 15px;background:rgba(11,12,14,.94);border-bottom:1px solid var(--line);
-  backdrop-filter:blur(14px)
-}
-.brand{display:flex;align-items:center;gap:10px;min-width:0}
-.logo{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--yellow);color:#111;font-weight:900}
-.brand b{font-size:15px}.brand small{display:block;color:var(--muted);font-size:10px;margin-top:-3px}
-.iconbtn{width:40px;height:40px;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:12px}
-main{padding:15px}
-.view{display:none}.view.active{display:block}
-.page-title{margin:3px 0 16px}.page-title h1{font-size:24px;margin:0;font-weight:900}.page-title p{margin:3px 0 0;color:var(--muted);font-size:11px}
-.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
-.stat{background:linear-gradient(145deg,#191a1e,#121316);border:1px solid var(--line);border-radius:16px;padding:14px}
-.stat span{font-size:10px;color:var(--muted)}.stat strong{display:block;font-size:25px;margin-top:2px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:15px;margin-bottom:12px}
-.card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:13px}
-.card-head h2{font-size:15px;margin:0;font-weight:900}.card-head small{color:var(--muted);font-size:10px}
-.btn{
-  min-height:42px;border:1px solid var(--line);border-radius:12px;padding:9px 13px;background:var(--panel2);color:var(--text);font-weight:800;font-size:12px
-}
-.btn.primary{background:var(--yellow);color:#111;border-color:var(--yellow)}
-.btn.danger{background:rgba(255,59,48,.09);border-color:rgba(255,59,48,.35);color:#ff6b62}
-.btn.full{width:100%}
-.btn:disabled{opacity:.5;cursor:not-allowed}
-.quick-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
-.quick{min-height:88px;text-align:right;padding:13px;border:1px solid var(--line);border-radius:15px;background:#18191d;color:var(--text)}
-.quick b{display:block;font-size:12px}.quick span{display:block;color:var(--muted);font-size:10px;margin-top:3px}.quick i{font-style:normal;font-size:22px;display:block;margin-bottom:4px}
-.product-list{display:grid;gap:9px}
-.product-row{display:flex;align-items:center;gap:10px;padding:9px;border:1px solid var(--line);border-radius:14px;background:#18191d}
-.product-row img{width:58px;height:58px;border-radius:11px;object-fit:cover;background:#24252a;flex:none}
-.product-row .info{min-width:0;flex:1}.info b{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.info small{display:block;color:var(--muted);font-size:9px;margin-top:2px}.price{color:var(--yellow);font-weight:900;font-size:11px}
-.actions{display:flex;gap:6px}.mini{width:35px;height:35px;border-radius:10px;border:1px solid var(--line);background:#202126;color:var(--text)}
-.search{position:relative;margin-bottom:10px}.search input{width:100%;height:44px;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:13px;padding:0 13px;outline:none}.search input:focus{border-color:#555860}
-.filters{display:flex;gap:7px;overflow:auto;padding-bottom:4px;margin-bottom:10px;scrollbar-width:none}.filters::-webkit-scrollbar{display:none}.filter{white-space:nowrap;border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:999px;padding:7px 11px;font-size:10px}.filter.active{color:#111;background:var(--yellow);border-color:var(--yellow)}
-.field{margin-bottom:11px}.field label{display:block;font-size:10px;font-weight:800;color:#c7c8cd;margin:0 0 5px}.field input,.field textarea,.field select{width:100%;border:1px solid var(--line);background:#101114;color:var(--text);border-radius:12px;padding:10px 11px;outline:none;font-size:12px}.field textarea{min-height:92px;resize:vertical}.field input:focus,.field textarea:focus,.field select:focus{border-color:#64666e}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.switchline{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0}.switchline b{font-size:11px}.switchline small{display:block;color:var(--muted);font-size:9px}
-.switch{position:relative;width:48px;height:28px;flex:none}.switch input{display:none}.slider{position:absolute;inset:0;border-radius:99px;background:#303137;border:1px solid #45464c}.slider:before{content:"";position:absolute;width:22px;height:22px;top:2px;right:2px;border-radius:50%;background:#aaa;transition:.2s}.switch input:checked+.slider{background:var(--yellow);border-color:var(--yellow)}.switch input:checked+.slider:before{right:22px;background:#111}
-.image-list{display:grid;gap:7px}.image-input{display:flex;gap:7px}.image-input input{flex:1}.remove-image{width:42px;border:1px solid var(--line);border-radius:12px;background:#1b1c20;color:#ff6b62}
-.modal{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.72);display:none;align-items:flex-end;justify-content:center}.modal.show{display:flex}
-.sheet{width:100%;max-width:720px;max-height:92vh;overflow:auto;background:#131417;border:1px solid var(--line);border-bottom:0;border-radius:22px 22px 0 0;padding:15px 15px 25px}
-.grabber{width:40px;height:4px;border-radius:99px;background:#45464c;margin:0 auto 15px}.sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px}.sheet-head h2{font-size:17px;margin:0}.close{border:0;background:transparent;color:#aaa;font-size:26px;line-height:1}
-.bottomnav{position:fixed;z-index:40;bottom:0;left:0;right:0;height:72px;padding:7px max(9px,env(safe-area-inset-left)) calc(7px + env(safe-area-inset-bottom));background:rgba(16,17,19,.96);border-top:1px solid var(--line);display:flex;justify-content:center}
-.navinner{width:100%;max-width:720px;display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
-.navitem{border:0;background:transparent;color:#777980;border-radius:12px;font-size:9px;font-weight:800;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}.navitem b{font-size:19px;line-height:20px;font-weight:500}.navitem.active{color:var(--yellow);background:rgba(255,210,26,.07)}
-.toast{position:fixed;z-index:100;left:12px;right:12px;bottom:84px;display:none;padding:11px 13px;border-radius:12px;background:#222328;border:1px solid #3a3b42;text-align:center;font-size:11px}.toast.show{display:block}.toast.ok{border-color:rgba(57,217,138,.4)}.toast.err{border-color:rgba(255,59,48,.45)}
-.login{min-height:100vh;display:grid;place-items:center;padding:18px;background:radial-gradient(circle at 50% 0,rgba(255,210,26,.08),transparent 34%),var(--bg)}
-.login-card{width:100%;max-width:390px;background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:0 24px 80px rgba(0,0,0,.35)}
-.login-logo{width:58px;height:58px;border-radius:17px;background:var(--yellow);color:#111;display:grid;place-items:center;font-size:22px;font-weight:900;margin-bottom:15px}.login-card h1{font-size:22px;margin:0}.login-card p{font-size:10px;color:var(--muted);line-height:1.8;margin:4px 0 18px}
-.loading{text-align:center;color:var(--muted);padding:25px;font-size:11px}
-.empty{text-align:center;color:var(--muted);padding:28px 10px;font-size:11px}
-@media(min-width:721px){.bottomnav{left:50%;right:auto;transform:translateX(-50%);width:100%;}.modal{align-items:center;padding:20px}.sheet{border:1px solid var(--line);border-radius:22px;max-height:88vh}}
-
-/* Kurdish typography */
-html, body, button, input, textarea, select, option {
-  font-family: 'PHKurdish', Tahoma, Arial, sans-serif !important;
-}
-
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PH.Tools | Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--red:#e21d2f;--red2:#b90f1f;--bg:#f4f5f7;--card:#fff;--text:#15171a;--muted:#737983;--line:#e5e7eb;--dark:#111317;--green:#159957;--amber:#c47b00;--danger:#c62828}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Cairo,Arial,sans-serif;background:var(--bg);color:var(--text)}button,input,textarea,select{font:inherit}button{cursor:pointer}
+.hidden{display:none!important}.screen{min-height:100vh}.login-screen{display:grid;place-items:center;padding:22px;background:radial-gradient(circle at 20% 20%,#fff 0,#f4f5f7 45%,#e9ebef 100%)}
+.login-card{width:min(430px,100%);background:#fff;border:1px solid var(--line);border-radius:20px;padding:30px;box-shadow:0 20px 60px #00000012}.brand{display:flex;align-items:center;gap:12px;margin-bottom:26px}.brand-mark{width:48px;height:48px;border-radius:13px;background:var(--red);color:#fff;display:grid;place-items:center;font-weight:900;font-size:19px}.brand h1{font-size:22px;margin:0;font-weight:900}.brand p{margin:1px 0 0;color:var(--muted);font-size:12px}.field{margin-bottom:15px}.field label{display:block;font-weight:800;font-size:13px;margin-bottom:7px}.field input,.field textarea,.field select{width:100%;border:1px solid var(--line);background:#fff;border-radius:10px;padding:12px 13px;outline:0;transition:.15s}.field textarea{min-height:100px;resize:vertical}.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--red);box-shadow:0 0 0 3px #e21d2f14}.btn{border:0;border-radius:10px;padding:11px 16px;font-weight:800;transition:.15s}.btn-primary{background:var(--red);color:#fff}.btn-primary:hover{background:var(--red2)}.btn-dark{background:var(--dark);color:#fff}.btn-light{background:#fff;border:1px solid var(--line)}.btn-danger{background:#fff;color:var(--danger);border:1px solid #f1caca}.btn:disabled{opacity:.55;cursor:not-allowed}.error{background:#fff0f1;border:1px solid #ffc8cd;color:#b31728;border-radius:9px;padding:10px 12px;font-size:12px;margin:12px 0}.hint{color:var(--muted);font-size:11px;margin-top:5px}
+.app{display:grid;grid-template-columns:250px 1fr;min-height:100vh;direction:ltr}.sidebar{direction:rtl;background:#111317;color:#fff;padding:20px 14px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}.side-brand{display:flex;align-items:center;gap:10px;padding:4px 8px 24px}.side-brand .brand-mark{width:40px;height:40px;border-radius:11px}.side-brand strong{font-size:17px}.side-brand small{display:block;color:#9297a0;font-size:10px}.nav{display:grid;gap:7px}.nav button{width:100%;border:0;background:transparent;color:#c7cad0;text-align:right;padding:12px;border-radius:10px;font-weight:800}.nav button.active,.nav button:hover{background:#24272d;color:#fff}.nav button.active{border-right:3px solid var(--red)}.side-bottom{margin-top:auto}.logout{width:100%;border:1px solid #343840;background:transparent;color:#ddd;border-radius:10px;padding:10px;font-weight:800}.main{direction:rtl;min-width:0}.topbar{height:70px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:10}.topbar h2{margin:0;font-size:20px}.top-actions{display:flex;align-items:center;gap:10px}.status-pill{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:7px 11px;font-size:11px;font-weight:800;background:#f2f3f5;color:#666}.dot{width:7px;height:7px;border-radius:50%;background:#999}.status-pill.ok{background:#e9f8f0;color:#11733f}.status-pill.ok .dot{background:var(--green)}.status-pill.sync{background:#fff6df;color:#966000}.status-pill.sync .dot{background:#e09b00}.status-pill.err{background:#fff0f1;color:#b31728}.status-pill.err .dot{background:var(--danger)}.content{padding:26px;max-width:1500px;margin:auto}.view{display:none}.view.active{display:block}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-bottom:20px}.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px}.stat small{color:var(--muted);font-weight:700}.stat strong{display:block;font-size:27px;margin-top:3px}.toolbar{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-bottom:15px}.toolbar .left,.toolbar .right{display:flex;gap:9px;align-items:center}.search{width:260px;border:1px solid var(--line);background:#fff;border-radius:10px;padding:10px 12px;outline:0}.table-wrap{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:auto}.table{width:100%;border-collapse:collapse;min-width:850px}.table th,.table td{padding:13px 14px;border-bottom:1px solid var(--line);text-align:right;font-size:12px;vertical-align:middle}.table th{background:#fafafa;font-weight:900;color:#666}.table tr:last-child td{border-bottom:0}.prod{display:flex;align-items:center;gap:10px;min-width:230px}.prod img{width:46px;height:46px;border-radius:8px;object-fit:cover;background:#eee}.prod-name{font-weight:900}.prod-desc{color:#888;font-size:10px;white-space:nowrap;max-width:220px;overflow:hidden;text-overflow:ellipsis}.tag{display:inline-flex;padding:5px 9px;border-radius:999px;font-size:10px;font-weight:900}.tag.on{background:#eaf8f0;color:#167642}.tag.off{background:#f0f1f3;color:#70757d}.actions{display:flex;gap:6px;justify-content:flex-start}.icon-btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 9px;font-size:11px;font-weight:900}.icon-btn:hover{border-color:#bbb}.icon-btn.danger{color:var(--danger)}.switch{position:relative;width:42px;height:24px;display:inline-block}.switch input{display:none}.slider{position:absolute;inset:0;background:#d6d9de;border-radius:99px;transition:.2s}.slider:before{content:"";position:absolute;width:18px;height:18px;right:3px;top:3px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 4px #0002}.switch input:checked+.slider{background:var(--green)}.switch input:checked+.slider:before{transform:translateX(-18px)}
+.editor{background:#fff;border:1px solid var(--line);border-radius:15px;padding:22px}.editor-head{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:15px;margin-bottom:18px}.editor-head h3{margin:0;font-size:18px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:15px}.full{grid-column:1/-1}.synced-label{display:flex;align-items:center;gap:7px}.synced{font-size:9px;background:#e9f8f0;color:#167642;padding:3px 6px;border-radius:999px;font-weight:900}.preview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-top:10px}.preview-img{aspect-ratio:1;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#f5f5f5}.preview-img img{width:100%;height:100%;object-fit:cover}.video-preview{margin-top:10px;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#111;display:grid;place-items:center;color:#aaa}.video-preview iframe,.video-preview video{width:100%;height:100%;border:0}.empty-preview{padding:35px;text-align:center;color:#999;font-size:12px}.editor-actions{display:flex;justify-content:flex-start;gap:10px;margin-top:22px;padding-top:17px;border-top:1px solid var(--line)}
+.banner-card{background:#fff;border:1px solid var(--line);border-radius:15px;padding:20px}.banner-preview{border-radius:12px;overflow:hidden;background:#f0f1f3;aspect-ratio:16/5;display:grid;place-items:center;color:#999;margin-bottom:18px}.banner-preview img{width:100%;height:100%;object-fit:cover}.banner-form{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end}.banner-form .field{margin:0}.loading{text-align:center;padding:45px;color:#888}.toast{position:fixed;bottom:22px;left:22px;background:#111317;color:#fff;border-radius:10px;padding:12px 16px;font-size:12px;font-weight:800;z-index:100;transform:translateY(20px);opacity:0;pointer-events:none;transition:.2s}.toast.show{transform:none;opacity:1}.modal{position:fixed;inset:0;background:#0008;display:none;place-items:center;z-index:50;padding:20px}.modal.show{display:grid}.confirm{background:#fff;border-radius:14px;padding:22px;width:min(400px,100%)}.confirm h3{margin:0 0 7px}.confirm p{color:#666;font-size:12px;line-height:1.8}.confirm-actions{display:flex;gap:8px;margin-top:18px}.mobile-menu{display:none}
+@media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{position:fixed;right:0;top:0;width:260px;transform:translateX(105%);z-index:30;transition:.2s}.sidebar.open{transform:none}.mobile-menu{display:block}.stats{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}.full{grid-column:auto}.banner-form{grid-template-columns:1fr}.content{padding:17px}.topbar{padding:0 17px}.search{width:180px}}
+@media(max-width:560px){.stats{grid-template-columns:1fr}.toolbar{align-items:stretch;flex-direction:column}.toolbar .left,.toolbar .right{width:100%}.search{width:100%}.top-actions .status-pill{display:none}.editor{padding:15px}}
 </style>
-
-<style id="mobile-normal-layout">
-/* Mobile: keep the admin dashboard clean, normal and usable */
-@media (max-width: 700px) {
-  html, body {
-    width: 100%;
-    min-width: 0 !important;
-    overflow-x: hidden !important;
-  }
-
-  body {
-    margin: 0 !important;
-    font-size: 14px !important;
-  }
-
-  .sidebar {
-    position: fixed !important;
-    inset: 0 auto 0 0 !important;
-    width: 250px !important;
-    max-width: 82vw !important;
-    transform: translateX(-105%) !important;
-    z-index: 1000 !important;
-    transition: transform .2s ease !important;
-    overflow-y: auto !important;
-  }
-
-  .sidebar.open,
-  .sidebar.active,
-  body.sidebar-open .sidebar {
-    transform: translateX(0) !important;
-  }
-
-  .main,
-  .main-content,
-  .content,
-  .app-main {
-    width: 100% !important;
-    max-width: none !important;
-    margin: 0 !important;
-    padding: 16px !important;
-    box-sizing: border-box !important;
-  }
-
-  .topbar,
-  .header,
-  .page-header {
-    width: 100% !important;
-    box-sizing: border-box !important;
-    gap: 10px !important;
-    flex-wrap: wrap !important;
-  }
-
-  .dashboard-grid,
-  .stats-grid,
-  .stat-grid,
-  .cards-grid,
-  .products-grid,
-  #productsList {
-    grid-template-columns: 1fr !important;
-    width: 100% !important;
-  }
-
-  .card,
-  .stat-card,
-  .product-card,
-  .panel,
-  .section {
-    width: 100% !important;
-    max-width: none !important;
-    box-sizing: border-box !important;
-  }
-
-  .toolbar,
-  .filters,
-  .actions,
-  .form-actions {
-    flex-wrap: wrap !important;
-    width: 100% !important;
-  }
-
-  input, select, textarea, button {
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-  }
-
-  input, select, textarea {
-    width: 100% !important;
-  }
-
-  .search-box {
-    width: 100% !important;
-    max-width: none !important;
-  }
-
-  .modal {
-    padding: 12px !important;
-    align-items: flex-start !important;
-    overflow-y: auto !important;
-  }
-
-  .modal-content,
-  .modal-box,
-  .modal-dialog {
-    width: 100% !important;
-    max-width: 560px !important;
-    max-height: calc(100vh - 24px) !important;
-    margin: 0 auto !important;
-    box-sizing: border-box !important;
-    overflow-y: auto !important;
-  }
-
-  .form-grid,
-  .two-col,
-  .form-row {
-    grid-template-columns: 1fr !important;
-  }
-
-  table {
-    display: block !important;
-    width: 100% !important;
-    overflow-x: auto !important;
-    white-space: nowrap !important;
-  }
-
-  .mobile-menu-btn,
-  #mobileMenuBtn {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-}
-
-/* Desktop: the mobile menu button should not affect normal desktop layout. */
-@media (min-width: 701px) {
-  .mobile-menu-btn,
-  #mobileMenuBtn {
-    display: none !important;
-  }
-}
-</style>
-
-
-<style id="small-dashboard-images">
-/* Smaller product images/cards on desktop and mobile */
-.products-grid,
-#productsList,
-.product-grid {
-  gap: 14px !important;
-}
-
-.products-grid .product-card,
-#productsList .product-card,
-.product-grid .product-card {
-  overflow: hidden !important;
-}
-
-.products-grid .product-card img,
-#productsList .product-card img,
-.product-grid .product-card img {
-  width: 100% !important;
-  height: 150px !important;
-  max-height: 150px !important;
-  object-fit: contain !important;
-  display: block !important;
-}
-
-@media (max-width: 700px) {
-  .products-grid .product-card img,
-  #productsList .product-card img,
-  .product-grid .product-card img {
-    height: 115px !important;
-    max-height: 115px !important;
-  }
-
-  .products-grid .product-card,
-  #productsList .product-card,
-  .product-grid .product-card {
-    min-width: 0 !important;
-  }
-}
-</style>
-
 </head>
 <body>
-<button id="mobileMenuBtn" class="mobile-menu-btn" type="button"
-  aria-label="Open menu"
-  style="position:fixed;top:12px;left:12px;z-index:1100;width:42px;height:42px;border:0;border-radius:10px;background:#111;color:#fff;font-size:20px;cursor:pointer;">☰</button>
+<section id="loginScreen" class="screen login-screen">
+  <div class="login-card">
+    <div class="brand"><div class="brand-mark">PH</div><div><h1>PH.Tools Admin</h1><p>بەڕێوەبردنی بەرهەم و بانەر</p></div></div>
+    <form id="loginForm">
+      <div class="field"><label>ئیمەیڵ</label><input id="email" type="email" autocomplete="username" required placeholder="admin@example.com"></div>
+      <div class="field"><label>وشەی نهێنی</label><input id="password" type="password" autocomplete="current-password" required placeholder="••••••••"></div>
+      <div id="loginError" class="error hidden"></div>
+      <button id="loginBtn" class="btn btn-primary" style="width:100%">چوونەژوورەوە</button>
+    </form>
+    <div class="hint" style="margin-top:13px">ئەم داشبۆردە بە Firebase Authentication پارێزراوە.</div>
+  </div>
+</section>
 
+<section id="app" class="app hidden">
+  <aside id="sidebar" class="sidebar">
+    <div class="side-brand"><div class="brand-mark">PH</div><div><strong>PH.Tools</strong><small>ADMIN DASHBOARD</small></div></div>
+    <nav class="nav">
+      <button class="nav-btn active" data-view="products">📦 بەڕێوەبردنی بەرهەم</button>
+      <button class="nav-btn" data-view="banner">🖼️ بەڕێوەبردنی بانەر</button>
+    </nav>
+    <div class="side-bottom"><button id="logoutBtn" class="logout">چوونەدەرەوە</button></div>
+  </aside>
+  <main class="main">
+    <header class="topbar"><div class="top-actions"><button id="mobileMenu" class="btn btn-light mobile-menu">☰</button><h2 id="pageTitle">بەڕێوەبردنی بەرهەم</h2></div><div class="top-actions"><span id="syncPill" class="status-pill"><i class="dot"></i><span>پشکنین...</span></span></div></header>
+    <div class="content">
+      <section id="productsView" class="view active">
+        <div class="stats"><div class="stat"><small>کۆی بەرهەم</small><strong id="totalCount">0</strong></div><div class="stat"><small>چالاک</small><strong id="activeCount">0</strong></div><div class="stat"><small>ناچالاک</small><strong id="inactiveCount">0</strong></div></div>
+        <div class="toolbar"><div class="right"><button id="addBtn" class="btn btn-primary">+ زیادکردنی بەرهەم</button></div><div class="left"><input id="search" class="search" placeholder="گەڕان بە ناو..." /></div></div>
+        <div class="table-wrap"><table class="table"><thead><tr><th>بەرهەم</th><th>بەها</th><th>کەتەگۆری</th><th>Sync</th><th>دۆخ</th><th>کردار</th></tr></thead><tbody id="productsBody"><tr><td colspan="6" class="loading">لە بارکردندایە...</td></tr></tbody></table></div>
+      </section>
 
-<div id="loginView" class="login">
-  <form class="login-card" id="loginForm">
-    <div class="login-logo">PH</div>
-    <h1>کۆنترۆڵی PH.Tools</h1>
-    <p>چوونەژوورەوەی بەڕێوەبەر بۆ بەڕێوەبردنی بەرهەمەکان و بەنەر.</p>
-    <div class="field"><label>ئیمەیڵ</label><input id="email" type="email" autocomplete="username" required></div>
-    <div class="field"><label>وشەی نهێنی</label><input id="password" type="password" autocomplete="current-password" required></div>
-    <button class="btn primary full" id="loginBtn">چوونەژوورەوە</button>
-  </form>
-</div>
-
-<div id="app" class="app hidden">
-  <header class="topbar">
-    <div class="brand"><div class="logo">PH</div><div><b>PH.Tools</b><small>پەنێڵی بەڕێوەبردن</small></div></div>
-    <button class="iconbtn" id="logoutBtn" title="دەرچوون">↪</button>
-  </header>
-
-  <main>
-    <section id="homeView" class="view active">
-      <div class="page-title"><h1>سڵاو 👋</h1><p>کۆنترۆڵی فرۆشگاکەت لە مۆبایل.</p></div>
-      <div class="stats">
-        <div class="stat"><span>هەموو بەرهەمەکان</span><strong id="statProducts">0</strong></div>
-        <div class="stat"><span>بەرهەمە چالاکەکان</span><strong id="statActive">0</strong></div>
-      </div>
-      <div class="card">
-        <div class="card-head"><h2>کردارە خێراکان</h2></div>
-        <div class="quick-grid">
-          <button class="quick" onclick="openProductEditor()"><i>＋</i><b>بەرهەمی نوێ</b><span>زیادکردنی کاڵا</span></button>
-          <button class="quick" onclick="openBannerEditor()"><i>▣</i><b>بەنەر</b><span>گۆڕینی وێنەی سەرەکی</span></button>
-          <button class="quick" onclick="switchView('products')"><i>⌘</i><b>بەرهەمەکان</b><span>دەستکاریکردن و سڕینەوە</span></button>
-          <button class="quick" onclick="openSite()"><i>↗</i><b>بینینی سایت</b><span>کردنەوەی ماڵپەڕ</span></button>
+      <section id="editorView" class="view">
+        <div class="editor"><div class="editor-head"><h3 id="editorTitle">زیادکردنی بەرهەم</h3><button id="backProducts" class="btn btn-light">← گەڕانەوە</button></div>
+          <form id="productForm"><input id="productId" type="hidden">
+            <div class="grid2">
+              <div class="field"><label class="synced-label">ناو <span class="synced">SYNCED</span></label><input id="pName" required></div>
+              <div class="field"><label class="synced-label">وەسفی کورت <span class="synced">SYNCED</span></label><input id="pShort"></div>
+              <div class="field"><label class="synced-label">بەها <span class="synced">SYNCED</span></label><input id="pPrice" inputmode="decimal" placeholder="25000"></div>
+              <div class="field"><label>دراو</label><select id="pCurrency"><option value="IQD">IQD — دینار</option><option value="USD">USD — دۆلار</option></select></div>
+              <div class="field full"><label class="synced-label">وەسفی درێژ <span class="synced">SYNCED</span></label><textarea id="pLong"></textarea></div>
+              <div class="field"><label>کەتەگۆری</label><select id="pCategory"><option value="">کەتەگۆری هەڵبژێرە</option><option value="drill">Drill</option><option value="charger">Charger</option><option value="shafra">Shafra</option><option value="nail">Nail</option><option value="cutting">Cutting</option><option value="electronics">Electronics</option><option value="warawela">Warawela</option></select></div>
+              <div class="field"><label>دۆخ</label><select id="pActive"><option value="true">چالاک</option><option value="false">ناچالاک</option></select></div>
+              <div class="field full"><label class="synced-label">Image URL <span class="synced">SYNCED</span></label><input id="pImage" type="url" placeholder="https://..."><div id="imagePreview" class="preview-grid"></div></div>
+              <div class="field full"><label>Multiple Image URLs</label><textarea id="pImages" placeholder="هەر URL ـێک لە دێڕێکی جیاواز یان بە comma جیا بکەرەوە"></textarea><div class="hint">یەکەم وێنە وێنەی سەرەکییە. Preview خۆکارە.</div><div id="multiPreview" class="preview-grid"></div></div>
+              <div class="field full"><label class="synced-label">Video URL <span class="synced">SYNCED</span></label><input id="pVideo" type="url" placeholder="https://www.youtube.com/watch?v=..."><div id="videoPreview" class="video-preview"><span>Preview ـی ڤیدیۆ</span></div></div>
+            </div>
+            <div class="editor-actions"><button class="btn btn-primary" type="submit" id="saveBtn">پاشەکەوتکردن</button><button class="btn btn-light" type="button" id="cancelEdit">هەڵوەشاندنەوە</button></div>
+          </form>
         </div>
-      </div>
-      <div class="card">
-        <div class="card-head"><h2>دواین بەرهەمەکان</h2><button class="btn" onclick="switchView('products')">هەموویان</button></div>
-        <div id="recentProducts" class="product-list"><div class="loading">چاوەڕوانبە...</div></div>
-      </div>
-    </section>
+      </section>
 
-    <section id="productsView" class="view">
-      <div class="page-title"><h1>بەرهەمەکان</h1><p>زیادکردن، دەستکاریکردن و سڕینەوەی بەرهەم.</p></div>
-      <div class="search"><input id="productSearch" placeholder="گەڕان بە ناوی بەرهەم..." oninput="renderProducts()"></div>
-      <div class="filters">
-        <button class="filter active" data-cat="all" onclick="setFilter('all')">هەموو</button>
-        <button class="filter" data-cat="drill" onclick="setFilter('drill')">درێل</button>
-        <button class="filter" data-cat="charger" onclick="setFilter('charger')">بابەت شەحن</button>
-        <button class="filter" data-cat="shafra" onclick="setFilter('shafra')">شفرە و ماڵە</button>
-        <button class="filter" data-cat="nail" onclick="setFilter('nail')">بورغی دەرزی</button>
-        <button class="filter" data-cat="cutting" onclick="setFilter('cutting')">مشار</button>
-        <button class="filter" data-cat="electronics" onclick="setFilter('electronics')">ئەلیکترۆنی</button>
-        <button class="filter" data-cat="warawela" onclick="setFilter('warawela')">وردەواڵە</button>
-      </div>
-      <button class="btn primary full" style="margin-bottom:10px" onclick="openProductEditor()">＋ زیادکردنی بەرهەم</button>
-      <div id="productsList" class="product-list"><div class="loading">چاوەڕوانبە...</div></div>
-    </section>
-
-    <section id="settingsView" class="view">
-      <div class="page-title"><h1>ڕێکخستنەکان</h1><p>بەنەر و هەندێک ڕێکخستنی پەنێڵ.</p></div>
-      <div class="card">
-        <div class="card-head"><h2>بەنەری سەرەکی</h2><button class="btn" onclick="openBannerEditor()">دەستکاری</button></div>
-        <div id="bannerPreview" class="empty">هیچ بەنەرێک دیاری نەکراوە.</div>
-      </div>
-      <div class="card">
-        <div class="card-head"><h2>ئاکاونت</h2></div>
-        <div class="switchline"><div><b>دۆخی ئاکاونت</b><small id="userEmail"></small></div><span style="color:var(--green);font-size:11px">● چالاک</span></div>
-        <button class="btn danger full" onclick="logout()">دەرچوون</button>
-      </div>
-    </section>
-  </main>
-
-  <nav class="bottomnav">
-    <div class="navinner">
-      <button class="navitem active" data-view="home" onclick="switchView('home')"><b>⌂</b>سەرەتا</button>
-      <button class="navitem" data-view="products" onclick="switchView('products')"><b>▦</b>بەرهەمەکان</button>
-      <button class="navitem" data-view="settings" onclick="switchView('settings')"><b>⚙</b>ڕێکخستن</button>
-      <button class="navitem" onclick="openSite()"><b>↗</b>سایت</button>
+      <section id="bannerView" class="view">
+        <div class="banner-card"><div class="editor-head"><h3>بانەری سەرەکی</h3><span class="synced">REALTIME SYNC</span></div><div id="bannerPreview" class="banner-preview"><span>Preview ـی بانەر</span></div><form id="bannerForm"><div class="banner-form"><div class="field"><label>Banner URL</label><input id="bannerUrl" type="url" placeholder="https://..."></div><button class="btn btn-primary" type="submit" id="bannerSave">پاشەکەوتکردن</button></div></form></div>
+      </section>
     </div>
-  </nav>
-</div>
-
-<div id="productModal" class="modal" onclick="if(event.target===this)closeProductEditor()">
-  <div class="sheet">
-    <div class="grabber"></div>
-    <div class="sheet-head"><h2 id="productModalTitle">بەرهەمی نوێ</h2><button class="close" onclick="closeProductEditor()">×</button></div>
-    <form id="productForm">
-      <input type="hidden" id="productId">
-      <div class="field"><label>ناوی بەرهەم *</label><input id="pName" required></div>
-      <div class="two">
-        <div class="field"><label>مارکە</label><input id="pBrand"></div>
-        <div class="field"><label>بەش</label>
-          <select id="pCategory"><option value="">بێ بەش</option><option value="drill">درێل</option><option value="charger">بابەت شەحن</option><option value="shafra">شفرە و ماڵە</option><option value="nail">بورغی دەرزی</option><option value="cutting">مشار</option><option value="electronics">ئەلیکترۆنی</option><option value="warawela">وردەواڵە</option></select>
-        </div>
-      </div>
-      <div class="field"><label>پوختەی وەسف</label><input id="pShort"></div>
-      <div class="field"><label>وەسفی تەواو</label><textarea id="pDescription"></textarea></div>
-      <div class="two">
-        <div class="field"><label>نرخ</label><input id="pPrice" inputmode="decimal" placeholder="مثلاً 125000"></div>
-        <div class="field"><label>دراو</label><select id="pCurrency"><option value="IQD">IQD</option><option value="USD">USD</option></select></div>
-      </div>
-      <div class="field"><label>لینکی ڤیدیۆ</label><input id="pVideo" type="url" placeholder="YouTube / Vimeo"></div>
-      <div class="field">
-        <label>وێنەکان</label>
-        <div id="imageList" class="image-list"></div>
-        <button type="button" class="btn" style="margin-top:7px" onclick="addImageInput()">＋ زیادکردنی لینک</button>
-      </div>
-      <div class="switchline"><div><b>چالاک</b><small>ئەگەر ناچالاک بێت لە سایت نیشان نادرێت.</small></div><label class="switch"><input id="pActive" type="checkbox" checked><span class="slider"></span></label></div>
-      <button class="btn primary full" id="saveProductBtn">پاشەکەوتکردن</button>
-      <button type="button" class="btn danger full" id="deleteProductBtn" style="margin-top:8px;display:none">سڕینەوەی بەرهەم</button>
-    </form>
-  </div>
-</div>
-
-<div id="bannerModal" class="modal" onclick="if(event.target===this)closeBannerEditor()">
-  <div class="sheet">
-    <div class="grabber"></div>
-    <div class="sheet-head"><h2>بەنەری سەرەکی</h2><button class="close" onclick="closeBannerEditor()">×</button></div>
-    <form id="bannerForm">
-      <div class="field"><label>لینکی وێنەی بەنەر</label><input id="bannerUrl" type="url" placeholder="https://..."></div>
-      <div class="card" style="padding:8px;margin-bottom:10px"><img id="bannerEditorPreview" alt="" style="width:100%;max-height:190px;object-fit:cover;border-radius:11px;display:none"></div>
-      <button class="btn primary full">پاشەکەوتکردنی بەنەر</button>
-      <button type="button" class="btn danger full" style="margin-top:8px" onclick="clearBanner()">لابردنی بەنەر</button>
-    </form>
-  </div>
-</div>
-
+  </main>
+</section>
 <div id="toast" class="toast"></div>
+<div id="confirmModal" class="modal"><div class="confirm"><h3>سڕینەوەی بەرهەم؟</h3><p id="confirmText">ئەم کردارە ناتوانرێت بە ئاسانی بگەڕێندرێتەوە.</p><div class="confirm-actions"><button id="confirmDelete" class="btn btn-danger">بەڵێ، بیسڕەوە</button><button id="cancelDelete" class="btn btn-light">هەڵوەشاندنەوە</button></div></div></div>
 
-
-
-<script type="module" id="admin-firebase">
+<script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-import {
-  getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut
-} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-import {
-  getFirestore, collection, doc, addDoc, setDoc, deleteDoc,
-  onSnapshot, serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+import { getFirestore, collection, doc, onSnapshot, setDoc, addDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCH5-6OhuCVfZo8abiIHYfOzvbQTBQbEmw",
-  authDomain: "ph-tools-4a82c.firebaseapp.com",
-  projectId: "ph-tools-4a82c",
-  storageBucket: "ph-tools-4a82c.firebasestorage.app",
-  messagingSenderId: "677581607396",
-  appId: "1:677581607396:web:7c63eee6537cdf7ccb37f1",
-  measurementId: "G-DDCWBJVG1T"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-let unsubscribeProducts = null;
-let unsubscribeBanner = null;
-let products = [];
-let editingId = null;
-let activeFilter = "all";
-
-const $ = id => document.getElementById(id);
-const val = id => String($(id)?.value ?? "").trim();
-
-function escapeHtml(value) {
-  return String(value ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
-
-function normalizeImages(raw) {
-  if (Array.isArray(raw)) return raw.map(String).map(x => x.trim()).filter(Boolean);
-  if (raw) return String(raw).split(/\r?\n|,/).map(x => x.trim()).filter(Boolean);
-  return [];
-}
-
-function normalizeSizes(raw) {
-  if (!Array.isArray(raw)) return [];
-  return raw.map((x, i) => {
-    if (typeof x === "string") return { name: x.trim(), price: 0, currency: "IQD" };
-    return {
-      name: String(x?.name ?? x?.size ?? `قەبارە ${i + 1}`).trim(),
-      price: x?.price ?? 0,
-      currency: x?.currency === "USD" ? "USD" : "IQD"
-    };
-  }).filter(x => x.name);
-}
-
-function productFromForm() {
-  const images = [...document.querySelectorAll("#imageList input[data-image-url]")]
-    .map(input => input.value.trim())
-    .filter(Boolean);
-
-  return {
-    name: val("pName"),
-    brand: val("pBrand"),
-    category: val("pCategory"),
-    smallDescription: val("pShort"),
-    description: val("pDescription"),
-    price: val("pPrice") || 0,
-    currency: val("pCurrency") === "USD" ? "USD" : "IQD",
-    videoUrl: val("pVideo"),
-    images,
-    active: $("pActive") ? $("pActive").checked : true,
-    updatedAt: serverTimestamp()
-  };
-}
-
-function showDashboard(show) {
-  $("loginView")?.classList.toggle("hidden", show);
-  $("app")?.classList.toggle("hidden", !show);
-}
-
-function toast(message) {
-  const el = $("toast");
-  if (!el) return;
-  el.textContent = message;
-  el.classList.add("show");
-  clearTimeout(window.__phToastTimer);
-  window.__phToastTimer = setTimeout(() => el.classList.remove("show"), 2800);
-}
-
-function switchView(view) {
-  document.querySelectorAll(".view").forEach(el => el.classList.remove("active"));
-  const target = $(`${view}View`);
-  if (target) target.classList.add("active");
-
-  document.querySelectorAll(".navitem[data-view]").forEach(el => {
-    el.classList.toggle("active", el.dataset.view === view);
-  });
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}
-window.switchView = switchView;
-
-function openSite() {
-  window.open("index.html", "_blank", "noopener,noreferrer");
-}
-window.openSite = openSite;
-
-function addImageInput(value = "") {
-  const list = $("imageList");
-  if (!list) return;
-  const row = document.createElement("div");
-  row.className = "image-row";
-  row.innerHTML = `
-    <input data-image-url type="url" placeholder="https://..." value="${escapeHtml(value)}">
-    <button type="button" class="btn" aria-label="سڕینەوە">×</button>
-  `;
-  row.querySelector("button").addEventListener("click", () => row.remove());
-  list.appendChild(row);
-}
-window.addImageInput = addImageInput;
-
-function renderImageInputs(images) {
-  const list = $("imageList");
-  if (!list) return;
-  list.innerHTML = "";
-  (images.length ? images : [""]).forEach(url => addImageInput(url));
-}
-
-function openProductEditor(product = null) {
-  editingId = product?.id || null;
-  $("productForm")?.reset();
-  $("productId").value = editingId || "";
-
-  if (product) {
-    $("pName").value = product.name || "";
-    $("pBrand").value = product.brand || "";
-    $("pCategory").value = product.category || "";
-    $("pShort").value = product.smallDescription || product.shortDescription || "";
-    $("pDescription").value = product.description || "";
-    $("pPrice").value = product.price ?? "";
-    $("pCurrency").value = product.currency === "USD" ? "USD" : "IQD";
-    $("pVideo").value = product.videoUrl || product.video || "";
-    $("pActive").checked = product.active !== false;
-    renderImageInputs(normalizeImages(product.images));
-    $("productModalTitle").textContent = "دەستکاریکردنی بەرهەم";
-    $("deleteProductBtn").style.display = "block";
-  } else {
-    $("pActive").checked = true;
-    renderImageInputs([]);
-    $("productModalTitle").textContent = "بەرهەمی نوێ";
-    $("deleteProductBtn").style.display = "none";
-  }
-
-  $("productModal")?.classList.add("show");
-  setTimeout(() => $("pName")?.focus(), 50);
-}
-window.openProductEditor = openProductEditor;
-
-function closeProductEditor() {
-  $("productModal")?.classList.remove("show");
-  editingId = null;
-}
-window.closeProductEditor = closeProductEditor;
-
-function openBannerEditor() {
-  const current = val("bannerUrl");
-  $("bannerUrl").value = current;
-  updateBannerEditorPreview(current);
-  $("bannerModal")?.classList.add("show");
-}
-window.openBannerEditor = openBannerEditor;
-
-function closeBannerEditor() {
-  $("bannerModal")?.classList.remove("show");
-}
-window.closeBannerEditor = closeBannerEditor;
-
-function updateBannerEditorPreview(url) {
-  const preview = $("bannerEditorPreview");
-  if (!preview) return;
-  preview.src = url || "";
-  preview.style.display = url ? "block" : "none";
-}
-
-function clearBanner() {
-  $("bannerUrl").value = "";
-  updateBannerEditorPreview("");
-  $("bannerForm")?.requestSubmit();
-}
-window.clearBanner = clearBanner;
-
-function updateStats() {
-  const active = products.filter(p => p.active !== false).length;
-  $("statProducts").textContent = String(products.length);
-  $("statActive").textContent = String(active);
-}
-window.updateStats = updateStats;
-
-function productMatches(p) {
-  const search = val("productSearch").toLowerCase();
-  const haystack = [p.name, p.brand, p.category, p.smallDescription, p.description]
-    .map(x => String(x || "").toLowerCase()).join(" ");
-  const categoryOk = activeFilter === "all" || p.category === activeFilter;
-  return categoryOk && (!search || haystack.includes(search));
-}
-
-function productCard(p) {
-  const image = normalizeImages(p.images)[0];
-  const price = p.price !== undefined && p.price !== "" ? `${escapeHtml(p.price)} ${escapeHtml(p.currency || "IQD")}` : "";
-  return `
-    <article class="product-card">
-      <div class="product-thumb">${image ? `<img src="${escapeHtml(image)}" alt="" loading="lazy">` : "<span>PH</span>"}</div>
-      <div class="product-info">
-        <strong>${escapeHtml(p.name || "بەرهەم")}</strong>
-        <small>${escapeHtml(p.brand || p.category || "")}</small>
-        ${price ? `<b>${price}</b>` : ""}
-        <span class="status ${p.active === false ? "off" : "on"}">${p.active === false ? "ناچالاک" : "چالاک"}</span>
-      </div>
-      <div class="product-actions">
-        <button class="btn" data-edit="${escapeHtml(p.id)}">دەستکاری</button>
-        <button class="btn danger" data-delete="${escapeHtml(p.id)}">سڕینەوە</button>
-      </div>
-    </article>
-  `;
-}
-
-function renderProducts() {
-  const filtered = products.filter(productMatches);
-  const list = $("productsList");
-  if (list) {
-    list.innerHTML = filtered.length
-      ? filtered.map(productCard).join("")
-      : '<div class="empty">هیچ بەرهەمێک نەدۆزرایەوە.</div>';
-    list.querySelectorAll("[data-edit]").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const p = products.find(x => x.id === btn.dataset.edit);
-        if (p) openProductEditor(p);
-      });
-    });
-    list.querySelectorAll("[data-delete]").forEach(btn => {
-      btn.addEventListener("click", () => window.deleteProduct(btn.dataset.delete));
-    });
-  }
-
-  const recent = $("recentProducts");
-  if (recent) {
-    const latest = [...products].slice(0, 5);
-    recent.innerHTML = latest.length
-      ? latest.map(p => `
-          <button type="button" class="recent-item" data-recent-id="${escapeHtml(p.id)}">
-            <span>${escapeHtml(p.name || "بەرهەم")}</span>
-            <small>${escapeHtml(p.brand || p.category || "")}</small>
-          </button>
-        `).join("")
-      : '<div class="empty">هیچ بەرهەمێک نییە.</div>';
-    recent.querySelectorAll("[data-recent-id]").forEach(btn => btn.addEventListener("click", () => {
-      const p = products.find(x => x.id === btn.dataset.recentId);
-      if (p) openProductEditor(p);
-    }));
-  }
-  updateStats();
-}
-window.renderProducts = renderProducts;
-
-function setFilter(filter) {
-  activeFilter = filter;
-  document.querySelectorAll(".filter").forEach(btn => btn.classList.toggle("active", btn.dataset.cat === filter));
-  renderProducts();
-}
-window.setFilter = setFilter;
-
-window.editProduct = id => {
-  const p = products.find(x => String(x.id) === String(id));
-  if (p) openProductEditor(p);
-};
-
-window.deleteProduct = async id => {
-  if (!auth.currentUser) return toast("تکایە سەرەتا بچۆ ژوورەوە.");
-  if (!confirm("دڵنیایت لە سڕینەوەی ئەم بەرهەمە؟")) return;
-  try {
-    await deleteDoc(doc(db, "products", id));
-    if (editingId === id) closeProductEditor();
-    toast("بەرهەمەکە سڕایەوە.");
-  } catch (error) {
-    console.error(error);
-    toast("سڕینەوە سەرکەوتوو نەبوو.");
-  }
-};
-
-async function saveProduct(event) {
-  event?.preventDefault();
-  if (!auth.currentUser) return toast("تکایە سەرەتا بچۆ ژوورەوە.");
-
-  const data = productFromForm();
-  if (!data.name) return toast("ناوی بەرهەم بنووسە.");
-
-  try {
-    if (editingId) {
-      await setDoc(doc(db, "products", editingId), data, { merge: true });
-      toast("بەرهەم نوێکرایەوە.");
-    } else {
-      await addDoc(collection(db, "products"), {
-        ...data,
-        createdAt: serverTimestamp()
-      });
-      toast("بەرهەم زیادکرا.");
-    }
-    closeProductEditor();
-  } catch (error) {
-    console.error(error);
-    toast("هەڵەیەک ڕوویدا لە پاشەکەوتکردن.");
-  }
-}
-window.saveProduct = saveProduct;
-
-async function saveBanner(event) {
-  event?.preventDefault();
-  if (!auth.currentUser) return toast("تکایە سەرەتا بچۆ ژوورەوە.");
-  const imageUrl = val("bannerUrl");
-  try {
-    await setDoc(doc(db, "settings", "banner"), {
-      imageUrl,
-      updatedAt: serverTimestamp()
-    }, { merge: true });
-    toast(imageUrl ? "بانەر نوێکرایەوە." : "بانەر سڕایەوە.");
-    closeBannerEditor();
-  } catch (error) {
-    console.error(error);
-    toast("نوێکردنەوەی بانەر سەرکەوتوو نەبوو.");
-  }
-}
-window.saveBanner = saveBanner;
-
-function updateBannerPreview(url) {
-  const preview = $("bannerPreview");
-  if (!preview) return;
-  if (url) {
-    preview.innerHTML = `<img src="${escapeHtml(url)}" alt="بانەر" style="width:100%;max-height:220px;object-fit:cover;border-radius:11px">`;
-    preview.classList.remove("empty");
-  } else {
-    preview.textContent = "هیچ بەنەرێک دیاری نەکراوە.";
-    preview.classList.add("empty");
-  }
-}
-
-async function doLogin(event) {
-  event?.preventDefault();
-  const email = val("email");
-  const password = val("password");
-  if (!email || !password) return toast("ئیمەیڵ و وشەی نهێنی پڕ بکەرەوە.");
-  const button = $("loginBtn");
-  if (button) button.disabled = true;
-  try {
-    await signInWithEmailAndPassword(auth, email, password);
-  } catch (error) {
-    console.error(error);
-    toast("ئیمەیڵ یان وشەی نهێنی هەڵەیە.");
-  } finally {
-    if (button) button.disabled = false;
-  }
-}
-window.doLogin = doLogin;
-window.login = doLogin;
-
-window.logout = async () => {
-  try {
-    await signOut(auth);
-    toast("بە سەرکەوتوویی دەرچوویت.");
-  } catch (error) {
-    console.error(error);
-    toast("دەرچوون سەرکەوتوو نەبوو.");
-  }
-};
-
-function bindForm() {
-  const loginForm = $("loginForm");
-  if (loginForm && !loginForm.dataset.bound) {
-    loginForm.dataset.bound = "1";
-    loginForm.addEventListener("submit", doLogin);
-  }
-
-  const productForm = $("productForm");
-  if (productForm && !productForm.dataset.bound) {
-    productForm.dataset.bound = "1";
-    productForm.addEventListener("submit", saveProduct);
-  }
-
-  const bannerForm = $("bannerForm");
-  if (bannerForm && !bannerForm.dataset.bound) {
-    bannerForm.dataset.bound = "1";
-    bannerForm.addEventListener("submit", saveBanner);
-  }
-
-  $("bannerUrl")?.addEventListener("input", e => updateBannerEditorPreview(e.target.value.trim()));
-  $("logoutBtn")?.addEventListener("click", window.logout);
-  $("deleteProductBtn")?.addEventListener("click", () => {
-    if (editingId) window.deleteProduct(editingId);
-  });
-}
-
-onAuthStateChanged(auth, user => {
-  if (!user) {
-    showDashboard(false);
-    if (unsubscribeProducts) { unsubscribeProducts(); unsubscribeProducts = null; }
-    if (unsubscribeBanner) { unsubscribeBanner(); unsubscribeBanner = null; }
-    return;
-  }
-
-  showDashboard(true);
-  $("userEmail").textContent = user.email || "";
-  bindForm();
-
-  if (!unsubscribeProducts) {
-    unsubscribeProducts = onSnapshot(
-      collection(db, "products"),
-      snap => {
-        products = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        products.sort((a, b) => {
-          const at = a.createdAt?.seconds || 0;
-          const bt = b.createdAt?.seconds || 0;
-          return bt - at;
-        });
-        renderProducts();
-      },
-      error => {
-        console.error("Products sync error:", error);
-        toast("بەستەرەکەی بەرهەمەکان هەڵەی هەیە.");
-      }
-    );
-  }
-
-  if (!unsubscribeBanner) {
-    unsubscribeBanner = onSnapshot(
-      doc(db, "settings", "banner"),
-      snap => {
-        const url = snap.exists() ? String(snap.data()?.imageUrl || "") : "";
-        $("bannerUrl").value = url;
-        updateBannerEditorPreview(url);
-        updateBannerPreview(url);
-      },
-      error => console.error("Banner sync error:", error)
-    );
-  }
-});
-
-document.addEventListener("DOMContentLoaded", bindForm);
+const firebaseConfig={apiKey:"AIzaSyCH5-6OhuCVfZo8abiIHYfOzvbQTBQbEmw",authDomain:"ph-tools-4a82c.firebaseapp.com",projectId:"ph-tools-4a82c",storageBucket:"ph-tools-4a82c.firebasestorage.app",messagingSenderId:"677581607396",appId:"1:677581607396:web:7c63eee6537cdf7ccb37f1",measurementId:"G-DDCWBJVG1T"};
+const app=initializeApp(firebaseConfig,"ph-tools-admin"); const auth=getAuth(app); const db=getFirestore(app);
+const $=id=>document.getElementById(id); let products=[]; let unsubProducts=null; let unsubBanner=null; let deleteId=null;
+const categories=['drill','charger','shafra','nail','cutting','electronics','warawela'];
+function toast(msg){$('toast').textContent=msg;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2500)}
+function setSync(type,text){const p=$('syncPill');p.className='status-pill '+type;p.innerHTML='<i class="dot"></i><span>'+text+'</span>'}
+function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function imagesOf(p){let arr=Array.isArray(p.images)?p.images.filter(Boolean):[];if(p.imageUrl&&!arr.includes(p.imageUrl))arr.unshift(p.imageUrl);if(!arr.length&&p.img)arr=[p.img];return arr}
+function formatPrice(v,c='IQD'){if(v===undefined||v===null||v==='')return '—';return c==='USD'?'$'+Number(v).toLocaleString('en-US'):Number(v).toLocaleString('en-US')+' د.ع'}
+function videoEmbed(url){if(!url)return '';try{const u=new URL(url);let id='';if(u.hostname.includes('youtu.be'))id=u.pathname.slice(1);else if(u.searchParams.get('v'))id=u.searchParams.get('v');else if(u.pathname.includes('/embed/'))id=u.pathname.split('/embed/')[1].split('/')[0];if(id)return 'https://www.youtube.com/embed/'+encodeURIComponent(id);}catch{}return ''}
+function renderProducts(){const q=$('search').value.trim().toLowerCase();const list=products.filter(p=>(p.name||'').toLowerCase().includes(q));$('totalCount').textContent=products.length;$('activeCount').textContent=products.filter(p=>p.active!==false).length;$('inactiveCount').textContent=products.filter(p=>p.active===false).length;if(!list.length){$('productsBody').innerHTML='<tr><td colspan="6" class="loading">هیچ بەرهەمێک نەدۆزرایەوە.</td></tr>';return}$('productsBody').innerHTML=list.map(p=>{const img=imagesOf(p)[0]||'';return `<tr><td><div class="prod">${img?`<img src="${esc(img)}" onerror="this.style.visibility='hidden'">`:'<div style="width:46px;height:46px;border-radius:8px;background:#eee"></div>'}<div><div class="prod-name">${esc(p.name||'بێ ناو')}</div><div class="prod-desc">${esc(p.smallDescription||p.shortDescription||'')}</div></div></div></td><td>${esc(formatPrice(p.price,p.currency||'IQD'))}</td><td>${esc(p.category||'—')}</td><td><span class="tag on">SYNCED</span></td><td><label class="switch" title="چالاک/ناچالاک"><input type="checkbox" data-toggle="${esc(p.id)}" ${p.active!==false?'checked':''}><span class="slider"></span></label></td><td><div class="actions"><button class="icon-btn" data-edit="${esc(p.id)}">Edit</button><button class="icon-btn danger" data-delete="${esc(p.id)}">Delete</button></div></td></tr>`}).join('')}
+function showView(name){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));$('sidebar').classList.remove('open');if(name==='products'){$('productsView').classList.add('active');$('pageTitle').textContent='بەڕێوەبردنی بەرهەم'}else if(name==='editor'){$('editorView').classList.add('active');$('pageTitle').textContent=$('productId').value?'دەستکاریکردنی بەرهەم':'زیادکردنی بەرهەم'}else{$('bannerView').classList.add('active');$('pageTitle').textContent='بەڕێوەبردنی بانەر'}}
+function resetEditor(){ $('productForm').reset();$('productId').value='';$('pCurrency').value='IQD';$('pActive').value='true';$('editorTitle').textContent='زیادکردنی بەرهەم';$('imagePreview').innerHTML='';$('multiPreview').innerHTML='';$('videoPreview').innerHTML='<span>Preview ـی ڤیدیۆ</span>'; }
+function editProduct(id){const p=products.find(x=>x.id===id);if(!p)return;showView('editor');$('productId').value=p.id;$('editorTitle').textContent='دەستکاریکردنی بەرهەم';$('pName').value=p.name||'';$('pShort').value=p.smallDescription||p.shortDescription||'';$('pPrice').value=p.price??'';$('pCurrency').value=p.currency||'IQD';$('pLong').value=p.description||p.longDescription||'';$('pCategory').value=p.category||'';$('pActive').value=p.active===false?'false':'true';const imgs=imagesOf(p);$('pImage').value=p.imageUrl||imgs[0]||'';$('pImages').value=imgs.join('\n');$('pVideo').value=p.videoUrl||p.video||'';previewImages();previewVideo()}
+function previewImages(){const main=$('pImage').value.trim();const rest=$('pImages').value.split(/[\n,]+/).map(x=>x.trim()).filter(Boolean);const urls=[...new Set([main,...rest].filter(Boolean))];$('imagePreview').innerHTML=urls.slice(0,1).map(u=>`<div class="preview-img"><img src="${esc(u)}" onerror="this.alt='Image error'"></div>`).join('');$('multiPreview').innerHTML=urls.slice(1).map(u=>`<div class="preview-img"><img src="${esc(u)}" onerror="this.alt='Image error'"></div>`).join('')}
+function previewVideo(){const url=$('pVideo').value.trim();const embed=videoEmbed(url);$('videoPreview').innerHTML=embed?`<iframe src="${esc(embed)}" allowfullscreen loading="lazy"></iframe>`:(url?`<video src="${esc(url)}" controls></video>`:'<span>Preview ـی ڤیدیۆ</span>')}
+function subscribe(){setSync('sync','خەریکی Sync...');if(unsubProducts)unsubProducts();unsubProducts=onSnapshot(collection(db,'products'),snap=>{products=snap.docs.map(d=>({id:d.id,...d.data()}));renderProducts();setSync('ok','Sync کرا');},err=>{console.error(err);setSync('err','Sync هەڵەیە')});if(unsubBanner)unsubBanner();unsubBanner=onSnapshot(doc(db,'settings','banner'),snap=>{const url=snap.exists()?(snap.data().imageUrl||''):'';$('bannerUrl').value=url;$('bannerPreview').innerHTML=url?`<img src="${esc(url)}" onerror="this.replaceWith(document.createTextNode('URL ـەکە کار ناکات'))">`:'<span>هیچ بانەرێک نییە</span>'},err=>console.error(err))}
+$('loginForm').addEventListener('submit',async e=>{e.preventDefault();$('loginError').classList.add('hidden');$('loginBtn').disabled=true;try{await signInWithEmailAndPassword(auth,$('email').value.trim(),$('password').value)}catch(err){$('loginError').textContent=err.code==='auth/invalid-credential'?'ئیمەیڵ یان وشەی نهێنی هەڵەیە.':err.message;$('loginError').classList.remove('hidden')}finally{$('loginBtn').disabled=false}});
+onAuthStateChanged(auth,user=>{if(user){$('loginScreen').classList.add('hidden');$('app').classList.remove('hidden');subscribe()}else{$('app').classList.add('hidden');$('loginScreen').classList.remove('hidden');if(unsubProducts)unsubProducts();if(unsubBanner)unsubBanner()}});
+$('logoutBtn').onclick=()=>signOut(auth);$('mobileMenu').onclick=()=>$('sidebar').classList.toggle('open');$('search').oninput=renderProducts;$('addBtn').onclick=()=>{resetEditor();showView('editor')};$('backProducts').onclick=()=>showView('products');$('cancelEdit').onclick=()=>showView('products');
+document.querySelectorAll('.nav-btn').forEach(b=>b.onclick=()=>showView(b.dataset.view));
+$('productsBody').addEventListener('click',async e=>{const edit=e.target.closest('[data-edit]');const del=e.target.closest('[data-delete]');if(edit)editProduct(edit.dataset.edit);if(del){deleteId=del.dataset.delete;$('confirmText').textContent='دڵنیایت لە سڕینەوەی '+(products.find(p=>p.id===deleteId)?.name||'ئەم بەرهەمە')+'؟';$('confirmModal').classList.add('show')}});
+$('productsBody').addEventListener('change',async e=>{const id=e.target.dataset.toggle;if(!id)return;try{await updateDoc(doc(db,'products',id),{active:e.target.checked,updatedAt:serverTimestamp()});toast(e.target.checked?'بەرهەم چالاک کرا':'بەرهەم ناچالاک کرا')}catch(err){e.target.checked=!e.target.checked;toast('نەتوانرا دۆخ بگۆڕدرێت')}});
+$('confirmDelete').onclick=async()=>{if(!deleteId)return;try{await deleteDoc(doc(db,'products',deleteId));toast('بەرهەم سڕایەوە')}catch(err){toast('سڕینەوە سەرکەوتوو نەبوو')}finally{deleteId=null;$('confirmModal').classList.remove('show')}};$('cancelDelete').onclick=()=>$('confirmModal').classList.remove('show');
+$('productForm').addEventListener('submit',async e=>{e.preventDefault();$('saveBtn').disabled=true;try{const id=$('productId').value.trim();const main=$('pImage').value.trim();const images=[...new Set([main,...$('pImages').value.split(/[\n,]+/).map(x=>x.trim()).filter(Boolean)].filter(Boolean))];const data={name:$('pName').value.trim(),smallDescription:$('pShort').value.trim(),shortDescription:$('pShort').value.trim(),price:$('pPrice').value.trim(),currency:$('pCurrency').value,description:$('pLong').value.trim(),longDescription:$('pLong').value.trim(),category:$('pCategory').value,imageUrl:main,images,videoUrl:$('pVideo').value.trim(),active:$('pActive').value==='true',updatedAt:serverTimestamp()};if(id)await updateDoc(doc(db,'products',id),data);else await addDoc(collection(db,'products'),{...data,createdAt:serverTimestamp()});toast(id?'بەرهەم نوێکرایەوە':'بەرهەم زیادکرا');showView('products')}catch(err){console.error(err);toast('پاشەکەوتکردن سەرکەوتوو نەبوو')}finally{$('saveBtn').disabled=false}});
+$('pImage').addEventListener('input',previewImages);$('pImages').addEventListener('input',previewImages);$('pVideo').addEventListener('input',previewVideo);
+$('bannerUrl').addEventListener('input',()=>{const u=$('bannerUrl').value.trim();$('bannerPreview').innerHTML=u?`<img src="${esc(u)}" onerror="this.replaceWith(document.createTextNode('URL ـەکە کار ناکات'))">`:'<span>Preview ـی بانەر</span>'});
+$('bannerForm').addEventListener('submit',async e=>{e.preventDefault();$('bannerSave').disabled=true;try{const imageUrl=$('bannerUrl').value.trim();await setDoc(doc(db,'settings','banner'),{imageUrl,updatedAt:serverTimestamp()},{merge:true});toast('بانەر پاشەکەوت کرا')}catch(err){console.error(err);toast('پاشەکەوتکردنی بانەر سەرکەوتوو نەبوو')}finally{$('bannerSave').disabled=false}});
 </script>
-
-
-<script>
-(function () {
-  function setupMobileAdmin() {
-    var btn = document.getElementById('mobileMenuBtn');
-    var sidebar = document.querySelector('.sidebar') ||
-                  document.querySelector('#sidebar') ||
-                  document.querySelector('.side-nav');
-
-    if (!btn || !sidebar || btn.dataset.bound === '1') return;
-    btn.dataset.bound = '1';
-
-    btn.addEventListener('click', function () {
-      sidebar.classList.toggle('open');
-      sidebar.classList.toggle('active');
-      document.body.classList.toggle('sidebar-open');
-    });
-
-    sidebar.addEventListener('click', function (e) {
-      if (window.innerWidth <= 700 && e.target.closest('a, button')) {
-        sidebar.classList.remove('open', 'active');
-        document.body.classList.remove('sidebar-open');
-      }
-    });
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', setupMobileAdmin);
-  } else {
-    setupMobileAdmin();
-  }
-})();
-</script>
-
 </body>
 </html>
