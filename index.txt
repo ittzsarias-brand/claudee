@@ -1197,7 +1197,7 @@ window.dispatchEvent(new Event("products-firebase-ready"));
       <h2 id="productDetailTitle"></h2>
       <div class="product-detail-brand" id="productDetailBrand"></div>
       <div class="product-detail-price" id="productDetailPrice"></div>
-      <div class="product-detail-section" id="sizeSection" style="display:none"><h4>قەبارە و نرخ</h4><div class="size-options" id="sizeOptions"></div></div>
+      <div class="product-detail-section" id="sizeSection" style="display:none"><h4>قەبارە</h4><div class="size-options" id="sizeOptions"></div></div>
       <div class="product-detail-section"><h4>وەسفی تەواو</h4><div class="product-detail-description" id="productDetailDescription"></div></div>
     </div>
   </div>
@@ -1328,7 +1328,7 @@ function formatSinglePrice(price,currency){
   return currency==='USD' ? `$${n.toLocaleString('en-US',{maximumFractionDigits:2})}` : `${n.toLocaleString('en-US')} د.ع`;
 }
 function formatPrice(price,currency){
-  const raw=String(price??'').trim().replace(/,/g,'').replace(/[–—]/g,'-');
+  const raw=String(price??'').trim();
   if(raw.includes('-')){
     const parts=raw.split('-').map(x=>x.trim());
     if(parts.length===2 && parts[0]!=='' && parts[1]!==''){
@@ -1356,6 +1356,8 @@ function renderProducts(){
   if(!list.length){grid.innerHTML='<div class="product-empty">هیچ بەرهەمێک لەم بەشەدا نییە.</div>';return;}
   grid.innerHTML=list.map(p=>{
     const img=p.images[0]||'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="600" height="600"%3E%3Crect width="100%25" height="100%25" fill="%23eeeeee"/%3E%3C/svg%3E';
+    // Product card price always comes from the MAIN product price.
+    // Size prices are separate and are shown in the product details.
     const price=p.price;
     const currency=p.currency;
     return `<article class="product-card-v2 prod-card" role="button" tabindex="0" onclick="openProductDetail('${escAttr(p.id)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openProductDetail('${escAttr(p.id)}')}" data-category="${escAttr(p.category||'')}" data-categories="${escAttr(p.categories||'')}">
@@ -1436,7 +1438,9 @@ function selectProductSize(i){
 }
 function updateDetailPrice(){
   if(!activeDetailProduct) return;
-  document.getElementById('productDetailPrice').textContent=formatPrice(activeDetailProduct.price,activeDetailProduct.currency);
+  const price=activeDetailSize?activeDetailSize.price:activeDetailProduct.price;
+  const currency=activeDetailSize?activeDetailSize.currency:activeDetailProduct.currency;
+  document.getElementById('productDetailPrice').textContent=formatPrice(price,currency);
 }
 function closeProductDetail(){
   const modal=document.getElementById('productDetailModal');

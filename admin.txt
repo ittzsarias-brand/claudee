@@ -559,22 +559,23 @@
       escapeHtml(value);
     function money(value, currency) {
       const raw = String(value ?? "").trim().replace(/,/g, "").replace(/[–—]/g, "-");
-      const formatOne = part => {
-        const number = Number(part || 0);
-        if (currency === "USD") {
-          return `$${number.toLocaleString("en-US", {
-            maximumFractionDigits: 2
-          })}`;
-        }
-        return `${number.toLocaleString("en-US")} د.ع`;
-      };
       if (raw.includes("-")) {
         const parts = raw.split("-").map(part => part.trim());
-        if (parts.length === 2 && parts.every(part => /^\d+(?:\.\d+)?$/.test(part))) {
-          return `${formatOne(parts[0])} - ${formatOne(parts[1])}`;
+        if (parts.length === 2 && parts[0] !== "" && parts[1] !== "") {
+          const a = Number(parts[0]);
+          const b = Number(parts[1]);
+          if (Number.isFinite(a) && Number.isFinite(b)) {
+            return `${money(a, currency)} - ${money(b, currency)}`;
+          }
         }
       }
-      return formatOne(raw);
+      const number = Number(raw || 0);
+      if (currency === "USD") {
+        return `$${number.toLocaleString("en-US", {
+          maximumFractionDigits: 2
+        })}`;
+      }
+      return `${number.toLocaleString("en-US")} د.ع`;
     }
     function showToast(message) {
       $("toast").textContent = message;
@@ -729,6 +730,8 @@
           Array.isArray(product.images) && product.images[0]
             ? product.images[0]
             : product.imageUrl || "";
+        // IMPORTANT: this is the same MAIN price stored in product.price.
+        // Never use the first size price for the product's main price.
         const price = money(product.price, product.currency);
         const active = product.active !== false;
         return `
