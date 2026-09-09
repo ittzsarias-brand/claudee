@@ -242,144 +242,256 @@ let unsubscribeProducts = null;
 let unsubscribeBanner = null;
 let products = [];
 let editingId = null;
+let activeFilter = "all";
 
 const $ = id => document.getElementById(id);
 const val = id => String($(id)?.value ?? "").trim();
 
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 function normalizeImages(raw) {
-  if (Array.isArray(raw)) return raw.map(String).map(x=>x.trim()).filter(Boolean);
-  if (raw) return String(raw).split(/\r?\n|,/).map(x=>x.trim()).filter(Boolean);
+  if (Array.isArray(raw)) return raw.map(String).map(x => x.trim()).filter(Boolean);
+  if (raw) return String(raw).split(/\r?\n|,/).map(x => x.trim()).filter(Boolean);
   return [];
 }
 
 function normalizeSizes(raw) {
   if (!Array.isArray(raw)) return [];
   return raw.map((x, i) => {
-    if (typeof x === "string") {
-      return {name:x.trim(), price:0, currency:"IQD"};
-    }
+    if (typeof x === "string") return { name: x.trim(), price: 0, currency: "IQD" };
     return {
-      name: String(x?.name ?? x?.size ?? `قەبارە ${i+1}`).trim(),
+      name: String(x?.name ?? x?.size ?? `قەبارە ${i + 1}`).trim(),
       price: x?.price ?? 0,
-      currency: x?.currency || "IQD"
+      currency: x?.currency === "USD" ? "USD" : "IQD"
     };
-  }).filter(x=>x.name);
+  }).filter(x => x.name);
 }
 
 function productFromForm() {
-  const images = normalizeImages(val("productImages") || val("imageUrls"));
-  const sizesText = val("productSizes");
-  let sizes = [];
-  if (sizesText) {
-    sizes = sizesText.split(/\r?\n/).map(line => {
-      const [name, price, currency] = line.split("|").map(x=>x.trim());
-      return {
-        name: name || "",
-        price: price === undefined || price === "" ? 0 : price,
-        currency: currency === "USD" ? "USD" : "IQD"
-      };
-    }).filter(x=>x.name);
-  }
+  const images = [...document.querySelectorAll("#imageList input[data-image-url]")]
+    .map(input => input.value.trim())
+    .filter(Boolean);
 
   return {
-    name: val("productName") || val("name"),
-    brand: val("productBrand") || val("brand"),
-    category: val("productCategory") || val("category"),
-    categories: val("productCategories") || val("categories"),
+    name: val("pName"),
+    brand: val("pBrand"),
+    category: val("pCategory"),
+    smallDescription: val("pShort"),
+    description: val("pDescription"),
+    price: val("pPrice") || 0,
+    currency: val("pCurrency") === "USD" ? "USD" : "IQD",
+    videoUrl: val("pVideo"),
     images,
-    price: val("productPrice") || val("price") || 0,
-    currency: val("productCurrency") === "USD" ? "USD" : "IQD",
-    smallDescription:
-      val("productShortDescription") ||
-      val("productSmallDescription") ||
-      val("smallDescription") ||
-      val("shortDescription"),
-    description:
-      val("productDescription") ||
-      val("description"),
-    videoUrl:
-      val("productVideo") ||
-      val("videoUrl") ||
-      val("video"),
-    sizes: normalizeSizes(sizes),
-    active: $("productActive") ? $("productActive").checked : true,
+    active: $("pActive") ? $("pActive").checked : true,
     updatedAt: serverTimestamp()
   };
 }
 
-function putValue(ids, value) {
-  for (const id of ids) {
-    const el = $(id);
-    if (el) {
-      el.value = value ?? "";
-      return;
-    }
-  }
-}
-
-function setChecked(ids, value) {
-  for (const id of ids) {
-    const el = $(id);
-    if (el && "checked" in el) {
-      el.checked = value !== false;
-      return;
-    }
-  }
-}
-
 function showDashboard(show) {
-  const login = $("loginView");
-  const dashboard = $("app");
-  if (login) login.classList.toggle("hidden", show);
-  if (dashboard) dashboard.classList.toggle("hidden", !show);
+  $("loginView")?.classList.toggle("hidden", show);
+  $("app")?.classList.toggle("hidden", !show);
 }
 
 function toast(message) {
-  if (typeof window.showToast === "function") return window.showToast(message);
-  alert(message);
+  const el = $("toast");
+  if (!el) return;
+  el.textContent = message;
+  el.classList.add("show");
+  clearTimeout(window.__phToastTimer);
+  window.__phToastTimer = setTimeout(() => el.classList.remove("show"), 2800);
+}
+
+function switchView(view) {
+  document.querySelectorAll(".view").forEach(el => el.classList.remove("active"));
+  const target = $(`${view}View`);
+  if (target) target.classList.add("active");
+
+  document.querySelectorAll(".navitem[data-view]").forEach(el => {
+    el.classList.toggle("active", el.dataset.view === view);
+  });
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+window.switchView = switchView;
+
+function openSite() {
+  window.open("index.html", "_blank", "noopener,noreferrer");
+}
+window.openSite = openSite;
+
+function addImageInput(value = "") {
+  const list = $("imageList");
+  if (!list) return;
+  const row = document.createElement("div");
+  row.className = "image-row";
+  row.innerHTML = `
+    <input data-image-url type="url" placeholder="https://..." value="${escapeHtml(value)}">
+    <button type="button" class="btn" aria-label="سڕینەوە">×</button>
+  `;
+  row.querySelector("button").addEventListener("click", () => row.remove());
+  list.appendChild(row);
+}
+window.addImageInput = addImageInput;
+
+function renderImageInputs(images) {
+  const list = $("imageList");
+  if (!list) return;
+  list.innerHTML = "";
+  (images.length ? images : [""]).forEach(url => addImageInput(url));
+}
+
+function openProductEditor(product = null) {
+  editingId = product?.id || null;
+  $("productForm")?.reset();
+  $("productId").value = editingId || "";
+
+  if (product) {
+    $("pName").value = product.name || "";
+    $("pBrand").value = product.brand || "";
+    $("pCategory").value = product.category || "";
+    $("pShort").value = product.smallDescription || product.shortDescription || "";
+    $("pDescription").value = product.description || "";
+    $("pPrice").value = product.price ?? "";
+    $("pCurrency").value = product.currency === "USD" ? "USD" : "IQD";
+    $("pVideo").value = product.videoUrl || product.video || "";
+    $("pActive").checked = product.active !== false;
+    renderImageInputs(normalizeImages(product.images));
+    $("productModalTitle").textContent = "دەستکاریکردنی بەرهەم";
+    $("deleteProductBtn").style.display = "block";
+  } else {
+    $("pActive").checked = true;
+    renderImageInputs([]);
+    $("productModalTitle").textContent = "بەرهەمی نوێ";
+    $("deleteProductBtn").style.display = "none";
+  }
+
+  $("productModal")?.classList.add("show");
+  setTimeout(() => $("pName")?.focus(), 50);
+}
+window.openProductEditor = openProductEditor;
+
+function closeProductEditor() {
+  $("productModal")?.classList.remove("show");
+  editingId = null;
+}
+window.closeProductEditor = closeProductEditor;
+
+function openBannerEditor() {
+  const current = val("bannerUrl");
+  $("bannerUrl").value = current;
+  updateBannerEditorPreview(current);
+  $("bannerModal")?.classList.add("show");
+}
+window.openBannerEditor = openBannerEditor;
+
+function closeBannerEditor() {
+  $("bannerModal")?.classList.remove("show");
+}
+window.closeBannerEditor = closeBannerEditor;
+
+function updateBannerEditorPreview(url) {
+  const preview = $("bannerEditorPreview");
+  if (!preview) return;
+  preview.src = url || "";
+  preview.style.display = url ? "block" : "none";
+}
+
+function clearBanner() {
+  $("bannerUrl").value = "";
+  updateBannerEditorPreview("");
+  $("bannerForm")?.requestSubmit();
+}
+window.clearBanner = clearBanner;
+
+function updateStats() {
+  const active = products.filter(p => p.active !== false).length;
+  $("statProducts").textContent = String(products.length);
+  $("statActive").textContent = String(active);
+}
+window.updateStats = updateStats;
+
+function productMatches(p) {
+  const search = val("productSearch").toLowerCase();
+  const haystack = [p.name, p.brand, p.category, p.smallDescription, p.description]
+    .map(x => String(x || "").toLowerCase()).join(" ");
+  const categoryOk = activeFilter === "all" || p.category === activeFilter;
+  return categoryOk && (!search || haystack.includes(search));
+}
+
+function productCard(p) {
+  const image = normalizeImages(p.images)[0];
+  const price = p.price !== undefined && p.price !== "" ? `${escapeHtml(p.price)} ${escapeHtml(p.currency || "IQD")}` : "";
+  return `
+    <article class="product-card">
+      <div class="product-thumb">${image ? `<img src="${escapeHtml(image)}" alt="" loading="lazy">` : "<span>PH</span>"}</div>
+      <div class="product-info">
+        <strong>${escapeHtml(p.name || "بەرهەم")}</strong>
+        <small>${escapeHtml(p.brand || p.category || "")}</small>
+        ${price ? `<b>${price}</b>` : ""}
+        <span class="status ${p.active === false ? "off" : "on"}">${p.active === false ? "ناچالاک" : "چالاک"}</span>
+      </div>
+      <div class="product-actions">
+        <button class="btn" data-edit="${escapeHtml(p.id)}">دەستکاری</button>
+        <button class="btn danger" data-delete="${escapeHtml(p.id)}">سڕینەوە</button>
+      </div>
+    </article>
+  `;
 }
 
 function renderProducts() {
-  // Use the existing admin renderer if present.
-  if (typeof window.renderProducts === "function") {
-    window.renderProducts(products);
-    return;
+  const filtered = products.filter(productMatches);
+  const list = $("productsList");
+  if (list) {
+    list.innerHTML = filtered.length
+      ? filtered.map(productCard).join("")
+      : '<div class="empty">هیچ بەرهەمێک نەدۆزرایەوە.</div>';
+    list.querySelectorAll("[data-edit]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const p = products.find(x => x.id === btn.dataset.edit);
+        if (p) openProductEditor(p);
+      });
+    });
+    list.querySelectorAll("[data-delete]").forEach(btn => {
+      btn.addEventListener("click", () => window.deleteProduct(btn.dataset.delete));
+    });
   }
-  const grid = $("productsGrid") || $("productList");
-  if (!grid) return;
-  grid.innerHTML = products.map(p => `
-    <div class="product-card">
-      <strong>${String(p.name || "بەرهەم")}</strong>
-      <small>${p.category || ""}</small>
-    </div>
-  `).join("");
-}
 
-function fillForm(p) {
-  editingId = p.id;
-  putValue(["productName","name"], p.name);
-  putValue(["productBrand","brand"], p.brand);
-  putValue(["productCategory","category"], p.category);
-  putValue(["productCategories","categories"], p.categories);
-  putValue(["productImages","imageUrls"], (p.images || []).join("\n"));
-  putValue(["productPrice","price"], p.price);
-  putValue(["productCurrency","currency"], p.currency || "IQD");
-  putValue(["productShortDescription","productSmallDescription","smallDescription","shortDescription"], p.smallDescription);
-  putValue(["productDescription","description"], p.description);
-  putValue(["productVideo","videoUrl","video"], p.videoUrl);
-  if ($("productSizes")) {
-    $("productSizes").value = (p.sizes || []).map(s =>
-      `${s.name}|${s.price}|${s.currency || "IQD"}`
-    ).join("\n");
+  const recent = $("recentProducts");
+  if (recent) {
+    const latest = [...products].slice(0, 5);
+    recent.innerHTML = latest.length
+      ? latest.map(p => `
+          <button type="button" class="recent-item" data-recent-id="${escapeHtml(p.id)}">
+            <span>${escapeHtml(p.name || "بەرهەم")}</span>
+            <small>${escapeHtml(p.brand || p.category || "")}</small>
+          </button>
+        `).join("")
+      : '<div class="empty">هیچ بەرهەمێک نییە.</div>';
+    recent.querySelectorAll("[data-recent-id]").forEach(btn => btn.addEventListener("click", () => {
+      const p = products.find(x => x.id === btn.dataset.recentId);
+      if (p) openProductEditor(p);
+    }));
   }
-  setChecked(["productActive"], p.active !== false);
-  if (typeof window.openProductForm === "function") window.openProductForm(p);
-  else if (typeof window.showProductForm === "function") window.showProductForm(p);
+  updateStats();
 }
+window.renderProducts = renderProducts;
+
+function setFilter(filter) {
+  activeFilter = filter;
+  document.querySelectorAll(".filter").forEach(btn => btn.classList.toggle("active", btn.dataset.cat === filter));
+  renderProducts();
+}
+window.setFilter = setFilter;
 
 window.editProduct = id => {
   const p = products.find(x => String(x.id) === String(id));
-  if (p) fillForm(p);
+  if (p) openProductEditor(p);
 };
 
 window.deleteProduct = async id => {
@@ -387,15 +499,16 @@ window.deleteProduct = async id => {
   if (!confirm("دڵنیایت لە سڕینەوەی ئەم بەرهەمە؟")) return;
   try {
     await deleteDoc(doc(db, "products", id));
+    if (editingId === id) closeProductEditor();
     toast("بەرهەمەکە سڕایەوە.");
-  } catch (e) {
-    console.error(e);
+  } catch (error) {
+    console.error(error);
     toast("سڕینەوە سەرکەوتوو نەبوو.");
   }
 };
 
-async function saveProduct(e) {
-  if (e) e.preventDefault();
+async function saveProduct(event) {
+  event?.preventDefault();
   if (!auth.currentUser) return toast("تکایە سەرەتا بچۆ ژوورەوە.");
 
   const data = productFromForm();
@@ -403,7 +516,7 @@ async function saveProduct(e) {
 
   try {
     if (editingId) {
-      await setDoc(doc(db, "products", editingId), data, {merge:true});
+      await setDoc(doc(db, "products", editingId), data, { merge: true });
       toast("بەرهەم نوێکرایەوە.");
     } else {
       await addDoc(collection(db, "products"), {
@@ -412,70 +525,97 @@ async function saveProduct(e) {
       });
       toast("بەرهەم زیادکرا.");
     }
-    editingId = null;
-    if (typeof window.closeProductForm === "function") window.closeProductForm();
-    if (typeof window.resetProductForm === "function") window.resetProductForm();
-  } catch (e) {
-    console.error(e);
+    closeProductEditor();
+  } catch (error) {
+    console.error(error);
     toast("هەڵەیەک ڕوویدا لە پاشەکەوتکردن.");
   }
 }
-
 window.saveProduct = saveProduct;
 
-async function saveBanner() {
+async function saveBanner(event) {
+  event?.preventDefault();
   if (!auth.currentUser) return toast("تکایە سەرەتا بچۆ ژوورەوە.");
-  const input = $("bannerUrl") || $("mainBannerUrl") || $("heroBannerUrl");
-  const imageUrl = String(input?.value || "").trim();
+  const imageUrl = val("bannerUrl");
   try {
     await setDoc(doc(db, "settings", "banner"), {
       imageUrl,
       updatedAt: serverTimestamp()
-    }, {merge:true});
+    }, { merge: true });
     toast(imageUrl ? "بانەر نوێکرایەوە." : "بانەر سڕایەوە.");
-  } catch (e) {
-    console.error(e);
+    closeBannerEditor();
+  } catch (error) {
+    console.error(error);
     toast("نوێکردنەوەی بانەر سەرکەوتوو نەبوو.");
   }
 }
 window.saveBanner = saveBanner;
 
-async function doLogin(e) {
-  if (e) e.preventDefault();
-  const email = val("email") || val("loginEmail");
-  const password = val("password") || val("loginPassword");
+function updateBannerPreview(url) {
+  const preview = $("bannerPreview");
+  if (!preview) return;
+  if (url) {
+    preview.innerHTML = `<img src="${escapeHtml(url)}" alt="بانەر" style="width:100%;max-height:220px;object-fit:cover;border-radius:11px">`;
+    preview.classList.remove("empty");
+  } else {
+    preview.textContent = "هیچ بەنەرێک دیاری نەکراوە.";
+    preview.classList.add("empty");
+  }
+}
+
+async function doLogin(event) {
+  event?.preventDefault();
+  const email = val("email");
+  const password = val("password");
   if (!email || !password) return toast("ئیمەیڵ و وشەی نهێنی پڕ بکەرەوە.");
+  const button = $("loginBtn");
+  if (button) button.disabled = true;
   try {
     await signInWithEmailAndPassword(auth, email, password);
-  } catch (e) {
-    console.error(e);
-    toast("چوونەژوورەوە سەرکەوتوو نەبوو.");
+  } catch (error) {
+    console.error(error);
+    toast("ئیمەیڵ یان وشەی نهێنی هەڵەیە.");
+  } finally {
+    if (button) button.disabled = false;
   }
 }
 window.doLogin = doLogin;
 window.login = doLogin;
 
 window.logout = async () => {
-  try { await signOut(auth); } catch(e) { console.error(e); }
+  try {
+    await signOut(auth);
+    toast("بە سەرکەوتوویی دەرچوویت.");
+  } catch (error) {
+    console.error(error);
+    toast("دەرچوون سەرکەوتوو نەبوو.");
+  }
 };
 
 function bindForm() {
-  const form = $("productForm") || $("addProductForm");
-  if (form && !form.dataset.firebaseBound) {
-    form.dataset.firebaseBound = "1";
-    form.addEventListener("submit", saveProduct);
-  }
   const loginForm = $("loginForm");
-  if (loginForm && !loginForm.dataset.firebaseBound) {
-    loginForm.dataset.firebaseBound = "1";
+  if (loginForm && !loginForm.dataset.bound) {
+    loginForm.dataset.bound = "1";
     loginForm.addEventListener("submit", doLogin);
   }
 
-  const logoutBtn = $("logoutBtn");
-  if (logoutBtn && !logoutBtn.dataset.firebaseBound) {
-    logoutBtn.dataset.firebaseBound = "1";
-    logoutBtn.addEventListener("click", () => window.logout());
+  const productForm = $("productForm");
+  if (productForm && !productForm.dataset.bound) {
+    productForm.dataset.bound = "1";
+    productForm.addEventListener("submit", saveProduct);
   }
+
+  const bannerForm = $("bannerForm");
+  if (bannerForm && !bannerForm.dataset.bound) {
+    bannerForm.dataset.bound = "1";
+    bannerForm.addEventListener("submit", saveBanner);
+  }
+
+  $("bannerUrl")?.addEventListener("input", e => updateBannerEditorPreview(e.target.value.trim()));
+  $("logoutBtn")?.addEventListener("click", window.logout);
+  $("deleteProductBtn")?.addEventListener("click", () => {
+    if (editingId) window.deleteProduct(editingId);
+  });
 }
 
 onAuthStateChanged(auth, user => {
@@ -487,18 +627,23 @@ onAuthStateChanged(auth, user => {
   }
 
   showDashboard(true);
+  $("userEmail").textContent = user.email || "";
   bindForm();
 
   if (!unsubscribeProducts) {
     unsubscribeProducts = onSnapshot(
       collection(db, "products"),
       snap => {
-        products = snap.docs.map(d => ({id:d.id, ...d.data()}));
+        products = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        products.sort((a, b) => {
+          const at = a.createdAt?.seconds || 0;
+          const bt = b.createdAt?.seconds || 0;
+          return bt - at;
+        });
         renderProducts();
-        if (typeof window.updateStats === "function") window.updateStats(products);
       },
-      err => {
-        console.error("Products sync error:", err);
+      error => {
+        console.error("Products sync error:", error);
         toast("بەستەرەکەی بەرهەمەکان هەڵەی هەیە.");
       }
     );
@@ -509,14 +654,11 @@ onAuthStateChanged(auth, user => {
       doc(db, "settings", "banner"),
       snap => {
         const url = snap.exists() ? String(snap.data()?.imageUrl || "") : "";
-        putValue(["bannerUrl","mainBannerUrl","heroBannerUrl"], url);
-        const preview = $("bannerPreview") || $("mainBannerPreview");
-        if (preview) {
-          preview.src = url;
-          preview.style.display = url ? "block" : "none";
-        }
+        $("bannerUrl").value = url;
+        updateBannerEditorPreview(url);
+        updateBannerPreview(url);
       },
-      err => console.error("Banner sync error:", err)
+      error => console.error("Banner sync error:", error)
     );
   }
 });
