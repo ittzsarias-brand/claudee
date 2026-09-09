@@ -212,10 +212,17 @@ html, body, button, input, textarea, select, option {
 
 <div id="toast" class="toast"></div>
 
-<script type="module">
+
+
+<script type="module" id="admin-firebase">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-import { getFirestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+import {
+  getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+import {
+  getFirestore, collection, doc, addDoc, setDoc, deleteDoc,
+  onSnapshot, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCH5-6OhuCVfZo8abiIHYfOzvbQTBQbEmw",
@@ -227,175 +234,289 @@ const firebaseConfig = {
   measurementId: "G-DDCWBJVG1T"
 };
 
-const app = initializeApp(firebaseConfig, "ph-tools-admin");
+const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-let products = [];
-let activeFilter = "all";
 let unsubscribeProducts = null;
+let unsubscribeBanner = null;
+let products = [];
+let editingId = null;
 
 const $ = id => document.getElementById(id);
-const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const imgFallback = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Crect width='100%25' height='100%25' fill='%2324262b'/%3E%3C/svg%3E";
+const val = id => String($(id)?.value ?? "").trim();
 
-function showToast(message, type="ok"){
-  const t=$("toast"); t.textContent=message; t.className="toast show "+type;
-  clearTimeout(window.__toastTimer); window.__toastTimer=setTimeout(()=>t.className="toast",2800);
+function normalizeImages(raw) {
+  if (Array.isArray(raw)) return raw.map(String).map(x=>x.trim()).filter(Boolean);
+  if (raw) return String(raw).split(/\r?\n|,/).map(x=>x.trim()).filter(Boolean);
+  return [];
 }
-function normalize(p){
-  return {...p, id:p.id, images:Array.isArray(p.images)?p.images.filter(Boolean):(p.imageUrl?[p.imageUrl]:p.img?[p.img]:[]), active:p.active!==false};
+
+function normalizeSizes(raw) {
+  if (!Array.isArray(raw)) return [];
+  return raw.map((x, i) => {
+    if (typeof x === "string") {
+      return {name:x.trim(), price:0, currency:"IQD"};
+    }
+    return {
+      name: String(x?.name ?? x?.size ?? `قەبارە ${i+1}`).trim(),
+      price: x?.price ?? 0,
+      currency: x?.currency || "IQD"
+    };
+  }).filter(x=>x.name);
 }
-function formatPrice(v,c="IQD"){
-  const n=Number(v||0);
-  return c==="USD" ? "$"+n.toLocaleString("en-US",{maximumFractionDigits:2}) : n.toLocaleString("en-US")+" د.ع";
-}
-function matches(p){
-  if(activeFilter==="all") return true;
-  const raw=[p.category,p.categories,p.brand,p.name].filter(Boolean).join(" ").toLowerCase();
-  const map={drill:["drill","درێل"],charger:["charger","شەحن"],shafra:["shafra","شفرە","ماڵە"],nail:["nail","بورغی","دەرزی"],cutting:["cutting","مشار"],electronics:["electronics","ئەلیکترۆنی"],warawela:["warawela","وردەواڵە"]};
-  return (map[activeFilter]||[]).some(x=>raw.includes(x.toLowerCase()));
-}
-function renderStats(){
-  $("statProducts").textContent=products.length;
-  $("statActive").textContent=products.filter(p=>p.active).length;
-}
-function rowHtml(p){
-  const img=esc(p.images?.[0]||imgFallback);
-  return `<div class="product-row">
-    <img src="${img}" alt="">
-    <div class="info"><b>${esc(p.name||"بەرهەم")}</b><small>${esc(p.brand||"بێ مارکە")} · ${p.active?"چالاک":"ناچالاک"}</small><span class="price">${esc(formatPrice(p.price,p.currency))}</span></div>
-    <div class="actions"><button class="mini" title="دەستکاری" onclick="openProductEditor('${esc(p.id)}')">✎</button><button class="mini" title="سڕینەوە" onclick="removeProduct('${esc(p.id)}')">×</button></div>
-  </div>`;
-}
-function renderProducts(){
-  const q=$("productSearch").value.trim().toLowerCase();
-  const list=products.filter(matches).filter(p=>!q || [p.name,p.brand,p.category,p.smallDescription].join(" ").toLowerCase().includes(q));
-  $("productsList").innerHTML=list.length?list.map(rowHtml).join(""):`<div class="empty">هیچ بەرهەمێک نەدۆزرایەوە.</div>`;
-}
-function renderRecent(){
-  const list=products.slice(0,5);
-  $("recentProducts").innerHTML=list.length?list.map(rowHtml).join(""):`<div class="empty">هیچ بەرهەمێک نییە.</div>`;
-}
-function subscribeProducts(){
-  if(unsubscribeProducts) unsubscribeProducts();
-  unsubscribeProducts=onSnapshot(collection(db,"products"), snap=>{
-    products=snap.docs.map(d=>normalize({id:d.id,...d.data()}));
-    renderStats(); renderProducts(); renderRecent();
-  }, err=>showToast("کێشەی هاوکاتکردنی بەرهەمەکان: "+err.message,"err"));
-}
-async function loadBanner(){
-  try{
-    const snap=await getDoc(doc(db,"settings","banner"));
-    const url=snap.exists()?String(snap.data()?.imageUrl||""):"";
-    $("bannerUrl").value=url;
-    $("bannerPreview").innerHTML=url?`<img src="${esc(url)}" alt="" style="width:100%;max-height:210px;object-fit:cover;border-radius:12px" onerror="this.style.display='none'">`:"<div class='empty'>هیچ بەنەرێک دیاری نەکراوە.</div>";
-  }catch(e){showToast("نەتوانرا بەنەر بخوێندرێتەوە.","err")}
-}
-window.switchView=function(view){
-  document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));
-  $(view+"View").classList.add("active");
-  document.querySelectorAll(".navitem[data-view]").forEach(x=>x.classList.toggle("active",x.dataset.view===view));
-  window.scrollTo({top:0,behavior:"smooth"});
-};
-window.setFilter=function(cat){
-  activeFilter=cat;
-  document.querySelectorAll(".filter").forEach(x=>x.classList.toggle("active",x.dataset.cat===cat));
-  renderProducts();
-};
-window.openSite=function(){window.open("./index.html","_blank","noopener")};
-function resetProductForm(){
-  $("productForm").reset(); $("productId").value=""; $("pActive").checked=true; $("imageList").innerHTML="";
-  addImageInput(); $("productModalTitle").textContent="بەرهەمی نوێ"; $("deleteProductBtn").style.display="none";
-}
-window.addImageInput=function(value=""){
-  const wrap=document.createElement("div"); wrap.className="image-input";
-  wrap.innerHTML=`<input type="url" placeholder="https://..." value="${esc(value)}"><button type="button" class="remove-image" title="لابردن">×</button>`;
-  wrap.querySelector(".remove-image").onclick=()=>wrap.remove();
-  $("imageList").appendChild(wrap);
-};
-window.openProductEditor=function(id=""){
-  resetProductForm();
-  if(id){
-    const p=products.find(x=>String(x.id)===String(id)); if(!p)return;
-    $("productModalTitle").textContent="دەستکاری بەرهەم";
-    $("productId").value=p.id; $("pName").value=p.name||""; $("pBrand").value=p.brand||"";
-    $("pCategory").value=p.category||""; $("pShort").value=p.smallDescription||p.shortDescription||"";
-    $("pDescription").value=p.description||""; $("pPrice").value=p.price??""; $("pCurrency").value=p.currency||"IQD";
-    $("pVideo").value=p.videoUrl||p.video||""; $("pActive").checked=p.active!==false;
-    $("imageList").innerHTML=""; (p.images?.length?p.images:[""]).forEach(addImageInput);
-    $("deleteProductBtn").style.display="block";
+
+function productFromForm() {
+  const images = normalizeImages(val("productImages") || val("imageUrls"));
+  const sizesText = val("productSizes");
+  let sizes = [];
+  if (sizesText) {
+    sizes = sizesText.split(/\r?\n/).map(line => {
+      const [name, price, currency] = line.split("|").map(x=>x.trim());
+      return {
+        name: name || "",
+        price: price === undefined || price === "" ? 0 : price,
+        currency: currency === "USD" ? "USD" : "IQD"
+      };
+    }).filter(x=>x.name);
   }
-  $("productModal").classList.add("show");
-};
-window.closeProductEditor=function(){$("productModal").classList.remove("show")};
-$("productForm").addEventListener("submit",async e=>{
-  e.preventDefault();
-  const id=$("productId").value;
-  const images=[...$("imageList").querySelectorAll("input")].map(x=>x.value.trim()).filter(Boolean);
-  const data={
-    name:$("pName").value.trim(),brand:$("pBrand").value.trim(),category:$("pCategory").value,
-    smallDescription:$("pShort").value.trim(),description:$("pDescription").value.trim(),
-    price:$("pPrice").value.trim(),currency:$("pCurrency").value,videoUrl:$("pVideo").value.trim(),
-    images,active:$("pActive").checked,updatedAt:Date.now()
+
+  return {
+    name: val("productName") || val("name"),
+    brand: val("productBrand") || val("brand"),
+    category: val("productCategory") || val("category"),
+    categories: val("productCategories") || val("categories"),
+    images,
+    price: val("productPrice") || val("price") || 0,
+    currency: val("productCurrency") === "USD" ? "USD" : "IQD",
+    smallDescription:
+      val("productShortDescription") ||
+      val("productSmallDescription") ||
+      val("smallDescription") ||
+      val("shortDescription"),
+    description:
+      val("productDescription") ||
+      val("description"),
+    videoUrl:
+      val("productVideo") ||
+      val("videoUrl") ||
+      val("video"),
+    sizes: normalizeSizes(sizes),
+    active: $("productActive") ? $("productActive").checked : true,
+    updatedAt: serverTimestamp()
   };
-  if(!data.name){showToast("ناوی بەرهەم پڕبکەرەوە.","err");return}
-  const btn=$("saveProductBtn");btn.disabled=true;btn.textContent="پاشەکەوت دەکرێت...";
-  try{
-    if(id) await updateDoc(doc(db,"products",id),data);
-    else await addDoc(collection(db,"products"),{...data,createdAt:Date.now()});
-    showToast(id?"بەرهەم نوێکرایەوە.":"بەرهەم زیادکرا.");
-    closeProductEditor();
-  }catch(err){showToast("هەڵە: "+err.message,"err")}
-  finally{btn.disabled=false;btn.textContent="پاشەکەوتکردن"}
-});
-window.removeProduct=async function(id){
-  const p=products.find(x=>String(x.id)===String(id)); if(!p)return;
-  if(!confirm(`دڵنیایت لە سڕینەوەی «${p.name||"بەرهەم"}»؟`))return;
-  try{await deleteDoc(doc(db,"products",id));showToast("بەرهەم سڕایەوە.");}
-  catch(e){showToast("سڕینەوە سەرکەوتوو نەبوو: "+e.message,"err")}
-};
-$("deleteProductBtn").onclick=async()=>{
-  const id=$("productId").value;if(!id)return;
-  if(!confirm("دڵنیایت لە سڕینەوەی ئەم بەرهەمە؟"))return;
-  try{await deleteDoc(doc(db,"products",id));closeProductEditor();showToast("بەرهەم سڕایەوە.");}
-  catch(e){showToast("هەڵە لە سڕینەوە.","err")}
-};
-window.openBannerEditor=function(){
-  $("bannerModal").classList.add("show"); previewBannerEditor();
-};
-window.closeBannerEditor=function(){$("bannerModal").classList.remove("show")};
-function previewBannerEditor(){
-  const url=$("bannerUrl").value.trim(), img=$("bannerEditorPreview");
-  if(url){img.src=url;img.style.display="block"}else img.style.display="none";
 }
-$("bannerUrl").addEventListener("input",previewBannerEditor);
-$("bannerForm").addEventListener("submit",async e=>{
-  e.preventDefault(); const url=$("bannerUrl").value.trim();
-  try{await setDoc(doc(db,"settings","banner"),{imageUrl:url,updatedAt:Date.now()},{merge:true});showToast("بەنەر پاشەکەوتکرا.");closeBannerEditor();loadBanner();}
-  catch(err){showToast("هەڵە: "+err.message,"err")}
-});
-window.clearBanner=async function(){
-  try{await setDoc(doc(db,"settings","banner"),{imageUrl:"",updatedAt:Date.now()},{merge:true});$("bannerUrl").value="";previewBannerEditor();showToast("بەنەر لابرا.");closeBannerEditor();loadBanner();}
-  catch(e){showToast("هەڵە لە لابردنی بەنەر.","err")}
+
+function putValue(ids, value) {
+  for (const id of ids) {
+    const el = $(id);
+    if (el) {
+      el.value = value ?? "";
+      return;
+    }
+  }
+}
+
+function setChecked(ids, value) {
+  for (const id of ids) {
+    const el = $(id);
+    if (el && "checked" in el) {
+      el.checked = value !== false;
+      return;
+    }
+  }
+}
+
+function showDashboard(show) {
+  const login = $("loginScreen");
+  const dashboard = $("dashboard");
+  if (login) login.classList.toggle("hidden", show);
+  if (dashboard) dashboard.classList.toggle("hidden", !show);
+}
+
+function toast(message) {
+  if (typeof window.showToast === "function") return window.showToast(message);
+  alert(message);
+}
+
+function renderProducts() {
+  // Use the existing admin renderer if present.
+  if (typeof window.renderProducts === "function") {
+    window.renderProducts(products);
+    return;
+  }
+  const grid = $("productsGrid") || $("productList");
+  if (!grid) return;
+  grid.innerHTML = products.map(p => `
+    <div class="product-card">
+      <strong>${String(p.name || "بەرهەم")}</strong>
+      <small>${p.category || ""}</small>
+    </div>
+  `).join("");
+}
+
+function fillForm(p) {
+  editingId = p.id;
+  putValue(["productName","name"], p.name);
+  putValue(["productBrand","brand"], p.brand);
+  putValue(["productCategory","category"], p.category);
+  putValue(["productCategories","categories"], p.categories);
+  putValue(["productImages","imageUrls"], (p.images || []).join("\n"));
+  putValue(["productPrice","price"], p.price);
+  putValue(["productCurrency","currency"], p.currency || "IQD");
+  putValue(["productShortDescription","productSmallDescription","smallDescription","shortDescription"], p.smallDescription);
+  putValue(["productDescription","description"], p.description);
+  putValue(["productVideo","videoUrl","video"], p.videoUrl);
+  if ($("productSizes")) {
+    $("productSizes").value = (p.sizes || []).map(s =>
+      `${s.name}|${s.price}|${s.currency || "IQD"}`
+    ).join("\n");
+  }
+  setChecked(["productActive"], p.active !== false);
+  if (typeof window.openProductForm === "function") window.openProductForm(p);
+  else if (typeof window.showProductForm === "function") window.showProductForm(p);
+}
+
+window.editProduct = id => {
+  const p = products.find(x => String(x.id) === String(id));
+  if (p) fillForm(p);
 };
-window.logout=async function(){await signOut(auth)};
-$("logoutBtn").onclick=window.logout;
-$("loginForm").addEventListener("submit",async e=>{
-  e.preventDefault();const btn=$("loginBtn");btn.disabled=true;btn.textContent="چاوەڕوانبە...";
-  try{await signInWithEmailAndPassword(auth,$("email").value.trim(),$("password").value);}
-  catch(err){showToast("ئیمەیڵ یان وشەی نهێنی هەڵەیە.","err")}
-  finally{btn.disabled=false;btn.textContent="چوونەژوورەوە"}
-});
-onAuthStateChanged(auth,user=>{
-  if(user){
-    $("loginView").classList.add("hidden");$("app").classList.remove("hidden");$("userEmail").textContent=user.email||"";
-    subscribeProducts();loadBanner();
-  }else{
-    $("app").classList.add("hidden");$("loginView").classList.remove("hidden");
-    if(unsubscribeProducts){unsubscribeProducts();unsubscribeProducts=null}
+
+window.deleteProduct = async id => {
+  if (!auth.currentUser) return toast("تکایە سەرەتا بچۆ ژوورەوە.");
+  if (!confirm("دڵنیایت لە سڕینەوەی ئەم بەرهەمە؟")) return;
+  try {
+    await deleteDoc(doc(db, "products", id));
+    toast("بەرهەمەکە سڕایەوە.");
+  } catch (e) {
+    console.error(e);
+    toast("سڕینەوە سەرکەوتوو نەبوو.");
+  }
+};
+
+async function saveProduct(e) {
+  if (e) e.preventDefault();
+  if (!auth.currentUser) return toast("تکایە سەرەتا بچۆ ژوورەوە.");
+
+  const data = productFromForm();
+  if (!data.name) return toast("ناوی بەرهەم بنووسە.");
+
+  try {
+    if (editingId) {
+      await setDoc(doc(db, "products", editingId), data, {merge:true});
+      toast("بەرهەم نوێکرایەوە.");
+    } else {
+      await addDoc(collection(db, "products"), {
+        ...data,
+        createdAt: serverTimestamp()
+      });
+      toast("بەرهەم زیادکرا.");
+    }
+    editingId = null;
+    if (typeof window.closeProductForm === "function") window.closeProductForm();
+    if (typeof window.resetProductForm === "function") window.resetProductForm();
+  } catch (e) {
+    console.error(e);
+    toast("هەڵەیەک ڕوویدا لە پاشەکەوتکردن.");
+  }
+}
+
+window.saveProduct = saveProduct;
+
+async function saveBanner() {
+  if (!auth.currentUser) return toast("تکایە سەرەتا بچۆ ژوورەوە.");
+  const input = $("bannerUrl") || $("mainBannerUrl") || $("heroBannerUrl");
+  const imageUrl = String(input?.value || "").trim();
+  try {
+    await setDoc(doc(db, "settings", "banner"), {
+      imageUrl,
+      updatedAt: serverTimestamp()
+    }, {merge:true});
+    toast(imageUrl ? "بانەر نوێکرایەوە." : "بانەر سڕایەوە.");
+  } catch (e) {
+    console.error(e);
+    toast("نوێکردنەوەی بانەر سەرکەوتوو نەبوو.");
+  }
+}
+window.saveBanner = saveBanner;
+
+async function doLogin(e) {
+  if (e) e.preventDefault();
+  const email = val("email") || val("loginEmail");
+  const password = val("password") || val("loginPassword");
+  if (!email || !password) return toast("ئیمەیڵ و وشەی نهێنی پڕ بکەرەوە.");
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+  } catch (e) {
+    console.error(e);
+    toast("چوونەژوورەوە سەرکەوتوو نەبوو.");
+  }
+}
+window.doLogin = doLogin;
+window.login = doLogin;
+
+window.logout = async () => {
+  try { await signOut(auth); } catch(e) { console.error(e); }
+};
+
+function bindForm() {
+  const form = $("productForm") || $("addProductForm");
+  if (form && !form.dataset.firebaseBound) {
+    form.dataset.firebaseBound = "1";
+    form.addEventListener("submit", saveProduct);
+  }
+  const loginForm = $("loginForm");
+  if (loginForm && !loginForm.dataset.firebaseBound) {
+    loginForm.dataset.firebaseBound = "1";
+    loginForm.addEventListener("submit", doLogin);
+  }
+}
+
+onAuthStateChanged(auth, user => {
+  if (!user) {
+    showDashboard(false);
+    if (unsubscribeProducts) { unsubscribeProducts(); unsubscribeProducts = null; }
+    if (unsubscribeBanner) { unsubscribeBanner(); unsubscribeBanner = null; }
+    return;
+  }
+
+  showDashboard(true);
+  bindForm();
+
+  if (!unsubscribeProducts) {
+    unsubscribeProducts = onSnapshot(
+      collection(db, "products"),
+      snap => {
+        products = snap.docs.map(d => ({id:d.id, ...d.data()}));
+        renderProducts();
+        if (typeof window.updateStats === "function") window.updateStats(products);
+      },
+      err => {
+        console.error("Products sync error:", err);
+        toast("بەستەرەکەی بەرهەمەکان هەڵەی هەیە.");
+      }
+    );
+  }
+
+  if (!unsubscribeBanner) {
+    unsubscribeBanner = onSnapshot(
+      doc(db, "settings", "banner"),
+      snap => {
+        const url = snap.exists() ? String(snap.data()?.imageUrl || "") : "";
+        putValue(["bannerUrl","mainBannerUrl","heroBannerUrl"], url);
+        const preview = $("bannerPreview") || $("mainBannerPreview");
+        if (preview) {
+          preview.src = url;
+          preview.style.display = url ? "block" : "none";
+        }
+      },
+      err => console.error("Banner sync error:", err)
+    );
   }
 });
+
+document.addEventListener("DOMContentLoaded", bindForm);
 </script>
+
 </body>
 </html>
