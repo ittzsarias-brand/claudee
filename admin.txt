@@ -719,9 +719,7 @@
           Array.isArray(product.images) && product.images[0]
             ? product.images[0]
             : product.imageUrl || "";
-        const price = product.sizes?.length
-          ? money(product.sizes[0].price, product.sizes[0].currency)
-          : money(product.price, product.currency);
+        const price = money(product.price, product.currency);
         const active = product.active !== false;
         return `
           <tr>
