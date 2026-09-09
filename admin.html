@@ -82,8 +82,153 @@ html, body, button, input, textarea, select, option {
 }
 
 </style>
+
+<style id="mobile-normal-layout">
+/* Mobile: keep the admin dashboard clean, normal and usable */
+@media (max-width: 700px) {
+  html, body {
+    width: 100%;
+    min-width: 0 !important;
+    overflow-x: hidden !important;
+  }
+
+  body {
+    margin: 0 !important;
+    font-size: 14px !important;
+  }
+
+  .sidebar {
+    position: fixed !important;
+    inset: 0 auto 0 0 !important;
+    width: 250px !important;
+    max-width: 82vw !important;
+    transform: translateX(-105%) !important;
+    z-index: 1000 !important;
+    transition: transform .2s ease !important;
+    overflow-y: auto !important;
+  }
+
+  .sidebar.open,
+  .sidebar.active,
+  body.sidebar-open .sidebar {
+    transform: translateX(0) !important;
+  }
+
+  .main,
+  .main-content,
+  .content,
+  .app-main {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 16px !important;
+    box-sizing: border-box !important;
+  }
+
+  .topbar,
+  .header,
+  .page-header {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    gap: 10px !important;
+    flex-wrap: wrap !important;
+  }
+
+  .dashboard-grid,
+  .stats-grid,
+  .stat-grid,
+  .cards-grid,
+  .products-grid,
+  #productsList {
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+  }
+
+  .card,
+  .stat-card,
+  .product-card,
+  .panel,
+  .section {
+    width: 100% !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
+  }
+
+  .toolbar,
+  .filters,
+  .actions,
+  .form-actions {
+    flex-wrap: wrap !important;
+    width: 100% !important;
+  }
+
+  input, select, textarea, button {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  input, select, textarea {
+    width: 100% !important;
+  }
+
+  .search-box {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  .modal {
+    padding: 12px !important;
+    align-items: flex-start !important;
+    overflow-y: auto !important;
+  }
+
+  .modal-content,
+  .modal-box,
+  .modal-dialog {
+    width: 100% !important;
+    max-width: 560px !important;
+    max-height: calc(100vh - 24px) !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+    overflow-y: auto !important;
+  }
+
+  .form-grid,
+  .two-col,
+  .form-row {
+    grid-template-columns: 1fr !important;
+  }
+
+  table {
+    display: block !important;
+    width: 100% !important;
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+  }
+
+  .mobile-menu-btn,
+  #mobileMenuBtn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+}
+
+/* Desktop: the mobile menu button should not affect normal desktop layout. */
+@media (min-width: 701px) {
+  .mobile-menu-btn,
+  #mobileMenuBtn {
+    display: none !important;
+  }
+}
+</style>
+
 </head>
 <body>
+<button id="mobileMenuBtn" class="mobile-menu-btn" type="button"
+  aria-label="Open menu"
+  style="position:fixed;top:12px;left:12px;z-index:1100;width:42px;height:42px;border:0;border-radius:10px;background:#111;color:#fff;font-size:20px;cursor:pointer;">☰</button>
+
 
 <div id="loginView" class="login">
   <form class="login-card" id="loginForm">
@@ -664,6 +809,40 @@ onAuthStateChanged(auth, user => {
 });
 
 document.addEventListener("DOMContentLoaded", bindForm);
+</script>
+
+
+<script>
+(function () {
+  function setupMobileAdmin() {
+    var btn = document.getElementById('mobileMenuBtn');
+    var sidebar = document.querySelector('.sidebar') ||
+                  document.querySelector('#sidebar') ||
+                  document.querySelector('.side-nav');
+
+    if (!btn || !sidebar || btn.dataset.bound === '1') return;
+    btn.dataset.bound = '1';
+
+    btn.addEventListener('click', function () {
+      sidebar.classList.toggle('open');
+      sidebar.classList.toggle('active');
+      document.body.classList.toggle('sidebar-open');
+    });
+
+    sidebar.addEventListener('click', function (e) {
+      if (window.innerWidth <= 700 && e.target.closest('a, button')) {
+        sidebar.classList.remove('open', 'active');
+        document.body.classList.remove('sidebar-open');
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupMobileAdmin);
+  } else {
+    setupMobileAdmin();
+  }
+})();
 </script>
 
 </body>
