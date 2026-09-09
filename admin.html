@@ -223,6 +223,47 @@ html, body, button, input, textarea, select, option {
 }
 </style>
 
+
+<style id="small-dashboard-images">
+/* Smaller product images/cards on desktop and mobile */
+.products-grid,
+#productsList,
+.product-grid {
+  gap: 14px !important;
+}
+
+.products-grid .product-card,
+#productsList .product-card,
+.product-grid .product-card {
+  overflow: hidden !important;
+}
+
+.products-grid .product-card img,
+#productsList .product-card img,
+.product-grid .product-card img {
+  width: 100% !important;
+  height: 150px !important;
+  max-height: 150px !important;
+  object-fit: contain !important;
+  display: block !important;
+}
+
+@media (max-width: 700px) {
+  .products-grid .product-card img,
+  #productsList .product-card img,
+  .product-grid .product-card img {
+    height: 115px !important;
+    max-height: 115px !important;
+  }
+
+  .products-grid .product-card,
+  #productsList .product-card,
+  .product-grid .product-card {
+    min-width: 0 !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <button id="mobileMenuBtn" class="mobile-menu-btn" type="button"
